@@ -1,0 +1,101 @@
+## Process this file with automake to produce Makefile.in
+
+## Created by Anjuta
+
+AM_CPPFLAGS = \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" 
+
+AM_CFLAGS =\
+	 -Wall\
+	 -g
+
+bin_PROGRAMS = boblightd \
+	boblighttest\
+	boblight-X11
+
+boblight_X11_SOURCES = \
+	clients/boblight-X11.cpp\
+	util/timer.cpp \
+	util/clock.cpp \
+	util/condition.cpp \
+	util/mutex.cpp \
+	util/thread.cpp \
+	util/lock.cpp
+
+boblighttest_SOURCES = \
+	boblight-test.cpp\
+	boblight-test2.cpp
+
+boblightd_SOURCES = \
+	util/clock.cpp    \
+	util/clock.h    \
+	util/condition.cpp    \
+	util/condition.h    \
+	util/lock.cpp    \
+	util/lock.h    \
+	util/log.cpp    \
+	util/log.h    \
+	util/misc.cpp    \
+	util/misc.h    \
+	util/mutex.cpp    \
+	util/mutex.h    \
+	util/thread.cpp    \
+	util/thread.h    \
+	util/timer.cpp    \
+	util/timer.h    \
+	util/udpsocket.cpp    \
+	util/udpsocket.h    \
+	util/serialport.cpp    \
+	util/serialport.h    \
+	main.cpp    \
+	util/tcpsocket.cpp    \
+	util/tcpsocket.h    \
+	util/messagequeue.cpp    \
+	util/messagequeue.h    \
+	client.cpp    \
+	client.h    \
+	connectionhandler.cpp    \
+	connectionhandler.h    \
+	light.cpp    \
+	light.h    \
+	util/baudrate.h    \
+	configuration.h    \
+	configuration.cpp    \
+	device/device.cpp    \
+	device/device.h    \
+	device/devicepopen.cpp    \
+	device/devicepopen.h    \
+	device/deviceltbl.cpp    \
+	device/deviceltbl.h    \
+	device/devicesound.cpp    \
+	device/devicesound.h    \
+	device/devicers232.cpp    \
+	device/devicers232.h    \
+	protocolversion.h
+
+boblightd_LDFLAGS = 
+
+boblightd_LDADD = 
+
+lib_LTLIBRARIES = \
+	libboblight.la
+
+libboblight_la_SOURCES = \
+	lib/boblight.cpp\
+	lib/boblight.h \
+	lib/libboblight.cpp \
+	lib/libboblight.h \
+	util/clock.cpp \
+	util/clock.h \
+	util/messagequeue.cpp \
+	util/messagequeue.h \
+	util/misc.cpp \
+	util/misc.h \
+	util/tcpsocket.cpp \
+	util/tcpsocket.h \
+	lib/libboblight-functions.h
+
+libboblight_la_CPPFLAGS = $(AM_CPPFLAGS)
+
