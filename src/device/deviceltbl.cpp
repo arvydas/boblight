@@ -30,7 +30,7 @@ bool CDeviceLtbl::SetupDevice()
 {
   if (!m_serialport.Open(m_output, m_rate))
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -72,7 +72,7 @@ bool CDeviceLtbl::WriteOutput()
     
     if (m_serialport.Write(prefix, 4) == -1 || m_serialport.Write(m_buff, m_channels.size() * 2) == -1)
     {
-      log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+      log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
       return false;
     }
   }
@@ -117,13 +117,13 @@ bool CDeviceLtbl::OpenController()
 
   if (m_serialport.Write(buff, 258) == -1 || m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(open, 2) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
   if (m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(getvalues, 4) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -132,7 +132,7 @@ bool CDeviceLtbl::OpenController()
   
   if (m_serialport.Read(buff, 2, 1000000) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -147,7 +147,7 @@ bool CDeviceLtbl::OpenController()
 
   if (m_serialport.Read(buff, nrchannels * 2, 1000000) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -175,7 +175,7 @@ bool CDeviceLtbl::CloseController()
   
   if (m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(close, 2) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -195,7 +195,7 @@ bool CDeviceLtbl::WaitForPrefix()
     prefix[0] = prefix[1];
     if (m_serialport.Read(prefix + 1, 1, 1000000) == -1)
     {
-      log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+      log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
       return false;
     }
 

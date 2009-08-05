@@ -43,7 +43,7 @@ bool CDeviceRS232::SetupDevice()
 {
   if (!m_serialport.Open(m_output, m_rate))
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), m_serialport.GetError().c_str());
+    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
   m_buff = new unsigned char[m_channels.size()];
@@ -65,7 +65,7 @@ bool CDeviceRS232::WriteOutput()
 
   if (m_serialport.Write(&m_prefix[0], m_prefix.size()) == -1 || m_serialport.Write(m_buff, m_channels.size()) == -1)
   {
-    log("%s %s: %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
+    log("%s %s", m_name.c_str(), GetErrno().c_str());
     return false;
   }
 
