@@ -361,6 +361,8 @@ bool CClientsHandler::ParseSet(CClient* client, CMessage& message)
       return false;
     }
     client->SetPriority(priority);
+    log("%s:%i priority set to %i", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort(), client->m_priority);
+    
   }
   else if (messagekey == "light")
   {
