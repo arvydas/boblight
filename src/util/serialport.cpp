@@ -40,6 +40,8 @@ CSerialPort::~CSerialPort()
 
 int CSerialPort::Write(unsigned char* data, int len)
 {
+  fd_set port;
+  
   if (m_fd == -1)
   {
     m_error = "port closed";
@@ -50,7 +52,16 @@ int CSerialPort::Write(unsigned char* data, int len)
 
   while (byteswritten < len)
   {
-    int returnv = write(m_fd, data + byteswritten, len - byteswritten);
+    FD_ZERO(&port);
+    FD_SET(m_fd, &port);
+    int returnv = select(m_fd + 1, NULL, &port, NULL, NULL);
+    if (returnv == -1)
+    {
+      m_error = GetErrno();
+      return -1;
+    }
+
+    returnv = write(m_fd, data + byteswritten, len - byteswritten);
     if (returnv == -1)
     {
       m_error = GetErrno();
@@ -207,6 +218,9 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     m_error = GetErrno();
     return false;
   }
+  
+  //non-blocking port
+  fcntl(m_fd, F_SETFL, FNDELAY);
 
   return true;
 }
