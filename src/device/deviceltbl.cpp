@@ -139,9 +139,9 @@ bool CDeviceLtbl::OpenController()
   int startchannel = buff[0];
   int nrchannels = buff[1];
 
-  if (startchannel >= (int)m_channels.size() || startchannel < 0 || nrchannels <= 0 || nrchannels > (int)m_channels.size())
+  if (startchannel < 0 || nrchannels <= 0 || startchannel + nrchannels > (int)m_channels.size())
   {
-    log("%s %s: sent gibberish", m_name.c_str(), m_output.c_str());
+    log("%s %s: sent gibberish, startchannel: %i, nrchannels: %i", m_name.c_str(), m_output.c_str(), startchannel, nrchannels);
     return false;
   }    
 
