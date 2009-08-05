@@ -25,6 +25,8 @@ CChannel::CChannel()
 {
   m_color = -1;
   m_light = -1;
+
+  m_isused = false;
   
   m_speed = 100.0;
   m_wantedvalue = 0.0;
@@ -77,9 +79,23 @@ void CDevice::Process()
       
   while(!m_stop)
   {
-    while(!m_stop && !SetupDevice())
-      sleep(10);
+    //keep trying to set up the device every 10 seconds
+    while(!m_stop)
+    {
+      if (!SetupDevice())
+      {
+        CloseDevice();
+        sleep(10);
+      }
+      else
+      {
+        break;
+      }
+    }
 
+    log("device %s opened", m_name.c_str());
+
+    //keep calling writeoutput until we're asked to stop or writeoutput fails
     while(!m_stop)
     {
       if (!WriteOutput())
@@ -87,6 +103,8 @@ void CDevice::Process()
     }
 
     CloseDevice();
+
+    log("device %s closed", m_name.c_str());
   }
 
   log("device %s stopped", m_name.c_str());

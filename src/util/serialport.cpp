@@ -65,7 +65,7 @@ int CSerialPort::Write(unsigned char* data, int len)
 int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
 {
   fd_set port;
-  struct timeval timeout;
+  struct timeval timeout, *tv;
 
   if (m_fd == -1)
   {
@@ -73,32 +73,51 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
     return -1;
   }
 
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 0;
-  
-  if (usecs > 0)
+  int64_t now = m_clock.GetTime();
+  int64_t target = now + (usecs * m_clock.GetFreq() / 1000000);
+  int     bytesread = 0;
+
+  while (bytesread < len)
   {
-    timeout.tv_sec = usecs / 1000000;
-    timeout.tv_usec = usecs % 1000000;
+    if (usecs < 0)
+    {
+      tv = NULL;
+    }
+    else
+    {
+      timeout.tv_sec  = (target - now) / m_clock.GetFreq();
+      timeout.tv_usec = ((target - now) * 1000000 / m_clock.GetFreq()) % 1000000;
+      tv = &timeout;
+    }
+
+    FD_ZERO(&port);
+    FD_SET(m_fd, &port);
+    int returnv = select(m_fd + 1, &port, NULL, NULL, tv);
+
+    if (returnv == -1)
+    {
+      m_error = GetErrno();
+      return -1;
+    }
+    else if (returnv == 0)
+    {
+      m_error = "read timed out";
+      return -1;
+    }
+
+    returnv = read(m_fd, data + bytesread, len - bytesread);
+    if (returnv == -1)
+    {
+      m_error = "read timed out";
+      return -1;
+    }
+
+    bytesread += returnv;
+
+    now = m_clock.GetTime();
   }
 
-  FD_ZERO(&port);
-  FD_SET(m_fd, &port);
-  int returnv = select(1, &port, NULL, NULL, &timeout);
-  FD_CLR(m_fd, &port);
-  
-  if (returnv == -1)
-  {
-    m_error = GetErrno();
-    return -1;
-  }
-
-  if (returnv == 1)
-  {
-    return read(m_fd, data, len);
-  }
-  m_error = "read timed out";
-  return 0;
+  return bytesread;
 }
 
 //setting all this stuff up is a pain in the ass

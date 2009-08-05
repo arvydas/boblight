@@ -83,9 +83,10 @@ void CDeviceRS232::CloseDevice()
 
     memset(m_buff, 0, m_channels.size());
     m_serialport.Write(m_buff, m_channels.size());
-    m_serialport.Close();
 
     delete m_buff;
     m_buff = NULL;
   }
+
+  m_serialport.Close();
 }

@@ -26,6 +26,7 @@ using namespace std;
 
 CDevicePopen::CDevicePopen (CClientsHandler& clients, CAsyncTimer& timer) : m_timer(timer), CDevice(clients)
 {
+  m_process = NULL;
 }
 
 bool CDevicePopen::SetupDevice()
@@ -46,7 +47,7 @@ bool CDevicePopen::WriteOutput()
 
   for (int i = 0; i < m_channels.size(); i++)
   {
-    if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) < 0)
+    if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) != 1)
     {
       log("%s %s: %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
       return false;

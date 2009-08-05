@@ -489,6 +489,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
     
     if (clientnr == -1) //no client for the light on this channel
     {
+      channels[i].SetUsed(false);
       channels[i].SetSpeed(m_lights[light].GetSpeed());
       channels[i].SetValueToFallback();
       channels[i].SetGamma(1.0);
@@ -497,6 +498,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
       continue;
     }
 
+    channels[i].SetUsed(true);
     channels[i].SetValue(m_clients[clientnr]->m_lights[light].GetColorValue(color, time));
     channels[i].SetSpeed(m_clients[clientnr]->m_lights[light].GetSpeed());
     channels[i].SetGamma(m_clients[clientnr]->m_lights[light].GetGamma(color));

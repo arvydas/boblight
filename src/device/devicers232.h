@@ -27,7 +27,7 @@ class CDeviceRS232 : public CDevice
   public:
     CDeviceRS232(CClientsHandler& clients, CAsyncTimer& timer);
 
-  private:
+  protected:
     void SetType(int type);
 
     bool SetupDevice();

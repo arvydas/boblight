@@ -27,6 +27,16 @@ class CDeviceLtbl : public CDeviceRS232
     CDeviceLtbl(CClientsHandler& clients, CAsyncTimer& timer);
 
   private:
+
+    bool SetupDevice();
+    bool WriteOutput();
+    void CloseDevice();
+    
+    bool OpenController();
+    bool CloseController();
+    bool WaitForPrefix();
+
+    bool m_isopened;
 };
 
 #endif //CDEVICELTBL

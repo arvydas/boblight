@@ -43,11 +43,15 @@ class CChannel
     CChannel();
     void SetLight(int light)             { m_light = light; }
     int  GetLight()                      { return m_light;  }
+
+    void SetUsed(bool used)              { m_isused = used; }
+    bool IsUsed()                        { return m_isused; }
+    
     void SetColor(int color)             { m_color = color; }
     int  GetColor()                      { return m_color;  }
     
     void SetValue(float value)           { m_wantedvalue = value; }
-    void SetFallback(float fallback)     { m_fallback = fallback; }
+    void SetFallback(float fallback)     { m_fallback = fallback; m_currentvalue = fallback; m_wantedvalue = fallback; }
     void SetValueToFallback()            { m_wantedvalue = m_fallback; }
     void SetSpeed(float speed)           { m_speed = speed; }
     void SetGamma(float gamma)           { m_gamma = gamma; }
@@ -59,6 +63,8 @@ class CChannel
   private:
     int   m_color;
     int   m_light;
+
+    bool  m_isused;
     
     float m_speed;
     float m_wantedvalue;
