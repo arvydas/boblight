@@ -85,6 +85,12 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
     }
     else
     {
+      if (now >= target)
+      {
+        m_error = "read timed out";
+        return -1;
+      }
+      
       timeout.tv_sec  = (target - now) / m_clock.GetFreq();
       timeout.tv_usec = ((target - now) * 1000000 / m_clock.GetFreq()) % 1000000;
       tv = &timeout;
