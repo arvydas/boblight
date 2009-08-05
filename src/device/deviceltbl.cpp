@@ -156,7 +156,6 @@ bool CDeviceLtbl::OpenController()
     int value = (int)(buff[i * 2]) << 8;
     value |= (int)(buff[i * 2 + 1]);
 
-    //broken for now
     m_channels[i].SetFallback(Clamp((float)value / 65535.0f, 0.0f, 1.0f));
   }
 
