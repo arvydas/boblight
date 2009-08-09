@@ -55,6 +55,7 @@ void CTcpData::SetData(std::string data, bool append)
   CopyData(const_cast<char*>(data.c_str()), data.length(), append);
 }
 
+//store data as c-string
 void CTcpData::CopyData(char* data, int size, bool append)
 {
   if (append)
@@ -89,6 +90,7 @@ CTcpSocket::~CTcpSocket()
   Close();
 }
 
+//can't open int the base class
 int CTcpSocket::Open(std::string address, int port, int usectimeout)
 {
   return FAIL;
@@ -174,18 +176,16 @@ int CTcpSocket::SetSockOptions()
   return SUCCESS;
 }
 
+//wait until the socket becomes readable or writeable
 int CTcpSocket::WaitForSocket(bool write, std::string timeoutstr)
 {
   int returnv;
   fd_set rwsock;
-  fd_set errorsock;
   struct timeval *tv = NULL;
 
   //add the socket to the fd_set
   FD_ZERO(&rwsock);
   FD_SET(m_sock, &rwsock);
-  FD_ZERO(&errorsock);
-  FD_SET(m_sock, &errorsock);
 
   //set the timeout
   struct timeval timeout;
@@ -197,9 +197,9 @@ int CTcpSocket::WaitForSocket(bool write, std::string timeoutstr)
   }
 
   if (write)
-    returnv = select(m_sock + 1, NULL, &rwsock, &errorsock, tv);
+    returnv = select(m_sock + 1, NULL, &rwsock, NULL, tv);
   else
-    returnv = select(m_sock + 1, &rwsock, NULL, &errorsock, tv);
+    returnv = select(m_sock + 1, &rwsock, NULL, NULL, tv);
   
   if (returnv == 0) //select timed out
   {
@@ -209,11 +209,6 @@ int CTcpSocket::WaitForSocket(bool write, std::string timeoutstr)
   else if (returnv == -1) //select had an error
   {
     m_error = "select() " + GetErrno();
-    return FAIL;
-  }
-  else if (FD_ISSET(m_sock, &errorsock)) //socket had an error
-  {
-    m_error = "FD_ISSET(errorsock) " + m_address + ":" + ToString(m_port) + " " + GetErrno();
     return FAIL;
   }
 
@@ -235,10 +230,12 @@ int CTcpSocket::WaitForSocket(bool write, std::string timeoutstr)
   return SUCCESS;
 }
 
+//open a client socket
 int CTcpClientSocket::Open(std::string address, int port, int usectimeout /*= -1*/)
 {
-  Close();
-  
+  Close(); //close it if it was opened
+
+  //store address, port and timeout
   m_address = address;
   m_port = port;
   m_usectimeout = usectimeout;
@@ -334,7 +331,7 @@ int CTcpClientSocket::Read(CTcpData& data)
     data.SetData(buff, size, true); //append the data
   }
 
-  return true;
+  return SUCCESS;
 }
 
 int CTcpClientSocket::Write(CTcpData& data)
@@ -348,6 +345,7 @@ int CTcpClientSocket::Write(CTcpData& data)
   int bytestowrite = data.GetSize();
   int byteswritten = 0;
 
+  //loop until we've written all bytes
   while (byteswritten < bytestowrite)
   {
     //wait until socket becomes writeable

@@ -31,6 +31,7 @@ CDevicePopen::CDevicePopen (CClientsHandler& clients, CAsyncTimer& timer) : m_ti
 
 bool CDevicePopen::SetupDevice()
 {
+  //try to open the process
   m_process = popen(m_output.c_str(), "w");
   if (m_process == NULL)
   {
@@ -42,9 +43,11 @@ bool CDevicePopen::SetupDevice()
 
 bool CDevicePopen::WriteOutput()
 {
+  //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
   m_clients.FillChannels(m_channels, now);
 
+  //print the values to the process, as float from 0.0 to 1.0
   for (int i = 0; i < m_channels.size(); i++)
   {
     if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) != 1)
@@ -59,7 +62,7 @@ bool CDevicePopen::WriteOutput()
     return false;
   }
   
-  m_timer.Wait();
+  m_timer.Wait(); //wait for the timer to signal us
 
   return true;
 }

@@ -27,6 +27,7 @@
 #include "client.h"
 #include "device/device.h"
 
+//place to store relevant lines from the config file
 class CConfigLine
 {
   public:
@@ -40,6 +41,7 @@ class CConfigLine
     std::string line;
 };
 
+//place to group config lines
 class CConfigGroup
 {
   public:
@@ -50,27 +52,32 @@ class CConfig
 {
   public:
     bool LoadConfigFromFile(std::string file);
-    bool CheckConfig();
+    bool CheckConfig(); //checks lines in the config file to make sure the syntax is correct
 
+    //builds the config
     bool BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
                      std::vector<CAsyncTimer>& timers, std::vector<CLight>& lights);
 
   private:
-    std::string m_filename;
+    std::string m_filename; //filename of the config file
 
+    //config lines groups
     std::vector<CConfigLine>  m_globalconfiglines;
     std::vector<CConfigGroup> m_devicelines;
     std::vector<CConfigGroup> m_colorlines;
     std::vector<CConfigGroup> m_lightlines;
 
+    //prints config to log
     void PrintConfig();
     void TabsToSpaces(std::string& line);
 
+    //syntax config checks
     bool CheckGlobalConfig();
     bool CheckDeviceConfig();
     bool CheckColorConfig();
     bool CheckLightConfig();
 
+    //gets a config line that starts with key
     int  GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, std::string& line);
 
     void BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler);

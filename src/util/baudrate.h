@@ -16,6 +16,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//every baudrate I could find is in here in an #ifdef block
+//so it should compile on everything
+
 #ifndef BAUDRATE
 #define BAUDRATE
 

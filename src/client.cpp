@@ -66,24 +66,28 @@ void CClientsHandler::Process()
     CClient* client = GetClientFromSock(sock);
     if (client == NULL) //guess it belongs to nobody
       continue;
-    
+
+    //try to read data from the client
     CTcpData data;
     int returnv = client->m_socket.Read(data);
     if (returnv == FAIL)
-    {
+    { //socket broke probably
       log("%s", client->m_socket.GetError().c_str());
       RemoveClient(client);
       continue;
     }
 
+    //add data to the messagequeue
     client->m_messagequeue.AddData(data.GetData(), data.GetSize());
 
+    //check messages from the messaqueue and parse them, if it fails remove the client
     if (!HandleMessages(client))
       RemoveClient(client);
   }
 
   log("Stopping clients handler");
 
+  //kick off all clients
   CLock lock(m_mutex);
   while(m_clients.size())
   {
@@ -91,6 +95,7 @@ void CClientsHandler::Process()
   }    
 }
 
+//called by the connection handler
 void CClientsHandler::AddClient(CClient* client)
 {
   CLock lock(m_mutex);
@@ -105,10 +110,12 @@ void CClientsHandler::AddClient(CClient* client)
     return;
   }
 
+  //assign lights and put the pointer in the clients vector
   client->m_lights = m_lights;
   m_clients.push_back(client);
 }
 
+//does select on all the client sockets, with a timeout of 100 ms
 int CClientsHandler::GetReadableClient()
 {
   vector<int> sockets;
@@ -121,11 +128,11 @@ int CClientsHandler::GetReadableClient()
     return -1;
   }
 
+  //store all the client sockets
   for (int i = 0; i < m_clients.size(); i++)
   {
     sockets.push_back(m_clients[i]->m_socket.GetSock());
   }
-
   lock.Leave();
   
   int returnv, highestsock = -1;
@@ -157,6 +164,7 @@ int CClientsHandler::GetReadableClient()
     return -1;
   }
 
+  //just return the first socket which can be read
   for (int i = 0; i < sockets.size(); i++)
   {
     if (FD_ISSET(sockets[i], &rsocks))
@@ -178,6 +186,7 @@ CClient* CClientsHandler::GetClientFromSock(int sock)
   return NULL;
 }
 
+//removes a client based on socket
 void CClientsHandler::RemoveClient(int sock)
 {
   CLock lock(m_mutex);
@@ -193,6 +202,7 @@ void CClientsHandler::RemoveClient(int sock)
   }
 }
 
+//removes a client based on pointer
 void CClientsHandler::RemoveClient(CClient* client)
 {
   CLock lock(m_mutex);
@@ -208,8 +218,10 @@ void CClientsHandler::RemoveClient(CClient* client)
   }
 }
 
+//handles client messages
 bool CClientsHandler::HandleMessages(CClient* client)
 {
+  //loop until there are no more messages
   while (client->m_messagequeue.GetNrMessages() > 0)
   {
     CMessage message = client->m_messagequeue.GetMessage();
@@ -219,10 +231,12 @@ bool CClientsHandler::HandleMessages(CClient* client)
   return true;
 }
 
+//parses client messages
 bool CClientsHandler::ParseMessage(CClient* client, CMessage& message)
 {
   CTcpData data;
   string messagekey;
+  //an empty message is invalid
   if (!GetWord(message.message, messagekey))
   {
     log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
@@ -287,6 +301,8 @@ bool CClientsHandler::ParseGet(CClient* client, CMessage& message)
   }
 }
 
+//this is used to check that boblightd and libboblight have the same protocol version
+//the check happens in libboblight
 bool CClientsHandler::SendVersion(CClient* client)
 {
   CTcpData data;
@@ -301,10 +317,12 @@ bool CClientsHandler::SendVersion(CClient* client)
   return true;
 }
 
+//sends light info, like name and area
 bool CClientsHandler::SendLights(CClient* client)
 {
   CTcpData data;
-  
+
+  //build up messages by appending to CTcpData
   data.SetData("lights " + ToString(client->m_lights.size()) + "\n");
 
   for (int i = 0; i < client->m_lights.size(); i++)
@@ -460,6 +478,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
   return true;
 }
 
+//called by devices
 void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time)
 {
   CLock lock(m_mutex);
@@ -481,6 +500,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
       if (m_clients[j]->m_priority == 255 || m_clients[j]->m_connecttime == -1 || !m_clients[j]->m_lights[light].GetUse())
         continue; //this client we don't use
 
+      //this client has a high priority (lower number) than the current one, or has the same and is older
       if (m_clients[j]->m_priority < priority || (priority == m_clients[j]->m_priority && m_clients[j]->m_connecttime < clienttime))
       {
         clientnr = j;
@@ -500,6 +520,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
       continue;
     }
 
+    //fill channel with values from the client
     channels[i].SetUsed(true);
     channels[i].SetValue(m_clients[clientnr]->m_lights[light].GetColorValue(color, time));
     channels[i].SetSpeed(m_clients[clientnr]->m_lights[light].GetSpeed());

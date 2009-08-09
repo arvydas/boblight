@@ -81,6 +81,7 @@ void CThread::sleep(int secs)
   usleep(secs * 1000000);
 }
 
+//when sleeping for longer than 1 second, wait on a condition variable so we can stop quickly
 void CThread::usleep(int usecs)
 {
   if (m_stop)

@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include "mutex.h"
 
+//pthread condition variable class
 class CCondition : public CMutex
 {
   public:

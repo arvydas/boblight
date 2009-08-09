@@ -36,6 +36,7 @@ using namespace std;
 #define SECTCOLOR   3
 #define SECTLIGHT   4
 
+//builds the config
 bool CConfig::LoadConfigFromFile(string file)
 {
   int linenr = 0;
@@ -46,13 +47,15 @@ bool CConfig::LoadConfigFromFile(string file)
   
   log("opening %s", file.c_str());
 
+  //try to open the config file
   ifstream configfile(file.c_str());
   if (configfile.fail())
   {
     log("%s: %s", file.c_str(), GetErrno().c_str());
     return false;
   }
-  
+
+  //read lines from the config file and store them in the appropriate sections
   while (!configfile.eof())
   {
     configfile.getline(buff, sizeof(buff));
@@ -64,13 +67,16 @@ bool CConfig::LoadConfigFromFile(string file)
     linenr++;
     string line = buff;
     string key;
+
+    //if the line doesn't have a word it's not important
     if (!GetWord(line, key))
       continue;
 
     //ignore comments
     if (key.substr(0, 1) == "#")
       continue;
-    
+
+    //check if we entered a section
     if (key == "[global]")
     {
       currentsection = SECTGLOBAL;
@@ -94,12 +100,14 @@ bool CConfig::LoadConfigFromFile(string file)
       m_lightlines.resize(m_lightlines.size() + 1);
       continue;
     }
-    
+
+    //we're not in a section
     if (currentsection == SECTNOTHING)
       continue;
 
     CConfigLine configline(buff, linenr);
 
+    //store the config line in the appropriate section
     if (currentsection == SECTGLOBAL)
     {
       m_globalconfiglines.push_back(configline);
@@ -186,6 +194,7 @@ void CConfig::TabsToSpaces(std::string& line)
   }
 }
 
+//checks lines in the config file to make sure the syntax is correct
 bool CConfig::CheckConfig()
 {
   bool valid = true;
@@ -219,9 +228,9 @@ bool CConfig::CheckGlobalConfig()
     string key;
     string value;
 
-    GetWord(line, key);
+    GetWord(line, key); //we already checked each line starts with one word
 
-    if (!GetWord(line, value))
+    if (!GetWord(line, value)) //every line here needs to have another word
     {
       log("%s error on line %i: no value for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
@@ -232,7 +241,7 @@ bool CConfig::CheckGlobalConfig()
     {
       continue; //not much to check here
     }
-    else if (key == "port")
+    else if (key == "port") //check tcp/ip port
     {
       int port;
       if (!StrToInt(value, port) || port < 0 || port > 65535)
@@ -241,7 +250,7 @@ bool CConfig::CheckGlobalConfig()
         valid = false;
       }
     }
-    else
+    else //we don't know this one
     {
       log("%s error on line %i: unknown key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
@@ -264,9 +273,9 @@ bool CConfig::CheckDeviceConfig()
       string key;
       string value;
 
-      GetWord(line, key);
+      GetWord(line, key); //we already checked each line starts with one word
 
-      if (!GetWord(line, value))
+      if (!GetWord(line, value)) //every line here needs to have another word
       {
         log("%s error on line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -278,7 +287,7 @@ bool CConfig::CheckDeviceConfig()
         continue; //can't check these here
       }
       else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "buffer")
-      {
+      { //these are of type integer not lower than 1
         int ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1)
         {
@@ -287,7 +296,7 @@ bool CConfig::CheckDeviceConfig()
         }          
       }
       else if (key == "prefix")
-      {
+      { //this is in hex from 00 to FF, separated by spaces, like: prefix FF 7F A0 22
         int ivalue;
         while(1)
         {
@@ -300,7 +309,7 @@ bool CConfig::CheckDeviceConfig()
             break;
         }
       }
-      else
+      else //don't know this one
       {
         log("%s error on line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -324,9 +333,9 @@ bool CConfig::CheckColorConfig()
       string key;
       string value;
 
-      GetWord(line, key);
+      GetWord(line, key); //we already checked each line starts with one word
 
-      if (!GetWord(line, value))
+      if (!GetWord(line, value)) //every line here needs to have another word
       {
         log("%s error on line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -338,7 +347,7 @@ bool CConfig::CheckColorConfig()
         continue;
       }
       else if (key == "gamma" || key == "adjust" || key == "blacklevel")
-      {
+      { //these are floats from 0.0 to 1.0, except gamma which is from 0.0 and up
         float fvalue;
         if (!StrToFloat(value, fvalue) || fvalue < 0.0 || (key != "gamma" && fvalue > 1.0))
         {
@@ -347,7 +356,7 @@ bool CConfig::CheckColorConfig()
         }
       }
       else if (key == "rgb")
-      {
+      { //rgb lines in hex notation, like: rgb FF0000 for red and rgb 0000FF for blue
         int rgb;
         if (!HexStrToInt(value, rgb) || (rgb & 0xFF000000))
         {
@@ -355,7 +364,7 @@ bool CConfig::CheckColorConfig()
           valid = false;
         }
       }
-      else
+      else //don't know this one
       {
         log("%s error on line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -379,9 +388,9 @@ bool CConfig::CheckLightConfig()
       string key;
       string value;
 
-      GetWord(line, key);
+      GetWord(line, key); //we already checked each line starts with one word
 
-      if (!GetWord(line, value))
+      if (!GetWord(line, value)) //every line here needs to have another word
       {
         log("%s error on line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -393,7 +402,8 @@ bool CConfig::CheckLightConfig()
         continue;
       }
       else if (key == "area")
-      {
+      { //contains points separated by . from 1 to 100, like: area 1.1 500.500 100.200
+        //it describes a polygon so it needs at least 3 points
         int x, y, nrpoints = 0;
         do
         {
@@ -412,7 +422,8 @@ bool CConfig::CheckLightConfig()
         }
       }
       else if (key == "color")
-      {
+      { //describes a color for a light, on a certain channel of a device
+        //we can only check if it has enough keys and channel is a positive int from 1 or higher
         int k;
         for (k = 0; k < 2; k++)
         {
@@ -433,7 +444,7 @@ bool CConfig::CheckLightConfig()
           }
         }
       }
-      else
+      else //don't know this one
       {
         log("%s error on line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
@@ -444,6 +455,7 @@ bool CConfig::CheckLightConfig()
   return valid;
 }
 
+//gets a config line that starts with key
 int CConfig::GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, std::string& line)
 {
   for (int i = 0; i < lines.size(); i++)
@@ -461,6 +473,7 @@ int CConfig::GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, st
   return -1;
 }
 
+//builds the config
 bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
                  std::vector<CAsyncTimer>& timers, std::vector<CLight>& lights)
 {
@@ -559,6 +572,7 @@ bool CConfig::BuildColorConfig(std::vector<CColor>& colors)
       }
     }
 
+    //we need at least a name for a color
     if (color.GetName().empty())
     {
       log("%s error: color %i has no name", m_filename.c_str(), i + 1);
@@ -571,21 +585,26 @@ bool CConfig::BuildColorConfig(std::vector<CColor>& colors)
   return true;
 }
 
+//builds a pool of CAsyncTimer, which is a timer that runs in its own thread
+//this way devices with the same interval can run off the same timer so they're synchonized :)
 void CConfig::BuildTimers(std::vector<CAsyncTimer>& timers)
 {
+  //loop though the device config lines
   for (int i = 0; i < m_devicelines.size(); i++)
   {
     string line;
 
+    //see if this device has an interval value, not all types have to have that
     int linenr = GetLineWithKey("interval", m_devicelines[i].lines, line);
-    if (linenr == -1) continue;
+    if (linenr == -1) continue; //this one doesn't
 
     string strinterval;
     GetWord(line, strinterval);
 
     int interval;
-    StrToInt(strinterval, interval);
+    StrToInt(strinterval, interval); //we already checked interval is a positive integer
 
+    //check if we already have a timer with this interval
     bool timerfound = false;
     for (int j = 0; j < timers.size(); j++)
     {
@@ -596,6 +615,7 @@ void CConfig::BuildTimers(std::vector<CAsyncTimer>& timers)
       }
     }
 
+    //we didn't find one, so we have to add it
     if (!timerfound)
     {
       CAsyncTimer timer;
@@ -605,6 +625,7 @@ void CConfig::BuildTimers(std::vector<CAsyncTimer>& timers)
   }
 }    
 
+//builds a pool of devices
 bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsyncTimer>& timers, CClientsHandler& clients)
 {
   for (int i = 0; i < m_devicelines.size(); i++)
@@ -658,6 +679,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsy
   return true;
 }
 
+//builds a pool of lights
 bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*>& devices, std::vector<CColor>& colors)
 {
   CLight globallight; //default values
@@ -672,6 +694,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
     if (!SetLightArea(light, m_lightlines[i].lines))
       return false;
 
+    //check the colors on a light
     for (int j = 0; j < m_lightlines[i].lines.size(); j++)
     {
       string line = m_lightlines[i].lines[j].line;
@@ -681,6 +704,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
       if (key != "color")
         continue;
 
+      //we already checked these in the syntax check
       string colorname, devicename, devicechannel;
       GetWord(line, colorname);
       GetWord(line, devicename);
@@ -696,7 +720,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
           break;
         }
       }
-      if (!colorfound)
+      if (!colorfound) //this color doesn't exist
       {
         log("%s error on line %i: no color with name %s", m_filename.c_str(), m_lightlines[i].lines[j].linenr, colorname.c_str());
         return false;
@@ -704,7 +728,8 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
 
       int ichannel;
       StrToInt(devicechannel, ichannel);
-      
+
+      //loop through the devices, check if one with this name exists and if the channel on it exists
       bool devicefound = false;
       for (int k = 0; k < devices.size(); k++)
       {
@@ -736,6 +761,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
   return true;
 }
 
+//gets a timer with a specific interval
 CAsyncTimer* CConfig::GetTimer(int interval, std::vector<CAsyncTimer>& timers)
 {
   for (int i = 0; i < timers.size(); i++)

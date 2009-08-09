@@ -19,6 +19,7 @@
 #ifndef CDEVICE
 #define CDEVICE
 
+//device types
 #define NOTHING 0
 #define MOMO    1
 #define ATMO    2
@@ -61,20 +62,20 @@ class CChannel
     float GetValue(int64_t time);
 
   private:
-    int   m_color;
-    int   m_light;
+    int   m_color;          //color this channel is on, -1 means not used
+    int   m_light;          //light this channel is on, -1 means not used
 
-    bool  m_isused;
+    bool  m_isused;         //whether a light uses this channel, set from clients handler
     
-    float m_speed;
-    float m_wantedvalue;
-    float m_fallback;
+    float m_speed;          //speed of the light
+    float m_wantedvalue;    //value the light wants to go to
+    float m_fallback;       //value when no lights use this channel
     float m_gamma;
     float m_adjust;
     float m_blacklevel;
 
-    float   m_currentvalue;
-    int64_t m_lastupdate; //when m_currentvalue was last updated
+    float   m_currentvalue; //value we're currently at
+    int64_t m_lastupdate;   //when m_currentvalue was last updated
 
     CClock  m_clock;
 };

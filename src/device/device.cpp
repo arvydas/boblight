@@ -41,16 +41,18 @@ CChannel::CChannel()
 
 float CChannel::GetValue(int64_t time)
 {
+  //we need two calls for the speed
   if (m_lastupdate == -1)
   {
     m_lastupdate = time;
     return m_currentvalue;
   }
 
-  float diff = m_wantedvalue - m_currentvalue;
-  float timediff = (time - m_lastupdate) * 1000000.0 / (double)m_clock.GetFreq();
-  float speedadjust = 1.0 - pow(1.0 - (m_speed / 100.0), timediff / 20000.0);
-  
+  float diff = m_wantedvalue - m_currentvalue; //difference between where we want to be, and where we are
+  float timediff = (time - m_lastupdate) * 1000000.0 / (double)m_clock.GetFreq(); //difference in time in seconds between now and the last update
+  float speedadjust = 1.0 - pow(1.0 - (m_speed / 100.0), timediff / 20000.0); //speed adjustment value, corrected for time
+
+  //move the current value closer to the wanted value
   m_currentvalue += diff * speedadjust;
   m_lastupdate = time;
 

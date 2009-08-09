@@ -21,15 +21,16 @@
 
 #include <stdint.h>
 
+//simple clock class
 class CClock
 {
   public:
     CClock();
 
-    int64_t GetTime();
-    int64_t GetFreq();
+    int64_t GetTime(); //value of the clock
+    int64_t GetFreq(); //frequency of the clock
 
-    long double GetSecTime();
+    long double GetSecTime(); //value of the clock in seconds
 
   private:
 
