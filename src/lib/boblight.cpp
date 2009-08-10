@@ -29,6 +29,8 @@ using namespace std;
 CLight::CLight()
 {
   m_speed = 100.0;
+  m_autospeed = false;
+  m_autospeedvalue = -1.0;
   m_interpolation = false;
   m_use = true;
   m_value = 1.0;
@@ -41,11 +43,13 @@ CLight::CLight()
   m_height = -1;
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
+  memset(m_prevrgb, 0, sizeof(m_prevrgb));
   memset(m_vscan, 0, sizeof(m_vscan));
   memset(m_hscan, 0, sizeof(m_hscan));
   memset(m_hscanscaled, 0, sizeof(m_hscanscaled));
-  memset(m_vscanscaled, 0, sizeof(m_vscanscaled));         
+  memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
 }
+
 
 void CLight::GetRGB(float* rgb)
 {
@@ -134,6 +138,14 @@ void CLight::GetRGB(float* rgb)
 
     for (int i = 0; i < 3; i++)
       rgb[i] = Clamp(rgb[i], 0.0f, 1.0f);
+
+    if (m_autospeed)
+    {
+      float change = Abs((rgb[0] + rgb[1] + rgb[2]) - (m_prevrgb[0] + m_prevrgb[1] + m_prevrgb[2]));
+      m_autospeedvalue = Clamp(m_speed * 10.0 * change / 3.0, 0.0, 100.0);
+    }
+
+    memcpy(m_prevrgb, rgb, sizeof(m_prevrgb));
   }
 }
 
@@ -585,6 +597,10 @@ int CBoblight::SendRGB()
     float rgb[3];
     m_lights[i].GetRGB(rgb);
     data += "set light " + m_lights[i].m_name + " rgb " + ToString(rgb[0]) + " " + ToString(rgb[1]) + " " + ToString(rgb[2]) + "\n";
+    if (m_lights[i].m_autospeed)
+    {
+      data += "set light " + m_lights[i].m_name + " speed " + ToString(m_lights[i].m_autospeedvalue) + "\n";
+    }
   }
 
   return WriteDataToSocket(data);

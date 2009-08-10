@@ -35,6 +35,9 @@ class CLight
 
     std::string m_name;
     float       m_speed;
+    bool        m_autospeed;
+    float       m_autospeedvalue;
+    
     bool        m_interpolation;
     bool        m_use;
 
@@ -44,6 +47,7 @@ class CLight
     int         m_threshold;
 
     int         m_rgbd[4];
+    float       m_prevrgb[3];
     void        GetRGB(float* rgb);
 
     float       m_hscan[2];
