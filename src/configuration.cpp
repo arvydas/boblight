@@ -41,7 +41,6 @@ bool CConfig::LoadConfigFromFile(string file)
 {
   int linenr = 0;
   int currentsection = SECTNOTHING;
-  char buff[100000];
 
   m_filename = file;
   
@@ -58,16 +57,17 @@ bool CConfig::LoadConfigFromFile(string file)
   //read lines from the config file and store them in the appropriate sections
   while (!configfile.eof())
   {
-    configfile.getline(buff, sizeof(buff));
+    string buff;
+    getline(configfile, buff);
     if (configfile.fail())
     {
       log("%s: %s", file.c_str(), GetErrno().c_str());
       return false;
     }
     linenr++;
+
     string line = buff;
     string key;
-
     //if the line doesn't have a word it's not important
     if (!GetWord(line, key))
       continue;
