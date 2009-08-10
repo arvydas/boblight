@@ -28,6 +28,7 @@
 
 #include "libboblight.h"
 
+//used to define a polygon
 struct boblight_point
 {
   int x;

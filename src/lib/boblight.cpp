@@ -141,23 +141,27 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
   int64_t  target;
   string   word;
 
+  //set address
   m_usectimeout = usectimeout;
   if (address == NULL)
     m_address = "127.0.0.1";
   else
     m_address = address;
 
+  //set port
   if (port >= 0)
     m_port = port;
   else
     m_port = 19333;
-  
+
+  //try to open a tcp connection
   if (m_socket.Open(m_address, m_port, m_usectimeout) != SUCCESS)
   {
     m_error = m_socket.GetError();
     return 0;
   }
 
+  //write hello to the server, we should get hello back
   if (!WriteDataToSocket("hello\n"))
     return 0;
 
@@ -171,6 +175,7 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
     return 0;
   }
 
+  //get the protocol version from the server
   if (!WriteDataToSocket("get version\n"))
     return 0;
 
@@ -185,6 +190,7 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
     return 0;
   }
 
+  //if we don't get the same protocol version back as we have, we can't work together
   if (word != PROTOCOLVERSION)
   {
     m_error = "version mismatch, " + m_address + ":" + ToString(m_port) + " has version \"" + message.message +
@@ -192,6 +198,7 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
     return 0;
   }
 
+  //get lights info, like number, names and area
   if (!WriteDataToSocket("get lights\n"))
     return 0;
 
@@ -251,6 +258,7 @@ bool CBoblight::WriteDataToSocket(std::string strdata)
   return true;
 }
 
+//TODO:need to clean this, doesn't make sense this way
 bool CBoblight::ParseWord(CMessage& message, std::string wordtocmp)
 {
   string word;
@@ -270,6 +278,7 @@ bool CBoblight::ParseLights(CMessage& message)
   string word;
   int nrlights;
 
+  //first word in the message is "lights", second word is the number of lights
   if (!ParseWord(message, "lights") || !GetWord(message.message, word) || !StrToInt(word, nrlights) || nrlights < 1)
     return false;
 
@@ -277,6 +286,7 @@ bool CBoblight::ParseLights(CMessage& message)
   {
     CLight light;
 
+    //read some data to the message queue if we have no messages
     if (m_messagequeue.GetNrMessages() == 0)
     {
       if (!ReadDataToQueue())
@@ -285,14 +295,17 @@ bool CBoblight::ParseLights(CMessage& message)
 
     message = m_messagequeue.GetMessage();
 
+    //first word sent is "light
     if (!ParseWord(message, "light") || !GetWord(message.message, light.m_name))
     {
       return false;
     }
 
+    //second one is "area"
     if (!ParseWord(message, "area"))
       return false;
 
+    //area is defined as points from 1 to 1000, separated by .
     while (GetWord(message.message, word))
     {
       struct boblight_point point;
@@ -302,6 +315,7 @@ bool CBoblight::ParseLights(CMessage& message)
       light.m_area.push_back(point);
     }
 
+    //it defines a polygon, so we need at least 3 points
     if (light.m_area.size() < 3)
       return false;
 
