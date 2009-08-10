@@ -18,16 +18,14 @@
 
 #include "lock.h"
 
-CLock::CLock(CMutex& mutex)
+CLock::CLock(CMutex& mutex) : m_mutex(mutex)
 {
-  m_mutex = &mutex;
   m_haslock = false;
   Enter();
 }
 
-CLock::CLock(CCondition& condition)
+CLock::CLock(CCondition& condition) : m_mutex(condition)
 {
-  m_mutex = dynamic_cast<CMutex*>(&condition);
   m_haslock = false;
   Enter();
 }
@@ -41,7 +39,7 @@ void CLock::Enter()
 {
   if (!m_haslock)
   {
-    m_mutex->Lock();
+    m_mutex.Lock();
     m_haslock = true;
   }
 }
@@ -50,7 +48,7 @@ void CLock::Leave()
 {
   if (m_haslock)
   {
-    m_mutex->Unlock();
+    m_mutex.Unlock();
     m_haslock = false;
   }
 }

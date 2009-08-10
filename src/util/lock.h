@@ -32,7 +32,7 @@ class CLock
     void Leave();
 
   private:
-    CMutex *m_mutex;
+    CMutex &m_mutex;
     bool    m_haslock;
 };
 
