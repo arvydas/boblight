@@ -329,11 +329,11 @@ bool CClientsHandler::SendLights(CClient* client)
   {
     data.SetData("light " + client->m_lights[i].GetName() + " ", true);
     
-    data.SetData("area ", true);
-    for (int j = 0; j < client->m_lights[i].GetArea().size(); j++)
-    {
-      data.SetData(ToString(client->m_lights[i].GetArea()[j].x) + "." + ToString(client->m_lights[i].GetArea()[j].y) + " ", true);
-    }
+    data.SetData("scan ", true);
+    data.SetData(ToString(client->m_lights[i].GetVscan()[0]) + " ", true);
+    data.SetData(ToString(client->m_lights[i].GetVscan()[1]) + " ", true);
+    data.SetData(ToString(client->m_lights[i].GetHscan()[0]) + " ", true);
+    data.SetData(ToString(client->m_lights[i].GetHscan()[1]), true);
     data.SetData("\n", true);
   }
 

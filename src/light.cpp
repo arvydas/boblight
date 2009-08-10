@@ -45,6 +45,11 @@ CLight::CLight()
   m_speed = 100.0;
   m_use = true;
   m_interpolation = false;
+
+  m_hscan[0] = 0.0;
+  m_hscan[1] = 100.0;
+  m_vscan[0] = 0.0;
+  m_vscan[1] = 0.0;
 }
 
 void CLight::SetRgb(float (&rgb)[3], int64_t time)

@@ -53,12 +53,6 @@ class CColor
     float m_blacklevel;
 };
     
-struct point
-{
-  int x;
-  int y;
-};
-
 class CLight
 {
   public:
@@ -84,8 +78,10 @@ class CLight
     float GetBlacklevel(int colornr)           { return m_colors[colornr].GetBlacklevel(); }
     float GetColorValue(int colornr, int64_t time);
 
-    void  SetArea(std::vector<point>& area)   { m_area = area; };
-    std::vector<point>& GetArea()             { return m_area; };
+    void   SetHscan(float* hscan) { m_hscan[0] = hscan[0]; m_hscan[1] = hscan[1]; }
+    void   SetVscan(float* vscan) { m_vscan[0] = vscan[0]; m_vscan[1] = vscan[1]; }
+    float* GetVscan() { return m_vscan; }
+    float* GetHscan() { return m_hscan; }
     
   private:
     std::string m_name;
@@ -101,8 +97,10 @@ class CLight
     bool    m_use;
 
     std::vector<CColor> m_colors;
-    std::vector<point>  m_area;
 
+    float   m_hscan[2];
+    float   m_vscan[2];
+    
     float   FindMultiplier(float *rgb, float ceiling);
     float   FindMultiplier(float *rgb, float *ceiling);
 };

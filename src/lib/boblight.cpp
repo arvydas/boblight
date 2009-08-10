@@ -41,6 +41,10 @@ CLight::CLight()
   m_height = -1;
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
+  memset(m_vscan, 0, sizeof(m_vscan));
+  memset(m_hscan, 0, sizeof(m_hscan));
+  memset(m_hscanscaled, 0, sizeof(m_hscanscaled));
+  memset(m_vscanscaled, 0, sizeof(m_vscanscaled));         
 }
 
 void CLight::GetRGB(float* rgb)
@@ -193,7 +197,7 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
   //if we don't get the same protocol version back as we have, we can't work together
   if (word != PROTOCOLVERSION)
   {
-    m_error = "version mismatch, " + m_address + ":" + ToString(m_port) + " has version \"" + message.message +
+    m_error = "version mismatch, " + m_address + ":" + ToString(m_port) + " has version \"" + word +
               "\", libboblight has version \"" + PROTOCOLVERSION + "\"";
     return 0;
   }
@@ -295,29 +299,30 @@ bool CBoblight::ParseLights(CMessage& message)
 
     message = m_messagequeue.GetMessage();
 
-    //first word sent is "light
+    //first word sent is "light, second one is the name
     if (!ParseWord(message, "light") || !GetWord(message.message, light.m_name))
     {
       return false;
     }
 
-    //second one is "area"
-    if (!ParseWord(message, "area"))
+    //third one is "scan"
+    if (!ParseWord(message, "scan"))
       return false;
 
-    //area is defined as points from 1 to 1000, separated by .
-    while (GetWord(message.message, word))
+    //now we read the scanrange
+    string scanarea;
+    for (int i = 0; i < 4; i++)
     {
-      struct boblight_point point;
-      if (sscanf(word.c_str(), "%i.%i", &point.x, &point.y) != 2 || point.x < 0 || point.x > 999 || point.y < 0 || point.y > 999)
+      if (!GetWord(message.message, word))
         return false;
 
-      light.m_area.push_back(point);
+      scanarea += word + " ";
     }
 
-    //it defines a polygon, so we need at least 3 points
-    if (light.m_area.size() < 3)
-      return false;
+    ConvertFloatLocale(scanarea); //workaround for locale mismatch (, and .)
+
+    if (sscanf(scanarea.c_str(), "%f %f %f %f", light.m_vscan, light.m_vscan + 1, light.m_hscan, light.m_hscan + 1) != 4)
+      return false;    
 
     m_lights.push_back(light);
   }    
@@ -517,178 +522,14 @@ void CBoblight::SetScanRange(int width, int height)
   
   for (int i = 0; i < m_lights.size(); i++)
   {
-    if (m_lights[i].m_width == width || m_lights[i].m_height == height)
-      continue;
-
-    m_lights[i].m_scanarea.clear();
-    m_lights[i].m_scanarea.resize(width * height);
     m_lights[i].m_width = width;
     m_lights[i].m_height = height;
 
-    DrawPolygon(m_lights[i]);
-    FillPolygon(m_lights[i]);
-
-    /*cout << "light " << m_lights[i].m_name << " " << m_lights[i].m_scanarea.size() / height << " " << m_lights[i].m_scanarea.size() / width << "\n";
-
-    for (int j = 0; j < m_lights[i].m_area.size(); j++)
-    {
-      cout << m_lights[i].m_area[j].x << " " << m_lights[i].m_area[j].y << "\n";
-    }
-
-    for (int y = 0; y < height; y++)
-    {
-      for (int x = 0; x < width; x++)
-      {
-        cout << m_lights[i].m_scanarea[y * width + x];
-      }
-      cout << "\n";
-    }*/
+    m_lights[i].m_hscanscaled[0] = Round<int>(m_lights[i].m_hscan[0] / 100.0 * ((float)height - 1));
+    m_lights[i].m_hscanscaled[1] = Round<int>(m_lights[i].m_hscan[1] / 100.0 * ((float)height - 1));
+    m_lights[i].m_vscanscaled[0] = Round<int>(m_lights[i].m_vscan[0] / 100.0 * ((float)width  - 1));
+    m_lights[i].m_vscanscaled[1] = Round<int>(m_lights[i].m_vscan[1] / 100.0 * ((float)width  - 1));
   }
-}
-
-void CBoblight::DrawPolygon(CLight& light)
-{
-  int width = light.m_width;
-  int height = light.m_height;
-  
-  for (int i = 0; i < light.m_area.size(); i++)
-  {
-    int firstpoint = i;
-    int secondpoint = (i + 1 < light.m_area.size()) ? i + 1 : 0;
-
-    int line[4];
-    line[0] = light.m_area[firstpoint].x;
-    line[1] = light.m_area[firstpoint].y;
-    line[2] = light.m_area[secondpoint].x;
-    line[3] = light.m_area[secondpoint].y;
-
-    TransformPoint(line + 0, width, height);
-    TransformPoint(line + 2, width, height);
-
-    int xsize = line[2] - line[0];
-    int ysize = line[3] - line[1];
-
-    int xadd = xsize > 0 ? 1 : -1;
-    int yadd = ysize > 0 ? 1 : -1;
-
-    if (ysize == 0)
-    {
-      for (int x = line[0]; x != line[2] + xadd; x += xadd)
-      {
-        light.m_scanarea[line[1] * width + x] = 1;
-      }
-    }
-    else if (xsize == 0)
-    {
-      for (int y = line[1]; y != line[3] + yadd; y += yadd)
-      {
-        light.m_scanarea[y * width + line[0]] = 1;
-      }
-    }
-    else if (Abs(ysize) < Abs(xsize))
-    {
-      for (int x = line[0]; x != line[2] + xadd; x += xadd)
-      {
-        int y = Round<int>((float)(x - line[0]) * (float)ysize / (float)xsize + (float)line[1]);
-        light.m_scanarea[y * width + x] = 1;
-      }
-    }
-    else
-    {
-      for (int y = line[1]; y != line[3] + yadd; y += yadd)
-      {
-        int x = Round<int>((float)(y - line[1]) * (float)xsize / (float)ysize + (float)line[0]);
-        light.m_scanarea[y * width + x] = 1;
-      }
-    }
-  }
-}
-
-void CBoblight::TransformPoint(int* point, int width, int height)
-{
-  point[0] = Round<int>((float)point[0] / 999.0f * ((float)width  - 1.0f));
-  point[1] = Round<int>((float)point[1] / 999.0f * ((float)height - 1.0f));
-
-  point[0] = Clamp(point[0], 0, width - 1);
-  point[1] = Clamp(point[1], 0, height - 1);
-}
-
-void CBoblight::FillPolygon(CLight& light)
-{
-  for (int y = 0; y < light.m_height; y++)
-  {
-    for (int x = 0; x < light.m_width; x++)
-    {
-      if (IsPointInPolygon(light, x, y))
-      {
-        light.m_scanarea[y * light.m_width + x] = 2;
-      }
-    }
-  }
-}
-
-bool CBoblight::IsPointInPolygon(CLight& light, int x, int y)
-{
-  int width = light.m_width;
-  int height = light.m_height;
-  
-  if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
-    return false;
-
-  if (light.m_scanarea[y * width + x])
-    return false;
-
-  bool edgefound;
-
-  edgefound = false;
-  for (int i = x; i < width; i++)
-  {
-    if (light.m_scanarea[y * width + i])
-    {
-      edgefound = true;
-      break;
-    }
-  }
-  if (!edgefound)
-    return false;
-
-  edgefound = false;
-  for (int i = x; i >= 0; i--)
-  {
-    if (light.m_scanarea[y * width + i])
-    {
-      edgefound = true;
-      break;
-    }
-  }
-  if (!edgefound)
-    return false;
-
-  edgefound = false;
-  for (int i = y; i < height; i++)
-  {
-    if (light.m_scanarea[i * width + x])
-    {
-      edgefound = true;
-      break;
-    }
-  }
-  if (!edgefound)
-    return false;
-
-  edgefound = false;
-  for (int i = y; i >= 0; i--)
-  {
-    if (light.m_scanarea[i * width + x])
-    {
-      edgefound = true;
-      break;
-    }
-  }
-  if (!edgefound)
-    return false;
-
-  return true;
 }
 
 void CBoblight::AddPixel(int lightnr, int* rgb)
@@ -722,7 +563,7 @@ void CBoblight::AddPixel(int* rgb, int x, int y)
 {
   for (int i = 0; i < m_lights.size(); i++)
   {
-    if (m_lights[i].m_scanarea[y * m_lights[i].m_width + x])
+    if (x >= m_lights[i].m_hscan[0] && x <= m_lights[i].m_hscan[1] && y >= m_lights[i].m_vscan[0] && y <= m_lights[i].m_vscan[1])
     {
       if (rgb[0] >= m_lights[i].m_threshold || rgb[1] >= m_lights[i].m_threshold || rgb[2] >= m_lights[i].m_threshold)
       {

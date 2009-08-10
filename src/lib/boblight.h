@@ -28,13 +28,6 @@
 
 #include "libboblight.h"
 
-//used to define a polygon
-struct boblight_point
-{
-  int x;
-  int y;
-};
-
 class CLight
 {
   public:
@@ -53,10 +46,12 @@ class CLight
     int         m_rgbd[4];
     void        GetRGB(float* rgb);
 
-    std::vector<boblight_point> m_area;
-    std::vector<unsigned char>  m_scanarea;
-    int                         m_width;
-    int                         m_height;
+    float       m_hscan[2];
+    float       m_vscan[2];
+    int         m_width;
+    int         m_height;
+    int         m_hscanscaled[2];
+    int         m_vscanscaled[2];
 };  
 
 class CBoblight
@@ -99,11 +94,6 @@ class CBoblight
     bool             ParseWord(CMessage& message, std::string wordtocmp, std::string readword);
     bool             ParseLights(CMessage& message);
     bool             CheckLightExists(int lightnr, bool printerror = true);
-
-    void             DrawPolygon(CLight& light);
-    void             FillPolygon(CLight& light);
-    void             TransformPoint(int* point, int width, int height);
-    bool             IsPointInPolygon(CLight& light, int x, int y);
 
     std::vector<CLight> m_lights;
 };

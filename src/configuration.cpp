@@ -401,24 +401,25 @@ bool CConfig::CheckLightConfig()
       {
         continue;
       }
-      else if (key == "area")
-      { //contains points separated by . from 1 to 100, like: area 1.1 500.500 100.200
-        //it describes a polygon so it needs at least 3 points
-        int x, y, nrpoints = 0;
-        do
+      else if (key == "vscan" || key == "hscan") //check the scanrange, should be two floats from 0.0 to 100.0
+      {
+        string scanrange;
+        float scan[2];
+        if (!GetWord(line, scanrange))
         {
-          if (sscanf(value.c_str(), "%i.%i", &x, &y) != 2 || x < 1 || x > 1000 || y < 1 || y > 1000)
-          {
-            log("%s error on line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
-            valid = false;
-          }
-          nrpoints++;
-        }
-        while (GetWord(line, value));
-        if (nrpoints < 3)
-        {
-          log("%s error on line %i: key %s requires at least 3 points", m_filename.c_str(), linenr, key.c_str());
+          log("%s error on line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
           valid = false;
+          continue;
+        }
+
+        scanrange = value + " " + scanrange;
+
+        if (sscanf(scanrange.c_str(), "%f %f", scan, scan + 1) != 2
+            || scan[0] < 0.0 || scan[0] > 100.0 || scan[1] < 0.0 || scan[1] > 100.0 || scan[0] > scan[1])
+        {
+          log("%s error on line %i: wrong value %s for key %s", m_filename.c_str(), linenr, scanrange.c_str(), key.c_str());
+          valid = false;
+          continue;
         }
       }
       else if (key == "color")
@@ -691,8 +692,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
     if (!SetLightName(light, m_lightlines[i].lines, i))
       return false;
 
-    if (!SetLightArea(light, m_lightlines[i].lines))
-      return false;
+    SetLightScanRange(light, m_lightlines[i].lines);
 
     //check the colors on a light
     for (int j = 0; j < m_lightlines[i].lines.size(); j++)
@@ -1106,27 +1106,22 @@ bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int l
   return true;
 }
 
-bool CConfig::SetLightArea(CLight& light, std::vector<CConfigLine>& lines)
+void CConfig::SetLightScanRange(CLight& light, std::vector<CConfigLine>& lines)
 {
   string line, strvalue;
-  int linenr = GetLineWithKey("area", lines, line);
-  if (linenr == -1)
+  int linenr = GetLineWithKey("hscan", lines, line);
+  if (linenr != -1)
   {
-    log("%s error: light %s has no area", m_filename.c_str(), light.GetName().c_str());
-    return false;
+    float hscan[2];
+    sscanf(line.c_str(), "%f %f", hscan, hscan + 1);
+    light.SetHscan(hscan);
   }
 
-  std::vector<point> area;
-
-  while (GetWord(line, strvalue))
+  linenr = GetLineWithKey("vscan", lines, line);
+  if (linenr != -1)
   {
-    point point;
-    sscanf(strvalue.c_str(), "%i.%i", &point.x, &point.y);
-    point.x--;
-    point.y--;
-    
-    area.push_back(point);           
+    float vscan[2];
+    sscanf(line.c_str(), "%f %f", vscan, vscan + 1);
+    light.SetVscan(vscan);
   }
-  light.SetArea(area);
-  return true;
 }  

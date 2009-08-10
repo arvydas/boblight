@@ -33,7 +33,6 @@ const char* test(void* vpboblight);
 int main (int argc, char *argv[])
 {
   char* error = boblight_loadlibrary(NULL);
-
   if (error)
   {
     cout << error << "\n";

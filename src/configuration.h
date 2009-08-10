@@ -105,7 +105,7 @@ class CConfig
     void SetLightUse(CLight& light, std::vector<CConfigLine>& lines);
     void SetLightInterpolation(CLight& light, std::vector<CConfigLine>& lines);
     bool SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr);
-    bool SetLightArea(CLight& light, std::vector<CConfigLine>& lines);
+    void SetLightScanRange(CLight& light, std::vector<CConfigLine>& lines);
 };
 
 #endif //CONFIGURATION

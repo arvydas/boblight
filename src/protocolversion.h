@@ -16,9 +16,14 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//version number increases whenever the protocol changes
+
 #ifndef PROTOCOLVERSION
 
 //23-7-2009
-#define PROTOCOLVERSION "1"
+//#define PROTOCOLVERSION "1"
+
+//10-8-2009
+#define PROTOCOLVERSION "2"
 
 #endif //PROTOCOLVERSION
