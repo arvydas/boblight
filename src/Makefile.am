@@ -21,8 +21,7 @@ boblight_X11_SOURCES = \
 	util/clock.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
-	util/thread.cpp \
-	util/lock.cpp
+	util/thread.cpp 
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
@@ -33,7 +32,6 @@ boblightd_SOURCES = \
 	util/clock.h    \
 	util/condition.cpp    \
 	util/condition.h    \
-	util/lock.cpp    \
 	util/lock.h    \
 	util/log.cpp    \
 	util/log.h    \

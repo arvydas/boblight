@@ -25,11 +25,40 @@
 class CLock
 {
   public:
-    CLock(CMutex& mutex);
-    CLock(CCondition& condition);
-    ~CLock();
-    void Enter();
-    void Leave();
+  CLock(CMutex& mutex) : m_mutex(mutex)
+  {
+    m_haslock = false;
+    Enter();
+  }
+
+  CLock(CCondition& condition) : m_mutex(condition)
+  {
+    m_haslock = false;
+    Enter();
+  }
+
+  ~CLock()
+  {
+    Leave();
+  }
+
+  void Enter()
+  {
+    if (!m_haslock)
+    {
+      m_mutex.Lock();
+      m_haslock = true;
+    }
+  }
+
+  void Leave()
+  {
+    if (m_haslock)
+    {
+      m_mutex.Unlock();
+      m_haslock = false;
+    }
+  }
 
   private:
     CMutex& m_mutex;

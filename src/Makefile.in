@@ -67,11 +67,10 @@ am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) timer.$(OBJEXT) \
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
-	lock.$(OBJEXT) log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) \
-	thread.$(OBJEXT) timer.$(OBJEXT) udpsocket.$(OBJEXT) \
-	serialport.$(OBJEXT) main.$(OBJEXT) tcpsocket.$(OBJEXT) \
-	messagequeue.$(OBJEXT) client.$(OBJEXT) \
-	connectionhandler.$(OBJEXT) light.$(OBJEXT) \
+	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
+	timer.$(OBJEXT) udpsocket.$(OBJEXT) serialport.$(OBJEXT) \
+	main.$(OBJEXT) tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) \
+	client.$(OBJEXT) connectionhandler.$(OBJEXT) light.$(OBJEXT) \
 	configuration.$(OBJEXT) device.$(OBJEXT) devicepopen.$(OBJEXT) \
 	deviceltbl.$(OBJEXT) devicesound.$(OBJEXT) \
 	devicers232.$(OBJEXT)
@@ -255,7 +254,6 @@ boblightd_SOURCES = \
 	util/clock.h    \
 	util/condition.cpp    \
 	util/condition.h    \
-	util/lock.cpp    \
 	util/lock.h    \
 	util/log.cpp    \
 	util/log.h    \
