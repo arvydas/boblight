@@ -19,6 +19,8 @@
 #include "libboblight.h"
 #include "boblight.h"
 
+//C wrapper for C++ class
+
 void* boblight_init()
 {
   CBoblight* boblight = new CBoblight;
