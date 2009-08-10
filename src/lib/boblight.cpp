@@ -62,7 +62,6 @@ void CLight::GetRGB(float* rgb)
     rgb[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
-  //return;
 
   //we need some hsv adjustments
   if (m_value != 1.0 || m_saturation != 1.0 || m_valuerange[0] != 0.0 || m_valuerange[1] != 1.0)
@@ -83,12 +82,12 @@ void CLight::GetRGB(float* rgb)
       if (max == rgb[0]) //red zone
       {
         hsv[0] = (60.0f * ((rgb[1] - rgb[2]) / (max - min)) + 360.0f);
-        while (hsv[0] > 360.0f)
+        while (hsv[0] >= 360.0f)
           hsv[0] -= 360.0f;
       }
       else if (max == rgb[1]) //green zone
       {
-        hsv[0] = 60.0f * ((rgb[2] - rgb[1]) / (max - min)) + 120.0f;
+        hsv[0] = 60.0f * ((rgb[2] - rgb[0]) / (max - min)) + 120.0f;
       }
       else if (max == rgb[2]) //blue zone
       {
@@ -113,10 +112,11 @@ void CLight::GetRGB(float* rgb)
       int hi = (int)(hsv[0] / 60.0f) % 6;
       float f = (hsv[0] / 60.0f) - (float)(int)(hsv[0] / 60.0f);
 
+      float s = hsv[1];
       float v = hsv[2];
-      float p = v * (1.0f - hsv[1]);
-      float q = v * (1.0f - f * v);
-      float t = v * (1.0f - (1.0f - f) * v);
+      float p = v * (1.0f - s);
+      float q = v * (1.0f - f * s);
+      float t = v * (1.0f - (1.0f - f) * s);
 
       if (hi == 0)
       { rgb[0] = v; rgb[1] = t; rgb[2] = p; }
@@ -584,7 +584,6 @@ int CBoblight::SendRGB()
   {
     float rgb[3];
     m_lights[i].GetRGB(rgb);
-    
     data += "set light " + m_lights[i].m_name + " rgb " + ToString(rgb[0]) + " " + ToString(rgb[1]) + " " + ToString(rgb[2]) + "\n";
   }
 

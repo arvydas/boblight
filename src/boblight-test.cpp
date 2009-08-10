@@ -40,9 +40,29 @@ int main (int argc, char *argv[])
   }
 
   void* boblight = boblight_init();
-  if (!boblight_connect(boblight, NULL, -1, 5000))
+  if (!boblight_connect(boblight, NULL, -1, 5000000))
   {
-    cout << test(boblight) << "\n";
+    cout << boblight_geterror(boblight) << "\n";
+    return 1;
   }
+
+  boblight_setvalue(boblight, -1, 2.0);
   
+  int rgb[3] = {100, 50, 25};
+  while(1)
+  {
+    boblight_addpixel(boblight, -1, rgb);
+    if (!boblight_sendrgb(boblight))
+    {
+      cout << boblight_geterror(boblight) << "\n";
+      return 1;
+    }
+    int temprgb[3];
+    for (int i = 0; i < 3; i++)
+    {
+      temprgb[i] = rgb[(i + 1) % 3];
+    }
+    memcpy(rgb, temprgb, sizeof(rgb));
+    usleep(100000);
+  }      
 }
