@@ -34,7 +34,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = boblightd$(EXEEXT) boblighttest$(EXEEXT) \
-	boblight-X11$(EXEEXT)
+	boblight-X11$(EXEEXT) boblight-constant$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -66,6 +66,9 @@ am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) timer.$(OBJEXT) \
 	thread.$(OBJEXT)
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
+am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT)
+boblight_constant_OBJECTS = $(am_boblight_constant_OBJECTS)
+boblight_constant_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
 	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
 	timer.$(OBJEXT) udpsocket.$(OBJEXT) serialport.$(OBJEXT) \
@@ -105,9 +108,11 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libboblight_la_SOURCES) $(boblight_X11_SOURCES) \
-	$(boblightd_SOURCES) $(boblighttest_SOURCES)
+	$(boblight_constant_SOURCES) $(boblightd_SOURCES) \
+	$(boblighttest_SOURCES)
 DIST_SOURCES = $(libboblight_la_SOURCES) $(boblight_X11_SOURCES) \
-	$(boblightd_SOURCES) $(boblighttest_SOURCES)
+	$(boblight_constant_SOURCES) $(boblightd_SOURCES) \
+	$(boblighttest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -235,6 +240,9 @@ AM_CPPFLAGS = \
 AM_CFLAGS = \
 	 -Wall\
 	 -g
+
+boblight_constant_SOURCES = \
+	clients/boblight-constant.cpp
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11.cpp\
@@ -408,6 +416,9 @@ clean-binPROGRAMS:
 boblight-X11$(EXEEXT): $(boblight_X11_OBJECTS) $(boblight_X11_DEPENDENCIES) 
 	@rm -f boblight-X11$(EXEEXT)
 	$(CXXLINK) $(boblight_X11_OBJECTS) $(boblight_X11_LDADD) $(LIBS)
+boblight-constant$(EXEEXT): $(boblight_constant_OBJECTS) $(boblight_constant_DEPENDENCIES) 
+	@rm -f boblight-constant$(EXEEXT)
+	$(CXXLINK) $(boblight_constant_OBJECTS) $(boblight_constant_LDADD) $(LIBS)
 boblightd$(EXEEXT): $(boblightd_OBJECTS) $(boblightd_DEPENDENCIES) 
 	@rm -f boblightd$(EXEEXT)
 	$(boblightd_LINK) $(boblightd_OBJECTS) $(boblightd_LDADD) $(LIBS)
@@ -422,6 +433,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-X11.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-constant.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-test2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
@@ -598,6 +610,20 @@ thread.obj: util/thread.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/thread.cpp' object='thread.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o thread.obj `if test -f 'util/thread.cpp'; then $(CYGPATH_W) 'util/thread.cpp'; else $(CYGPATH_W) '$(srcdir)/util/thread.cpp'; fi`
+
+boblight-constant.o: clients/boblight-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.o -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.o `test -f 'clients/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-constant.Tpo $(DEPDIR)/boblight-constant.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant.cpp' object='boblight-constant.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.o `test -f 'clients/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant.cpp
+
+boblight-constant.obj: clients/boblight-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.obj -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.obj `if test -f 'clients/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-constant.Tpo $(DEPDIR)/boblight-constant.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant.cpp' object='boblight-constant.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.obj `if test -f 'clients/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant.cpp'; fi`
 
 log.o: util/log.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT log.o -MD -MP -MF $(DEPDIR)/log.Tpo -c -o log.o `test -f 'util/log.cpp' || echo '$(srcdir)/'`util/log.cpp

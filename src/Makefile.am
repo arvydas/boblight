@@ -13,7 +13,11 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = boblightd \
 	boblighttest\
-	boblight-X11
+	boblight-X11\
+	boblight-constant
+
+boblight_constant_SOURCES = \
+	clients/boblight-constant.cpp
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11.cpp\
