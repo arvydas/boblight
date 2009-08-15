@@ -63,10 +63,10 @@ int main (int argc, char *argv[])
   }
 
   boblight_setpriority(boblight, 128);
-  boblight_setinterpolation(boblight, -1, 1);
-  boblight_setvalue(boblight, -1, 10.0f);
-  boblight_setsaturation(boblight, -1, 5.0f);
-  boblight_setspeed(boblight, -1, 5.0f);
+  boblight_setoption(boblight, -1, "interpolation 1");
+  boblight_setoption(boblight, -1, "value 10.0");
+  boblight_setoption(boblight, -1, "saturation 5.0");
+  boblight_setoption(boblight, -1, "speed 5.0");
   
   timer.SetInterval(40000);
   timer.StartTimer();

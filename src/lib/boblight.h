@@ -70,13 +70,6 @@ class CBoblight
     const char* GetLightName    (int lightnr);
 
     int         SetPriority     (int priority);
-    int         SetSpeed        (int lightnr, float speed);
-    int         SetInterpolation(int lightnr, int on);
-    int         SetUse          (int lightnr, int on);
-    int         SetValue        (int lightnr, float value);
-    int         SetSaturation   (int lightnr, float saturation);
-    int         SetValueRange   (int lightnr, float* valuerange);
-    int         SetThreshold    (int lightnr, int threshold);
     void        SetScanRange    (int width,   int height);
 
     int         AddPixel(int lightnr, int* rgb);

@@ -81,48 +81,6 @@ int boblight_setoption(void* vpboblight, int lightnr, const char* option)
   return boblight->SetOption(lightnr, option);
 }
 
-int boblight_setspeed(void* vpboblight, int lightnr, float speed)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetSpeed(lightnr, speed);
-}
-
-int boblight_setinterpolation(void* vpboblight, int lightnr, int on)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetInterpolation(lightnr, on);
-}
-
-int boblight_setuse(void* vpboblight, int lightnr, int on)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetUse(lightnr, on);
-}
-
-int boblight_setvalue(void* vpboblight, int lightnr, float value)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetValue(lightnr, value);
-}
-
-int boblight_setsaturation (void* vpboblight, int lightnr, float saturation)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetSaturation(lightnr, saturation);
-}
-
-int boblight_setvaluerange (void* vpboblight, int lightnr, float* valuerange)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SetValueRange(lightnr, valuerange);
-}
-
-int boblight_setthreshold(void* vpboblight, int lightnr, int threshold)
-{
-  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  boblight->SetThreshold(lightnr, threshold);
-}
-
 void boblight_setscanrange(void* vpboblight, int width, int height)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);

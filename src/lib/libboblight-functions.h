@@ -31,14 +31,6 @@ BOBLIGHT_FUNCTION(int,         boblight_getnroptions,     (void* vpboblight));
 BOBLIGHT_FUNCTION(const char*, boblight_getoptiondescript,(void* vpboblight, int option));
 BOBLIGHT_FUNCTION(int,         boblight_setoption,        (void* vpboblight, int lightnr, const char* option));
 
-BOBLIGHT_FUNCTION(int,         boblight_setspeed,         (void* vpboblight, int lightnr, float speed));
-BOBLIGHT_FUNCTION(int,         boblight_setinterpolation, (void* vpboblight, int lightnr, int on));
-BOBLIGHT_FUNCTION(int,         boblight_setuse,           (void* vpboblight, int lightnr, int on));
-BOBLIGHT_FUNCTION(int,         boblight_setvalue,         (void* vpboblight, int lightnr, float value));
-BOBLIGHT_FUNCTION(int,         boblight_setsaturation,    (void* vpboblight, int lightnr, float saturation));
-BOBLIGHT_FUNCTION(int,         boblight_setvaluerange,    (void* vpboblight, int lightnr, float* valuerange));
-BOBLIGHT_FUNCTION(int,         boblight_setthreshold,     (void* vpboblight, int lightnr, int threshold));
-
 BOBLIGHT_FUNCTION(void,        boblight_setscanrange,     (void* vpboblight, int width, int height));
 
 BOBLIGHT_FUNCTION(int,         boblight_addpixel,         (void* vpboblight, int lightnr, int* rgb));
