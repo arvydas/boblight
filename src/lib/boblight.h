@@ -33,7 +33,7 @@ class CLight
   public:
     CLight();
 
-    int         SetOption(const char* option);
+    std::string SetOption(const char* option);
     
     std::string m_name;
     float       m_speed;

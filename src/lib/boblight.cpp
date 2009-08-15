@@ -56,13 +56,13 @@ CLight::CLight()
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
 }
 
-int CLight::SetOption(const char* option)
+string CLight::SetOption(const char* option)
 {
   string stroption = option;
   string strname;
 
   if (!GetWord(stroption, strname))
-    return 0; //string with only whitespace
+    return "emtpy option"; //string with only whitespace
 
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
   if (strname == #name) \
@@ -71,16 +71,18 @@ int CLight::SetOption(const char* option)
     stringstream stream; \
     stream << stroption; \
     stream >> value; \
-    if (stream.fail()) return 0; \
+    if (stream.fail()) return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
     if (min != -1) value = Max(min, value); \
     if (max != -1) value = Min(max, value); \
     \
     variable = value; \
+    \
+    return ""; \
   }
   #include "options.h"
   #undef BOBLIGHT_OPTION
 
-  return 1;
+  return "unknown option " + strname;
 }
 
 void CLight::GetRGB(float* rgb)
@@ -523,6 +525,8 @@ const char* CBoblight::GetOptionDescription(int option)
 
 int CBoblight::SetOption(int lightnr, const char* option)
 {
+  string error;
+  
   if (!CheckLightExists(lightnr))
     return 0;
 
@@ -530,12 +534,22 @@ int CBoblight::SetOption(int lightnr, const char* option)
   {
     for (int i = 0; i < m_lights.size(); i++)
     {
-      m_lights[i].SetOption(option);
+      error = m_lights[i].SetOption(option);
+      if (!error.empty())
+      {
+        m_error = error;
+        return 0;
+      }
     }
   }
   else
   {
-    m_lights[lightnr].SetOption(option);
+    error = m_lights[lightnr].SetOption(option);
+    if (!error.empty())
+    {
+      m_error = error;
+      return 0;
+    }
   }
 
   return 1;
