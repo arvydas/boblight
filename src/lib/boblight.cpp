@@ -682,7 +682,7 @@ int CBoblight::SetOption(int lightnr, const char* option)
   if (!CheckLightExists(lightnr))
     return 0;
 
-  if (lightnr == -1)
+  if (lightnr < 0)
   {
     for (int i = 0; i < m_lights.size(); i++)
     {
