@@ -29,7 +29,7 @@ using namespace std;
 
 static const char *g_optiondescriptions[] = 
 {
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) #name #type #min #max #default,
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) #name " " #type " " #min " " #max " " #default,
   #include "options.h"
   NULL
   #undef BOBLIGHT_OPTION
