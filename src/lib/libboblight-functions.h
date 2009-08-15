@@ -27,6 +27,10 @@ BOBLIGHT_FUNCTION(const char*, boblight_geterror,         (void* vpboblight));
 BOBLIGHT_FUNCTION(int,         boblight_getnrlights,      (void* vpboblight));
 BOBLIGHT_FUNCTION(const char*, boblight_getlightname,     (void* vpboblight, int lightnr));
 
+BOBLIGHT_FUNCTION(int,         boblight_getnroptions,     (void* vpboblight));
+BOBLIGHT_FUNCTION(const char*, boblight_getoptiondescript,(void* vpboblight, int option));
+BOBLIGHT_FUNCTION(int,         boblight_setoption,        (void* vpboblight, int lightnr, const char* option));
+
 BOBLIGHT_FUNCTION(int,         boblight_setspeed,         (void* vpboblight, int lightnr, float speed));
 BOBLIGHT_FUNCTION(int,         boblight_setinterpolation, (void* vpboblight, int lightnr, int on));
 BOBLIGHT_FUNCTION(int,         boblight_setuse,           (void* vpboblight, int lightnr, int on));
@@ -37,7 +41,7 @@ BOBLIGHT_FUNCTION(int,         boblight_setthreshold,     (void* vpboblight, int
 
 BOBLIGHT_FUNCTION(void,        boblight_setscanrange,     (void* vpboblight, int width, int height));
 
-BOBLIGHT_FUNCTION(void,        boblight_addpixel,         (void* vpboblight, int lightnr, int* rgb));
+BOBLIGHT_FUNCTION(int,         boblight_addpixel,         (void* vpboblight, int lightnr, int* rgb));
 BOBLIGHT_FUNCTION(void,        boblight_addpixelxy,       (void* vpboblight, int x, int y, int* rgb));
 
 BOBLIGHT_FUNCTION(int,         boblight_sendrgb,          (void* vpboblight));

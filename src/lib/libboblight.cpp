@@ -63,6 +63,24 @@ const char* boblight_getlightname(void* vpboblight, int lightnr)
   return boblight->GetLightName(lightnr);
 }
 
+int boblight_getnroptions(void* vpboblight)
+{
+  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
+  return boblight->GetNrOptions();
+}
+
+const char* boblight_getoptiondescript(void* vpboblight, int option)
+{
+  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
+  return boblight->GetOptionDescription(option);
+}
+
+int boblight_setoption(void* vpboblight, int lightnr, const char* option)
+{
+  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
+  return boblight->SetOption(lightnr, option);
+}
+
 int boblight_setspeed(void* vpboblight, int lightnr, float speed)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
@@ -111,10 +129,10 @@ void boblight_setscanrange(void* vpboblight, int width, int height)
   boblight->SetScanRange(width, height);
 }
 
-void boblight_addpixel(void* vpboblight, int lightnr, int* rgb)
+int boblight_addpixel(void* vpboblight, int lightnr, int* rgb)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  boblight->AddPixel(lightnr, rgb);
+  return boblight->AddPixel(lightnr, rgb);
 }
 
 void boblight_addpixelxy(void* vpboblight, int x, int y, int* rgb)

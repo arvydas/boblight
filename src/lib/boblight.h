@@ -33,6 +33,8 @@ class CLight
   public:
     CLight();
 
+    int         SetOption(const char* option);
+    
     std::string m_name;
     float       m_speed;
     bool        m_autospeed;
@@ -77,11 +79,15 @@ class CBoblight
     int         SetThreshold    (int lightnr, int threshold);
     void        SetScanRange    (int width,   int height);
 
-    void        AddPixel(int lightnr, int* rgb);
+    int         AddPixel(int lightnr, int* rgb);
     void        AddPixel(int* rgb, int x, int y);
 
     int         SendRGB();
     int         Ping();
+
+    int         GetNrOptions();
+    const char* GetOptionDescription(int option);
+    int         SetOption(int lightnr, const char* option);
     
   private:
     CTcpClientSocket m_socket;

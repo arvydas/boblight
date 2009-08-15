@@ -19,6 +19,7 @@
 #include <string>
 #include <stdint.h>
 #include <iostream> //debug
+#include <sstream>
 
 #include "boblight.h"
 #include "util/misc.h"
@@ -26,18 +27,23 @@
 
 using namespace std;
 
+static const char *g_optiondescriptions[] = 
+{
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) #name #type #min #max #default,
+  #include "options.h"
+  NULL
+  #undef BOBLIGHT_OPTION
+};
+
+#define NROPTIONS (sizeof(g_optiondescriptions) / sizeof(const char*) - 1)
+
 CLight::CLight()
 {
-  m_speed = 100.0;
-  m_autospeed = false;
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) variable = default;
+  #include "options.h"
+  #undef  BOBLIGHT_OPTION
+
   m_autospeedvalue = -1.0;
-  m_interpolation = false;
-  m_use = true;
-  m_value = 1.0;
-  m_saturation = 1.0;
-  m_valuerange[0] = 0.0;
-  m_valuerange[1] = 1.0;
-  m_threshold = 0;
 
   m_width = -1;
   m_height = -1;
@@ -50,6 +56,32 @@ CLight::CLight()
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
 }
 
+int CLight::SetOption(const char* option)
+{
+  string stroption = option;
+  string strname;
+
+  if (!GetWord(stroption, strname))
+    return 0; //string with only whitespace
+
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  if (strname == #name) \
+  { \
+    type value; \
+    stringstream stream; \
+    stream << stroption; \
+    stream >> value; \
+    if (stream.fail()) return 0; \
+    if (min != -1) value = Max(min, value); \
+    if (max != -1) value = Min(max, value); \
+    \
+    variable = value; \
+  }
+  #include "options.h"
+  #undef BOBLIGHT_OPTION
+
+  return 1;
+}
 
 void CLight::GetRGB(float* rgb)
 {
@@ -544,8 +576,11 @@ void CBoblight::SetScanRange(int width, int height)
   }
 }
 
-void CBoblight::AddPixel(int lightnr, int* rgb)
+int CBoblight::AddPixel(int lightnr, int* rgb)
 {
+  if (!CheckLightExists(lightnr))
+    return 0;
+
   if (lightnr < 0)
   {
     for (int i = 0; i < m_lights.size(); i++)
@@ -569,6 +604,8 @@ void CBoblight::AddPixel(int lightnr, int* rgb)
     }
     m_lights[lightnr].m_rgbd[3]++;
   }
+
+  return 1;
 }
 
 void CBoblight::AddPixel(int* rgb, int x, int y)
@@ -622,6 +659,39 @@ int CBoblight::Ping()
   {
     m_error = m_address + ":" + ToString(m_port) + " sent gibberish";
     return 0;
+  }
+
+  return 1;
+}
+
+int CBoblight::GetNrOptions()
+{
+  return NROPTIONS;
+}
+
+const char* CBoblight::GetOptionDescription(int option)
+{
+  if (option < 0 || option >= NROPTIONS)
+    return NULL;
+
+  return g_optiondescriptions[option];
+}
+
+int CBoblight::SetOption(int lightnr, const char* option)
+{
+  if (!CheckLightExists(lightnr))
+    return 0;
+
+  if (lightnr == -1)
+  {
+    for (int i = 0; i < m_lights.size(); i++)
+    {
+      m_lights[i].SetOption(option);
+    }
+  }
+  else
+  {
+    m_lights[lightnr].SetOption(option);
   }
 
   return 1;
