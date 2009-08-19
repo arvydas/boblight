@@ -69,8 +69,6 @@ string CLight::SetOption(const char* option)
       stream << stroption; \
       stream >> value; \
       if (stream.fail()) return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
-      if (min != -1) value = Max(min, value); \
-      if (max != -1) value = Min(max, value); \
       \
       variable = value; \
     }\
