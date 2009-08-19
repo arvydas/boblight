@@ -87,6 +87,12 @@ int boblight_getoption(void* vpboblight, int lightnr, const char* option, const 
   return boblight->GetOption(lightnr, option, output);
 }
 
+void boblight_setscanrange(void* vpboblight, int width, int height)
+{
+  CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
+  boblight->SetScanRange(width, height);
+}
+
 int boblight_addpixel(void* vpboblight, int lightnr, int* rgb)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
