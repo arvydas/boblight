@@ -27,14 +27,6 @@
 
 using namespace std;
 
-/*static string g_optiondescriptions[] = 
-{
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) #name " " #type " " #min " " #max " " #default,
-  #include "options.h"
-  NULL
-  #undef BOBLIGHT_OPTION
-};*/
-
 CLight::CLight()
 {
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable) variable = default;
@@ -280,6 +272,12 @@ CBoblight::CBoblight()
     padsize = strlen(#name) + 1;
   #include "options.h"
   #undef BOBLIGHT_OPTION
+
+  //stick in a line that describes the options
+  string option = "name";
+  option.append(Max(padsize - option.length(), 1), ' ');
+  option += "type    min     max     default";
+  m_options.push_back(option);
 
   //fill vector with option strings
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
