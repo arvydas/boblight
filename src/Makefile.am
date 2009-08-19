@@ -17,7 +17,9 @@ bin_PROGRAMS = boblightd \
 	boblight-constant
 
 boblight_constant_SOURCES = \
-	clients/boblight-constant.cpp
+	clients/boblight-constant.cpp\
+	util/misc.cpp \
+	util/misc.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11.cpp\
@@ -29,7 +31,8 @@ boblight_X11_SOURCES = \
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
-	boblight-test2.cpp
+	boblight-test2.cpp \
+	util/misc.cpp
 
 boblightd_SOURCES = \
 	util/clock.cpp    \

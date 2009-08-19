@@ -52,7 +52,19 @@ int main (int argc, char *argv[])
   {
     cout << boblight_getoptiondescript(boblight, i) << "\n";
   }
-  return 0;
+  cout << "\n";
+
+  for (int i = 1; i < nroptions; i++)
+  {
+    string name;
+    string option = boblight_getoptiondescript(boblight, i);
+    GetWord(option, name);
+
+    const char* value;
+    boblight_getoption(boblight, 0, name.c_str(), &value);
+    cout << name << " " << value << "\n";
+  }
+
   boblight_setoption(boblight, -1, "value 2.0");
   
   int rgb[3] = {100, 50, 25};
