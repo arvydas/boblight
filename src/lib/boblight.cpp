@@ -66,14 +66,22 @@ string CLight::SetOption(const char* option)
   if (strname == #name) \
   { \
     type value; \
-    stringstream stream; \
-    stream << stroption; \
-    stream >> value; \
-    if (stream.fail()) return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
-    if (min != -1) value = Max(min, value); \
-    if (max != -1) value = Min(max, value); \
-    \
-    variable = value; \
+    if (#type == "bool")\
+    {\
+      if (!StrToBool(stroption, *(bool*)(&value)))\
+        return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
+    }\
+    else\
+    {\
+      stringstream stream; \
+      stream << stroption; \
+      stream >> value; \
+      if (stream.fail()) return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
+      if (min != -1) value = Max(min, value); \
+      if (max != -1) value = Min(max, value); \
+      \
+      variable = value; \
+    }\
     \
     return ""; \
   }
