@@ -27,15 +27,13 @@
 
 using namespace std;
 
-static const char *g_optiondescriptions[] = 
+/*static string g_optiondescriptions[] = 
 {
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable) #name " " #type " " #min " " #max " " #default,
   #include "options.h"
   NULL
   #undef BOBLIGHT_OPTION
-};
-
-#define NROPTIONS (sizeof(g_optiondescriptions) / sizeof(const char*) - 1)
+};*/
 
 CLight::CLight()
 {
@@ -263,6 +261,40 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
   }
   
   return 1;
+}
+
+CBoblight::CBoblight()
+{
+  int padsize = 1;
+  //get option name pad size so it looks pretty
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  if (strlen(#name) + 1 > padsize)\
+    padsize = strlen(#name) + 1;
+  #include "options.h"
+  #undef BOBLIGHT_OPTION
+
+  //fill vector with option strings
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  {\
+    string option = #name;\
+    option.append(padsize, ' ');\
+    \
+    option += #type;\
+    option.append(Max(8 - strlen(#type), 1), ' ');\
+    \
+    option += #min;\
+    option.append(Max(8 - strlen(#min), 1), ' ');\
+    \
+    option += #max;\
+    option.append(Max(8 - strlen(#max), 1), ' ');\
+    \
+    option += #default;\
+    option.append(Max(8 - strlen(#default), 1), ' ');\
+    \
+    m_options.push_back(option);\
+  }
+  #include "options.h"
+  #undef BOBLIGHT_OPTION
 }
 
 //reads from socket until timeout or one message has arrived
@@ -512,15 +544,15 @@ int CBoblight::Ping()
 
 int CBoblight::GetNrOptions()
 {
-  return NROPTIONS;
+  return m_options.size();
 }
 
 const char* CBoblight::GetOptionDescription(int option)
 {
-  if (option < 0 || option >= NROPTIONS)
+  if (option < 0 || option >= m_options.size())
     return NULL;
 
-  return g_optiondescriptions[option];
+  return m_options[option].c_str();
 }
 
 int CBoblight::SetOption(int lightnr, const char* option)

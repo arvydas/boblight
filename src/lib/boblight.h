@@ -63,6 +63,8 @@ class CLight
 class CBoblight
 {
   public:
+    CBoblight();
+    
     int         Connect(const char* address, int port, int usectimeout);
     const char* GetError()                    { return m_error.c_str(); }
 
@@ -99,6 +101,8 @@ class CBoblight
     bool             CheckLightExists(int lightnr, bool printerror = true);
 
     std::vector<CLight> m_lights;
+
+    std::vector<std::string> m_options;
 };
 
 #endif //CBOBLIGHT

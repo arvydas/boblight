@@ -23,6 +23,6 @@ BOBLIGHT_OPTION(interpolation, bool,  -1,              -1,                0,    
 BOBLIGHT_OPTION(use,           bool,  -1,              -1,                0,      m_use)
 BOBLIGHT_OPTION(saturation,    float, 0.0,             -1,                1.0,    m_saturation)
 BOBLIGHT_OPTION(value,         float, 0.0,             -1,                1.0,    m_value)
-BOBLIGHT_OPTION(valuemin,      float, 0.0,             m_valuerange[1],   0.0,    m_valuerange[0])
-BOBLIGHT_OPTION(valuemax,      float, m_valuerange[0], 1.0,               1.0,    m_valuerange[1])
+BOBLIGHT_OPTION(valuemin,      float, 0.0,             1.0,               0.0,    m_valuerange[0])
+BOBLIGHT_OPTION(valuemax,      float, 0.0,             1.0,               1.0,    m_valuerange[1])
 BOBLIGHT_OPTION(threshold,     int,   0,               255,               0,      m_threshold)

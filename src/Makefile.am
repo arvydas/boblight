@@ -97,7 +97,8 @@ libboblight_la_SOURCES = \
 	util/misc.h \
 	util/tcpsocket.cpp \
 	util/tcpsocket.h \
-	lib/libboblight-functions.h
+	lib/libboblight-functions.h \
+	lib/options.h
 
 libboblight_la_CPPFLAGS = $(AM_CPPFLAGS)
 
