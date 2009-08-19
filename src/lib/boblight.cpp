@@ -82,6 +82,26 @@ string CLight::SetOption(const char* option)
   return "unknown option " + strname;
 }
 
+std::string CLight::GetOption(const char* option, std::string& output)
+{
+  string stroption = option;
+  string strname;
+
+  if (!GetWord(stroption, strname))
+    return "emtpy option"; //string with only whitespace
+
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) \
+  if (#name == strname)\
+  {\
+    output = ToString(variable);\
+    return "";\
+  }
+  #include "options.h"
+  #undef BOBLIGHT_OPTION
+
+  return "unknown option";
+}
+
 void CLight::GetRGB(float* rgb)
 {
   if (m_rgbd[3] == 0)
@@ -589,5 +609,25 @@ int CBoblight::SetOption(int lightnr, const char* option)
     }
   }
 
+  return 1;
+}
+
+int CBoblight::GetOption(int lightnr, const char* option, const char** output)
+{
+  if (lightnr < 0) //negative lights don't exist, so we set it to an invalid number to get the error message
+    lightnr = m_lights.size();
+
+  if (!CheckLightExists(lightnr))
+    return 0;
+
+  string error = m_lights[lightnr].GetOption(option, m_lastoption);
+  if (!error.empty())
+  {
+    m_error = error;
+    return 0;
+  }
+
+  *output = m_lastoption.c_str();
+  
   return 1;
 }

@@ -34,6 +34,7 @@ class CLight
     CLight();
 
     std::string SetOption(const char* option);
+    std::string GetOption(const char* option, std::string& output);
     
     std::string m_name;
     float       m_speed;
@@ -83,6 +84,7 @@ class CBoblight
     int         GetNrOptions();
     const char* GetOptionDescription(int option);
     int         SetOption(int lightnr, const char* option);
+    int         GetOption(int lightnr, const char* option, const char** output);
     
   private:
     CTcpClientSocket m_socket;
@@ -103,6 +105,7 @@ class CBoblight
     std::vector<CLight> m_lights;
 
     std::vector<std::string> m_options;
+    std::string              m_lastoption; //place to store the last option retrieved by GetOption
 };
 
 #endif //CBOBLIGHT

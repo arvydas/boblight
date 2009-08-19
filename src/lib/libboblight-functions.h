@@ -30,6 +30,7 @@ BOBLIGHT_FUNCTION(const char*, boblight_getlightname,     (void* vpboblight, int
 BOBLIGHT_FUNCTION(int,         boblight_getnroptions,     (void* vpboblight));
 BOBLIGHT_FUNCTION(const char*, boblight_getoptiondescript,(void* vpboblight, int option));
 BOBLIGHT_FUNCTION(int,         boblight_setoption,        (void* vpboblight, int lightnr, const char* option));
+BOBLIGHT_FUNCTION(int,         boblight_getoption,        (void* vpboblight, int lightnr, const char* option, const char** output));
 
 BOBLIGHT_FUNCTION(void,        boblight_setscanrange,     (void* vpboblight, int width, int height));
 
