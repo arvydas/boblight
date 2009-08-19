@@ -29,7 +29,7 @@ using namespace std;
 
 CLight::CLight()
 {
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) variable = default;
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) variable = default;
   #include "options.h"
   #undef  BOBLIGHT_OPTION
 
@@ -54,7 +54,7 @@ string CLight::SetOption(const char* option)
   if (!GetWord(stroption, strname))
     return "emtpy option"; //string with only whitespace
 
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) \
   if (strname == #name) \
   { \
     type value; \
@@ -74,6 +74,7 @@ string CLight::SetOption(const char* option)
       \
       variable = value; \
     }\
+    postprocess\
     \
     return ""; \
   }
@@ -267,7 +268,7 @@ CBoblight::CBoblight()
 {
   int padsize = 1;
   //get option name pad size so it looks pretty
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) \
   if (strlen(#name) + 1 > padsize)\
     padsize = strlen(#name) + 1;
   #include "options.h"
@@ -280,7 +281,7 @@ CBoblight::CBoblight()
   m_options.push_back(option);
 
   //fill vector with option strings
-  #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
+  #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) \
   {\
     string option = #name;\
     option.append(padsize - strlen(#name), ' ');\

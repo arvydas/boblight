@@ -46,6 +46,13 @@ int main (int argc, char *argv[])
     return 1;
   }
 
+  int nroptions = boblight_getnroptions(boblight);
+
+  for (int i = 0; i < nroptions; i++)
+  {
+    cout << boblight_getoptiondescript(boblight, i) << "\n";
+  }
+  return 0;
   boblight_setoption(boblight, -1, "value 2.0");
   
   int rgb[3] = {100, 50, 25};
