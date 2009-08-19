@@ -277,7 +277,7 @@ CBoblight::CBoblight()
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable) \
   {\
     string option = #name;\
-    option.append(padsize, ' ');\
+    option.append(padsize - strlen(#name), ' ');\
     \
     option += #type;\
     option.append(Max(8 - strlen(#type), 1), ' ');\
