@@ -33,7 +33,7 @@ class CLight
   public:
     CLight();
 
-    std::string SetOption(const char* option);
+    std::string SetOption(const char* option, bool& send);
     std::string GetOption(const char* option, std::string& output);
     
     std::string m_name;

@@ -46,11 +46,13 @@ CLight::CLight()
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
 }
 
-string CLight::SetOption(const char* option)
+string CLight::SetOption(const char* option, bool& send)
 {
   string stroption = option;
   string strname;
 
+  send = false;
+  
   if (!GetWord(stroption, strname))
     return "emtpy option"; //string with only whitespace
 
@@ -583,6 +585,8 @@ const char* CBoblight::GetOptionDescription(int option)
 int CBoblight::SetOption(int lightnr, const char* option)
 {
   string error;
+  string data;
+  bool   send;
   
   if (!CheckLightExists(lightnr))
     return 0;
@@ -591,23 +595,34 @@ int CBoblight::SetOption(int lightnr, const char* option)
   {
     for (int i = 0; i < m_lights.size(); i++)
     {
-      error = m_lights[i].SetOption(option);
+      error = m_lights[i].SetOption(option, send);
       if (!error.empty())
       {
         m_error = error;
         return 0;
       }
+      if (send)
+      {
+        data += "set light " + m_lights[i].m_name + " " + option + "\n";
+      }
     }
   }
   else
   {
-    error = m_lights[lightnr].SetOption(option);
+    error = m_lights[lightnr].SetOption(option, send);
     if (!error.empty())
     {
       m_error = error;
       return 0;
     }
+    if (send)
+    {
+      data += "set light " + m_lights[lightnr].m_name + " " + option + "\n";
+    }
   }
+
+  if (!WriteDataToSocket(data))
+    return 0;
 
   return 1;
 }

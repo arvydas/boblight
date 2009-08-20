@@ -17,10 +17,10 @@
  */
 
 //              name           type   min              max                default variable         post-process
-BOBLIGHT_OPTION(speed,         float, 0.0,             100.0,             100.0,  m_speed,         m_speed = Clamp(m_speed, 0.0, 100.0);)
-BOBLIGHT_OPTION(autospeed,     bool,  -1,              -1,                0,      m_autospeed,     ;)
-BOBLIGHT_OPTION(interpolation, bool,  -1,              -1,                0,      m_interpolation, ;)
-BOBLIGHT_OPTION(use,           bool,  -1,              -1,                0,      m_use,           ;)
+BOBLIGHT_OPTION(speed,         float, 0.0,             100.0,             100.0,  m_speed,         m_speed = Clamp(m_speed, 0.0, 100.0); send = true;)
+BOBLIGHT_OPTION(autospeed,     bool,  -1,              -1,                0,      m_autospeed,     send = true;)
+BOBLIGHT_OPTION(interpolation, bool,  -1,              -1,                0,      m_interpolation, send = true;)
+BOBLIGHT_OPTION(use,           bool,  -1,              -1,                0,      m_use,           send = true;)
 BOBLIGHT_OPTION(saturation,    float, 0.0,             -1,                1.0,    m_saturation,    m_saturation = Max(m_saturation, 0.0);)
 BOBLIGHT_OPTION(value,         float, 0.0,             -1,                1.0,    m_value,         m_value = Max(m_value, 0.0);)
 BOBLIGHT_OPTION(valuemin,      float, 0.0,             1.0,               0.0,    m_valuerange[0], m_valuerange[0] = Clamp(m_valuerange[0], 0.0, m_valuerange[1]);)
