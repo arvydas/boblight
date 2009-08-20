@@ -212,10 +212,10 @@ int CBoblight::Connect(const char* address, int port, int usectimeout)
 
   //set address
   m_usectimeout = usectimeout;
-  if (address == NULL)
-    m_address = "127.0.0.1";
-  else
+  if (address)
     m_address = address;
+  else
+    m_address = "127.0.0.1";
 
   //set port
   if (port >= 0)
