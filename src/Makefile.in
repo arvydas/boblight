@@ -67,7 +67,7 @@ am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) timer.$(OBJEXT) \
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT) \
-	misc.$(OBJEXT)
+	misc.$(OBJEXT) flags.$(OBJEXT)
 boblight_constant_OBJECTS = $(am_boblight_constant_OBJECTS)
 boblight_constant_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
@@ -245,7 +245,9 @@ AM_CFLAGS = \
 boblight_constant_SOURCES = \
 	clients/boblight-constant.cpp\
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	clients/flags.cpp \
+	clients/flags.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11.cpp\
@@ -451,6 +453,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicepopen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicers232.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicesound.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flags.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-boblight.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-libboblight.Plo@am__quote@
@@ -643,6 +646,20 @@ misc.obj: util/misc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/misc.cpp' object='misc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o misc.obj `if test -f 'util/misc.cpp'; then $(CYGPATH_W) 'util/misc.cpp'; else $(CYGPATH_W) '$(srcdir)/util/misc.cpp'; fi`
+
+flags.o: clients/flags.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flags.o -MD -MP -MF $(DEPDIR)/flags.Tpo -c -o flags.o `test -f 'clients/flags.cpp' || echo '$(srcdir)/'`clients/flags.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/flags.Tpo $(DEPDIR)/flags.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/flags.cpp' object='flags.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flags.o `test -f 'clients/flags.cpp' || echo '$(srcdir)/'`clients/flags.cpp
+
+flags.obj: clients/flags.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flags.obj -MD -MP -MF $(DEPDIR)/flags.Tpo -c -o flags.obj `if test -f 'clients/flags.cpp'; then $(CYGPATH_W) 'clients/flags.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/flags.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/flags.Tpo $(DEPDIR)/flags.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/flags.cpp' object='flags.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flags.obj `if test -f 'clients/flags.cpp'; then $(CYGPATH_W) 'clients/flags.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/flags.cpp'; fi`
 
 log.o: util/log.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT log.o -MD -MP -MF $(DEPDIR)/log.Tpo -c -o log.o `test -f 'util/log.cpp' || echo '$(srcdir)/'`util/log.cpp

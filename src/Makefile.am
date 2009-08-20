@@ -19,7 +19,9 @@ bin_PROGRAMS = boblightd \
 boblight_constant_SOURCES = \
 	clients/boblight-constant.cpp\
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	clients/flags.cpp \
+	clients/flags.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11.cpp\
