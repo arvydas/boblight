@@ -57,21 +57,6 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  //check if a color was given
-  if (optind == argc)
-  {
-    PrintError("no color given");
-    help = true;
-  }
-  
-  //check if the color can be loaded
-  string strcolor = argv[optind];
-  if (!HexStrToInt(strcolor, color) || color & 0xFF000000)
-  {
-    PrintError("wrong value " + ToString(argv[optind]) + " for color");
-    help = true;
-  }
-  
   if (help)
   {
     PrintHelpMessage();
@@ -83,6 +68,23 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  //check if a color was given
+  if (optind == argc)
+  {
+    PrintError("no color given");
+    PrintHelpMessage();
+    return 1;
+  }
+  
+  //check if the color can be loaded
+  string strcolor = argv[optind];
+  if (!HexStrToInt(strcolor, color) || color & 0xFF000000)
+  {
+    PrintError("wrong value " + ToString(argv[optind]) + " for color");
+    PrintHelpMessage();
+    return 1;
+  }
+  
   if (straddress.empty())
     address = NULL;
   else
