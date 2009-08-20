@@ -106,17 +106,17 @@ inline T Abs(T value)
   return value > 0 ? value : -value;
 }
 
-inline bool StrToInt(std::string& data, int& value)
+inline bool StrToInt(std::string data, int& value)
 {
   return sscanf(data.c_str(), "%i", &value) == 1;
 }
 
-inline bool HexStrToInt(std::string& data, int& value)
+inline bool HexStrToInt(std::string data, int& value)
 {
   return sscanf(data.c_str(), "%x", &value) == 1;
 }
 
-inline bool StrToFloat(std::string& data, float& value)
+inline bool StrToFloat(std::string data, float& value)
 {
   return sscanf(data.c_str(), "%f", &value) == 1;
 }
