@@ -77,8 +77,7 @@ int main(int argc, char *argv[])
   }
   
   //check if the color can be loaded
-  string strcolor = argv[optind];
-  if (!HexStrToInt(strcolor, color) || color & 0xFF000000)
+  if (!HexStrToInt(argv[optind], color) || color & 0xFF000000)
   {
     PrintError("wrong value " + ToString(argv[optind]) + " for color");
     PrintHelpMessage();
