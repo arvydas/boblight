@@ -26,8 +26,6 @@
 #include "util/messagequeue.h"
 #include "util/clock.h"
 
-#include "libboblight.h"
-
 class CLight
 {
   public:
