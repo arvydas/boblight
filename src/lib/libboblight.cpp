@@ -19,6 +19,8 @@
 #include "libboblight.h"
 #include "boblight.h"
 
+using namespace boblight;
+
 //C wrapper for C++ class
 
 void* boblight_init()

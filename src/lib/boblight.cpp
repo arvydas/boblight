@@ -26,6 +26,7 @@
 #include "protocolversion.h"
 
 using namespace std;
+using namespace boblight;
 
 CLight::CLight()
 {

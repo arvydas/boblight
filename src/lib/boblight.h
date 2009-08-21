@@ -26,84 +26,86 @@
 #include "util/messagequeue.h"
 #include "util/clock.h"
 
-class CLight
+namespace boblight
 {
-  public:
-    CLight();
+  class CLight
+  {
+    public:
+      CLight();
 
-    std::string SetOption(const char* option, bool& send);
-    std::string GetOption(const char* option, std::string& output);
-    
-    std::string m_name;
-    float       m_speed;
-    bool        m_autospeed;
-    float       m_autospeedvalue;
-    
-    bool        m_interpolation;
-    bool        m_use;
+      std::string SetOption(const char* option, bool& send);
+      std::string GetOption(const char* option, std::string& output);
 
-    float       m_value;
-    float       m_saturation;
-    float       m_valuerange[2];
-    int         m_threshold;
+      std::string m_name;
+      float       m_speed;
+      bool        m_autospeed;
+      float       m_autospeedvalue;
 
-    int         m_rgbd[4];
-    float       m_prevrgb[3];
-    void        GetRGB(float* rgb);
+      bool        m_interpolation;
+      bool        m_use;
 
-    float       m_hscan[2];
-    float       m_vscan[2];
-    int         m_width;
-    int         m_height;
-    int         m_hscanscaled[2];
-    int         m_vscanscaled[2];
-};  
+      float       m_value;
+      float       m_saturation;
+      float       m_valuerange[2];
+      int         m_threshold;
 
-class CBoblight
-{
-  public:
-    CBoblight();
-    
-    int         Connect(const char* address, int port, int usectimeout);
-    const char* GetError()                    { return m_error.c_str(); }
+      int         m_rgbd[4];
+      float       m_prevrgb[3];
+      void        GetRGB(float* rgb);
 
-    int         GetNrLights()                 { return m_lights.size(); }
-    const char* GetLightName    (int lightnr);
+      float       m_hscan[2];
+      float       m_vscan[2];
+      int         m_width;
+      int         m_height;
+      int         m_hscanscaled[2];
+      int         m_vscanscaled[2];
+  };  
 
-    int         SetPriority     (int priority);
-    void        SetScanRange    (int width,   int height);
+  class CBoblight
+  {
+    public:
+      CBoblight();
 
-    int         AddPixel(int lightnr, int* rgb);
-    void        AddPixel(int* rgb, int x, int y);
+      int         Connect(const char* address, int port, int usectimeout);
+      const char* GetError()                    { return m_error.c_str(); }
 
-    int         SendRGB();
-    int         Ping();
+      int         GetNrLights()                 { return m_lights.size(); }
+      const char* GetLightName    (int lightnr);
 
-    int         GetNrOptions();
-    const char* GetOptionDescription(int option);
-    int         SetOption(int lightnr, const char* option);
-    int         GetOption(int lightnr, const char* option, const char** output);
-    
-  private:
-    CTcpClientSocket m_socket;
-    std::string      m_address;
-    int              m_port;
-    std::string      m_error;
-    CMessageQueue    m_messagequeue;
-    CClock           m_clock;
-    int              m_usectimeout;
+      int         SetPriority     (int priority);
+      void        SetScanRange    (int width,   int height);
 
-    bool             ReadDataToQueue();
-    bool             WriteDataToSocket(std::string strdata);
-    bool             ParseWord(CMessage& message, std::string wordtocmp);
-    bool             ParseWord(CMessage& message, std::string wordtocmp, std::string readword);
-    bool             ParseLights(CMessage& message);
-    bool             CheckLightExists(int lightnr, bool printerror = true);
+      int         AddPixel(int lightnr, int* rgb);
+      void        AddPixel(int* rgb, int x, int y);
 
-    std::vector<CLight> m_lights;
+      int         SendRGB();
+      int         Ping();
 
-    std::vector<std::string> m_options;
-    std::string              m_lastoption; //place to store the last option retrieved by GetOption
-};
+      int         GetNrOptions();
+      const char* GetOptionDescription(int option);
+      int         SetOption(int lightnr, const char* option);
+      int         GetOption(int lightnr, const char* option, const char** output);
 
+    private:
+      CTcpClientSocket m_socket;
+      std::string      m_address;
+      int              m_port;
+      std::string      m_error;
+      CMessageQueue    m_messagequeue;
+      CClock           m_clock;
+      int              m_usectimeout;
+
+      bool             ReadDataToQueue();
+      bool             WriteDataToSocket(std::string strdata);
+      bool             ParseWord(CMessage& message, std::string wordtocmp);
+      bool             ParseWord(CMessage& message, std::string wordtocmp, std::string readword);
+      bool             ParseLights(CMessage& message);
+      bool             CheckLightExists(int lightnr, bool printerror = true);
+
+      std::vector<CLight> m_lights;
+
+      std::vector<std::string> m_options;
+      std::string              m_lastoption; //place to store the last option retrieved by GetOption
+  };
+}
 #endif //CBOBLIGHT

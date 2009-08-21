@@ -49,6 +49,7 @@ int main (int argc, char *argv[])
   char*  address;        //set to NULL for default, or straddress.c_str() otherwise
   int    port = -1;      //port, -1 is default port
   int    color;          //where we load in the hex color
+  float  interval = 0.1; //interval of the grabber in seconds
   vector<string> options;
 
   //parse default boblight flags, if it fails we're screwed
