@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void PrintError(std::string error);
+void PrintError(const std::string& error);
 bool GetWord(std::string& data, std::string& word);
 void ConvertFloatLocale(std::string& strfloat);
 
@@ -106,25 +106,26 @@ inline T Abs(T value)
   return value > 0 ? value : -value;
 }
 
-inline bool StrToInt(std::string& data, int& value)
+inline bool StrToInt(const std::string& data, int& value)
 {
   return sscanf(data.c_str(), "%i", &value) == 1;
 }
 
-inline bool HexStrToInt(std::string& data, int& value)
+inline bool HexStrToInt(const std::string& data, int& value)
 {
   return sscanf(data.c_str(), "%x", &value) == 1;
 }
 
-inline bool StrToFloat(std::string& data, float& value)
+inline bool StrToFloat(const std::string& data, float& value)
 {
   return sscanf(data.c_str(), "%f", &value) == 1;
 }
 
-inline bool StrToBool(std::string& data, bool& value)
+inline bool StrToBool(const std::string& data, bool& value)
 {
+  std::string data2 = data;
   std::string word;
-  if (!GetWord(data, word))
+  if (!GetWord(data2, word))
     return false;
   
   if (word == "1" || word == "true" || word == "on" || word == "yes")

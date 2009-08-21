@@ -22,7 +22,7 @@
 
 using namespace std;
 
-void PrintError(std::string error)
+void PrintError(const std::string& error)
 {
   std::cerr << "ERROR: " << error << "\n";
 }
