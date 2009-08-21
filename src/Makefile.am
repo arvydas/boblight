@@ -29,7 +29,11 @@ boblight_X11_SOURCES = \
 	util/clock.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
-	util/thread.cpp 
+	util/thread.cpp \
+	clients/flags.cpp \
+	clients/flags.h \
+	util/misc.cpp \
+	util/misc.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\

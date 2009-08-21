@@ -23,19 +23,54 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include "util/misc.h"
 #include "util/timer.h"
+#include "config.h"
+#include "flags.h"
 
 using namespace std;
 
+void PrintHelpMessage();
+
 int main (int argc, char *argv[])
 {
+  //load the boblight lib, if it fails we get a char* from dlerror()
   char* boblight_error = boblight_loadlibrary(NULL);
   if (boblight_error)
   {
-    cout << boblight_error << "\n";
+    PrintError(boblight_error);
     return 1;
   }
 
+  bool   list = false;   //if we have to print the boblight options
+  bool   help = false;   //if we have to print the help message
+  int    priority = 128; //priority of us as a client of boblightd
+  string straddress;     //address of boblightd
+  char*  address;        //set to NULL for default, or straddress.c_str() otherwise
+  int    port = -1;      //port, -1 is default port
+  int    color;          //where we load in the hex color
+  vector<string> options;
+
+  //parse default boblight flags, if it fails we're screwed
+  if (!ParseBoblightFlags(argc, argv, options, priority, straddress, port, list, help))
+  {
+    PrintHelpMessage();
+    return 1;
+  }
+
+  if (help)
+  {
+    PrintHelpMessage();
+    return 1;
+  }
+  else if (list)
+  {
+    ListBoblightOptions();
+    return 1;
+  }
+
+
+  
   void*             boblight;
   CAsyncTimer       timer;
 
@@ -104,3 +139,19 @@ int main (int argc, char *argv[])
     timer.Wait();
   }
 }
+
+void PrintHelpMessage()
+{
+  cout << "\n";
+  cout << "boblight-X11 " << VERSION << "\n";
+  cout << "\n";
+  cout << "Usage: boblight-X11 [OPTION]\n";
+  cout << "\n";
+  cout << "  options:\n";
+  cout << "\n";
+  cout << "  -p  priority, from 0 to 255\n";
+  cout << "  -s  address:[port], set the address and optional port to connect to\n";
+  cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
+  cout << "  -l  list libboblight options\n";
+  cout << "\n";
+}  
