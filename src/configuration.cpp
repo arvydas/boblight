@@ -501,8 +501,8 @@ void CConfig::BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler
 {
   //set up where to bind the listening socket
   //config for this should already be valid here, of course we can't check yet if the interface actually exists
-  string interface;
-  int port;
+  string interface; //empty string means bind to *
+  int port = 19333; //default port
   for (int i = 0; i < m_globalconfiglines.size(); i++)
   {
     string line = m_globalconfiglines[i].line;
