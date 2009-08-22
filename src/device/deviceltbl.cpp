@@ -184,14 +184,14 @@ bool CDeviceLtbl::CloseController()
   if (!m_isopened)
     return true; //nothing to do here
 
+  m_isopened = false;
+
   //write the prefix and close command
   if (m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(close, 2) == -1)
   {
     log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
-
-  m_isopened = false;
 
   log("controller on %s closed", m_output.c_str());
   
