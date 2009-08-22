@@ -41,7 +41,9 @@ int main (int argc, char *argv[])
   logtostdout = true;
   SetLogFile("boblight.log");
   PrintFlags(argc, argv);
+  
   signal(SIGTERM, SignalHandler);
+  signal(SIGINT, SignalHandler);
 
   CConfig             config;
   vector<CDevice*>    devices;
@@ -113,5 +115,14 @@ void SignalHandler(int signum)
   {
     log("caught SIGTERM");
     stop = true;
+  }
+  else if (signum == SIGINT)
+  {
+    log("caught SIGINT");
+    stop = true;
+  }
+  else
+  {
+    log("caught %i", signum);
   }
 }
