@@ -97,8 +97,10 @@ int main(int argc, char *argv[])
     //init boblight
     void* boblight = boblight_init();
 
+    cout << "Connecting to boblightd\n";
+    
     //try to connect, if we can't then bitch to stdout and destroy boblight
-    if (!boblight_connect(boblight, NULL, -1, 5000000) || !boblight_setpriority(boblight, priority))
+    if (!boblight_connect(boblight, address, port, 5000000) || !boblight_setpriority(boblight, priority))
     {
       PrintError(boblight_geterror(boblight));
       cout << "Waiting 10 seconds before trying again\n";
