@@ -37,7 +37,7 @@ bool CDeviceLtbl::SetupDevice()
   //try to open the controller
   if (OpenController())
   {
-    m_buff = new unsigned char[m_channels.size()];
+    m_buff = new unsigned char[m_channels.size() * 2];
     return true;
   }
 
