@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
     if (!boblight_connect(boblight, NULL, -1, 5000000) || !boblight_setpriority(boblight, priority))
     {
       PrintError(boblight_geterror(boblight));
+      cout << "Waiting 10 seconds before trying again\n";
       boblight_destroy(boblight);
       sleep(10);
       continue;
