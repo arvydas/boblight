@@ -38,20 +38,23 @@ void SignalHandler(int signum);
 
 int main (int argc, char *argv[])
 {
+  //init our logfile
   logtostdout = true;
   SetLogFile("boblight.log");
   PrintFlags(argc, argv);
-  
+
+  //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
-  CConfig             config;
-  vector<CDevice*>    devices;
-  vector<CAsyncTimer> timers;
-  vector<CLight>      lights;
+  CConfig             config;  //class for loading and parsing config
+  vector<CDevice*>    devices; //where we store devices
+  vector<CAsyncTimer> timers;  //timer pool, devices with the same interval run off the same async timer
+  vector<CLight>      lights;  //lights pool
   CClientsHandler     clients(lights);
   CConnectionHandler  connectionhandler(clients);
 
+  //load and parse config
   if (!config.LoadConfigFromFile("./boblight.conf"))
     return 1;
   if (!config.CheckConfig())
@@ -73,6 +76,7 @@ int main (int argc, char *argv[])
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StartThread();
 
+  //keep spinning while running
   while(!stop)
   {
     sleep(1);
@@ -85,7 +89,6 @@ int main (int argc, char *argv[])
   //stop the timers
   for (int i = 0; i < timers.size(); i++)
     timers[i].StopTimer();
-
 
   //stop the connection handler
   connectionhandler.StopThread();
