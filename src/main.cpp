@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
 {
   //init our logfile
   logtostdout = true;
-  SetLogFile("boblight.log");
+  SetLogFile("boblightd.log");
   PrintFlags(argc, argv);
 
   //set up signal handlers
