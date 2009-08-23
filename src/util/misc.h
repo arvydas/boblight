@@ -121,6 +121,11 @@ inline bool StrToFloat(const std::string& data, float& value)
   return sscanf(data.c_str(), "%f", &value) == 1;
 }
 
+inline bool StrToFloat(const std::string& data, double& value)
+{
+  return sscanf(data.c_str(), "%lf", &value) == 1;
+}
+
 inline bool StrToBool(const std::string& data, bool& value)
 {
   std::string data2 = data;
