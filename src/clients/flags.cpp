@@ -76,10 +76,7 @@ bool ParseBoblightFlags(int argc, char *argv[], vector<string>& options, int& pr
     {
       if (optopt == 'p' || optopt == 's' || optopt == 'o')
       {
-        string error = "Option ";
-        error += static_cast<char>(optopt);
-        error += " requires an argument";
-        PrintError(error);
+        PrintError("Option " + ToString((char)optopt) + "requires an argument");
         return false;
       }
     }
