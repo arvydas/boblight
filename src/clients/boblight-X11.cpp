@@ -93,7 +93,7 @@ int main (int argc, char *argv[])
 bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
 {
   int c;
-  optind = 1; //ParseBoblightFlags already did getopt
+  optind = 0; //ParseBoblightFlags already did getopt
 
   while ((c = getopt (argc, argv, "i:u:")) != -1)
   {
