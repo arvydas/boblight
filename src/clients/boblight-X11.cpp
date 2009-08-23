@@ -19,6 +19,7 @@
 #define BOBLIGHT_DLOPEN
 #include "../lib/libboblight.h"
 
+#include <stdint.h>
 #include <iostream>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -30,6 +31,9 @@
 
 using namespace std;
 
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels);
+int  Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer);
+bool Grabber(void* boblight, int pixels, CAsyncTimer& timer);
 void PrintHelpMessage();
 
 int main (int argc, char *argv[])
@@ -48,8 +52,8 @@ int main (int argc, char *argv[])
   string straddress;     //address of boblightd
   char*  address;        //set to NULL for default, or straddress.c_str() otherwise
   int    port = -1;      //port, -1 is default port
-  int    color;          //where we load in the hex color
-  float  interval = 0.1; //interval of the grabber in seconds
+  double interval = 0.1; //interval of the grabber in seconds
+  int    pixels = 16;      //number of pixels/rows to use
   vector<string> options;
 
   //parse default boblight flags, if it fails we're screwed
@@ -70,53 +74,125 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-
+  if (!ParseFlags(argc, argv, interval, pixels))
+    return 1;
   
-  void*             boblight;
-  CAsyncTimer       timer;
+  if (straddress.empty())
+    address = NULL;
+  else
+    address = const_cast<char*>(straddress.c_str());
 
+  CAsyncTimer timer;
+  timer.StartTimer(Round<int64_t>(interval * 1000000.0));
+
+  //keeps running until some unrecoverable error happens
+  return Run(options, priority, address, port, pixels, timer);
+
+}
+
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
+{
+  int c;
+  optind = 1; //ParseBoblightFlags already did getopt
+
+  while ((c = getopt (argc, argv, "i:u:")) != -1)
+  {
+    if (c == 'i')
+    {
+      if (!StrToFloat(optarg, interval) || interval <= 0.0)
+      {
+        PrintError("Wrong value " + string(optarg) + " for interval");
+        return false;
+      }
+    }
+    else if (c == 'u')
+    {
+      if (!StrToInt(optarg, pixels) || pixels <= 0)
+      {
+        PrintError("Wrong value " + string(optarg) + " for pixels");
+        return false;
+      }
+    }
+    else if (c == '?')
+    {
+      if (optopt == 'u' || optopt == 'i')
+      {
+        PrintError("Option " + ToString((char)optopt) + " requires an argument");
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+int Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer)
+{
+  while(1)
+  {
+    //init boblight
+    void* boblight = boblight_init();
+
+    cout << "Connecting to boblightd\n";
+    
+    //try to connect, if we can't then bitch to stdout and destroy boblight
+    if (!boblight_connect(boblight, address, port, 5000000) || !boblight_setpriority(boblight, priority))
+    {
+      PrintError(boblight_geterror(boblight));
+      cout << "Waiting 10 seconds before trying again\n";
+      boblight_destroy(boblight);
+      sleep(10);
+      continue;
+    }
+
+    cout << "Connection to boblightd opened\n";
+    
+    //if we can't parse the boblight option lines (given with -o) properly, just exit
+    if (!ParseBoblightOptions(boblight, options))
+    {
+      boblight_destroy(boblight);
+      return 1;
+    }
+
+    if (!Grabber(boblight, pixels, timer)) //if grabber returns false we give up
+      return 1;
+
+    boblight_destroy(boblight);
+  }
+
+  return 0;
+}
+
+bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
+{
   Display*          dpy;
   Window            rootwin;
   XWindowAttributes rootattr;
   XImage*           xim;
   unsigned long     pixel;
   int               rgb[3];
+  int               usedpixels;
 
   dpy = XOpenDisplay(NULL);
   if (dpy == NULL)
   {
-    cout << "Unable to open display\n";
-    return 1;
+    PrintError("Unable to open display");
+    return false;
   }
-  
-  boblight = boblight_init();
-
-  if (!boblight_connect(boblight, NULL, -1, 10000000))
-  {
-    cout << boblight_geterror(boblight) << "\n";
-    boblight_destroy(boblight);
-    return 1;
-  }
-
-  boblight_setpriority(boblight, 128);
-  boblight_setoption(boblight, -1, "interpolation 1");
-  boblight_setoption(boblight, -1, "value 10.0");
-  boblight_setoption(boblight, -1, "saturation 5.0");
-  boblight_setoption(boblight, -1, "speed 5.0");
-  
-  timer.SetInterval(40000);
-  timer.StartTimer();
 
   while(1)
   {
     rootwin = RootWindow(dpy, DefaultScreen(dpy));
     XGetWindowAttributes(dpy, rootwin, &rootattr);
 
-    boblight_setscanrange(boblight, rootattr.width / 16, rootattr.height / 16);
+    //we want at least four pixels
+    usedpixels = Min(rootattr.width / 2, rootattr.height / 2, pixels);
+    
+    boblight_setscanrange(boblight, rootattr.width / usedpixels, rootattr.height / usedpixels);
 
-    for (int y = 0; y < rootattr.height; y += rootattr.height / 16)
+    for (int y = 0; y < rootattr.height; y += rootattr.height / usedpixels)
     {
-      for (int x = 0; x < rootattr.width; x += rootattr.width / 16)
+      for (int x = 0; x < rootattr.width; x += rootattr.width / usedpixels)
       {
         xim = XGetImage(dpy, rootwin, x, y, 1, 1, AllPlanes, ZPixmap);
         pixel = XGetPixel(xim, 0, 0);
@@ -132,9 +208,8 @@ int main (int argc, char *argv[])
 
     if (!boblight_sendrgb(boblight))
     {
-      cout << boblight_geterror(boblight) << "\n";
-      boblight_destroy(boblight);
-      return 1;
+      PrintError(boblight_geterror(boblight));
+      return true;
     }
     
     timer.Wait();
@@ -154,5 +229,7 @@ void PrintHelpMessage()
   cout << "  -s  address:[port], set the address and optional port to connect to\n";
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
+  cout << "  -i  set the interval in seconds\n";
+  cout << "  -u  set the number of pixels/rows to use, default is 16\n";
   cout << "\n";
 }  
