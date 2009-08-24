@@ -38,8 +38,10 @@ int  Run(vector<string>& options, int priority, char* address, int port, int pix
 bool Grabber(void* boblight, int pixels, double interval);
 void PrintHelpMessage();
 void SignalHandler(int signum);
+int  ErrorHandler(Display* dpy, XErrorEvent* error);
 
 volatile bool stop = false;
+volatile bool xerror = false;
 
 int main (int argc, char *argv[])
 {
@@ -223,6 +225,9 @@ bool Grabber(void* boblight, int pixels, double interval)
     PrintError("Unable to open display");
     return false;
   }
+
+  //set error handler in case we read beyond the dimensions of the display
+  XSetErrorHandler(ErrorHandler);
   
   while(!stop)
   {
@@ -234,11 +239,19 @@ bool Grabber(void* boblight, int pixels, double interval)
     
     boblight_setscanrange(boblight, rootattr.width / usedpixels, rootattr.height / usedpixels);
 
-    for (int y = 0; y < rootattr.height; y += rootattr.height / usedpixels)
+    for (int y = 0; y < rootattr.height && !stop; y += rootattr.height / usedpixels)
     {
-      for (int x = 0; x < rootattr.width; x += rootattr.width / usedpixels)
+      for (int x = 0; x < rootattr.width && !stop; x += rootattr.width / usedpixels)
       {
         xim = XGetImage(dpy, rootwin, x, y, 1, 1, AllPlanes, ZPixmap);
+        if (xerror) //size of the root window probably changed and we read beyond it
+        {
+          xerror = false;
+          sleep(1);
+          XGetWindowAttributes(dpy, rootwin, &rootattr);
+          continue;
+        }
+        
         pixel = XGetPixel(xim, 0, 0);
         XDestroyImage(xim);
 
@@ -304,6 +317,20 @@ void SignalHandler(int signum)
   else if (signum == SIGINT)
   {
     cout << "caught SIGINT\n";
+    stop = true;
+  }
+}
+
+int ErrorHandler(Display* dpy, XErrorEvent* error)
+{
+  if (error->error_code == BadMatch)
+  {
+    cout << "caught BadMatch, resolution probably changed\n";
+    xerror = true;
+  }
+  else
+  {
+    cout << "caught error " << error->error_code << "\n";
     stop = true;
   }
 }
