@@ -22,6 +22,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <signal.h>
 
 #include "config.h"
 #include "util/misc.h"
@@ -30,6 +31,9 @@
 using namespace std;
 
 void PrintHelpMessage();
+void SignalHandler(int signum);
+
+volatile bool stop = false;
 
 int main(int argc, char *argv[])
 {
@@ -89,10 +93,14 @@ int main(int argc, char *argv[])
   else
     address = const_cast<char*>(straddress.c_str());
 
+  //set up signal handlers
+  signal(SIGTERM, SignalHandler);
+  signal(SIGINT, SignalHandler);
+
   //load the color into int array
   int rgb[3] = {(color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF};
 
-  while(1)
+  while(!stop)
   {
     //init boblight
     void* boblight = boblight_init();
@@ -128,7 +136,7 @@ int main(int argc, char *argv[])
     }
 
     //keep checking the connection to boblightd every 10 seconds, if it breaks we try to connect again
-    while(1)
+    while(!stop)
     {
       if (!boblight_ping(boblight))
       {
@@ -139,6 +147,10 @@ int main(int argc, char *argv[])
       sleep(10);
     }
   }
+
+  cout << "Exiting\n";
+
+  return 0;
 }
 
 void PrintHelpMessage()
@@ -157,4 +169,18 @@ void PrintHelpMessage()
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
   cout << "\n";
+}
+
+void SignalHandler(int signum)
+{
+  if (signum == SIGTERM)
+  {
+    cout << "caught SIGTERM\n";
+    stop = true;
+  }
+  else if (signum == SIGINT)
+  {
+    cout << "caught SIGINT\n";
+    stop = true;
+  }
 }
