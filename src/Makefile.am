@@ -33,7 +33,9 @@ boblight_X11_SOURCES = \
 	clients/flags.cpp \
 	clients/flags.h \
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	util/vblanksignal.cpp \
+	util/vblanksignal.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
