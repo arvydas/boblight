@@ -121,7 +121,7 @@ bool CVblankSignal::Setup()
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!m_glXWaitVideoSyncSGI)
+  if (!m_glXGetVideoSyncSGI)
   {
     m_error = "glXGetVideoSyncSGI not found";
     return false;
