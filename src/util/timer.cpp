@@ -45,15 +45,23 @@ void CTimer::Reset()
 
 void CTimer::Wait()
 {
-  m_time += m_interval * m_clock.GetFreq() / 1000000;
+  int64_t sleeptime;
 
-  int64_t sleeptime = (m_time - m_clock.GetTime()) * 1000000 / m_clock.GetFreq();
+  //keep looping until we have a timestamp in the future we can wait for
+  do
+  {
+    m_time += m_interval * m_clock.GetFreq() / 1000000;
+    sleeptime = (m_time - m_clock.GetTime()) * 1000000 / m_clock.GetFreq();
+  }
+  while(sleeptime <= 0);
   
-  if (sleeptime > m_interval * 2) //failsafe
+  if (sleeptime > m_interval * 2) //failsafe, m_time must be bork if we get here
+  {
     sleeptime = m_interval * 2;
+    Reset();
+  }
   
-  if (sleeptime > 0)
-    usleep(sleeptime);
+  usleep(sleeptime);
 }
 
 CAsyncTimer::~CAsyncTimer()
