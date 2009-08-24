@@ -19,4 +19,37 @@
 #ifndef CVBLANKSIGNAL
 #define CVBLANKSIGNAL
 
+#include <string>
+
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+
+class CVblankSignal
+{
+  public:
+    CVblankSignal();
+    ~CVblankSignal();
+
+    bool Setup();
+    void Close();
+    bool Wait(unsigned int nrvblanks = 1);
+
+    std::string& GetError() { return m_error; }
+
+  private:
+    int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
+    int  (*m_glXGetVideoSyncSGI)(unsigned int*);
+
+    std::string  m_error;
+    
+    Display*     m_dpy;
+    XVisualInfo* m_vinfo;
+    Window       m_window;
+    GLXContext   m_context;
+
+    unsigned int m_prevvblank;
+    bool         m_isreset;
+};
+
 #endif //CVBLANKSIGNAL

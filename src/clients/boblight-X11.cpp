@@ -27,6 +27,7 @@
 
 #include "util/misc.h"
 #include "util/timer.h"
+#include "util/vblanksignal.h"
 #include "config.h"
 #include "flags.h"
 
@@ -104,10 +105,27 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
   {
     if (c == 'i')
     {
+      bool vblank = false;
+      if (optarg[0] == 'v') //starting interval with v means vblank interval
+      {
+        optarg++;
+        vblank = true;
+      }
+
       if (!StrToFloat(optarg, interval) || interval <= 0.0)
       {
         PrintError("Wrong value " + string(optarg) + " for interval");
         return false;
+      }
+
+      if (vblank)
+      {
+        if (interval < 1.0)
+        {
+          PrintError("Wrong value " + string(optarg) + " for vblank interval");
+          return false;
+        }
+        interval *= -1.0; //negative interval means vblank
       }
     }
     else if (c == 'u')
@@ -183,15 +201,28 @@ bool Grabber(void* boblight, int pixels, double interval)
   int               rgb[3];
   int               usedpixels;
   CTimer            timer;
+  CVblankSignal     vblanksignal;
 
+  //positive interval means seconds, negative means vblank interval
+  if (interval > 0.0)
+  {
+    timer.SetInterval(Round<int64_t>(interval * 1000000.0));
+  }
+  else
+  {
+    if (!vblanksignal.Setup())
+    {
+      PrintError(vblanksignal.GetError());
+      return false;
+    }
+  }
+  
   dpy = XOpenDisplay(NULL);
   if (dpy == NULL)
   {
     PrintError("Unable to open display");
     return false;
   }
-
-  timer.SetInterval(Round<int64_t>(interval * 1000000.0));
   
   while(!stop)
   {
@@ -225,7 +256,18 @@ bool Grabber(void* boblight, int pixels, double interval)
       return true;
     }
 
-    timer.Wait();
+    if (interval > 0.0)
+    {
+      timer.Wait();
+    }
+    else
+    {
+      if (!vblanksignal.Wait(Round<unsigned int>(interval * -1.0)))
+      {
+        PrintError(vblanksignal.GetError());
+        return false;
+      }
+    }
   }
 
   XCloseDisplay(dpy);
@@ -247,6 +289,7 @@ void PrintHelpMessage()
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
   cout << "  -i  set the interval in seconds, default is 0.1\n";
+  cout << "      prefix the value with v to wait for a number of vertical blanks instead\n";
   cout << "  -u  set the number of pixels/rows to use, default is 16\n";
   cout << "\n";
 }
