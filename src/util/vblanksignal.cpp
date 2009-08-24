@@ -195,7 +195,7 @@ bool CVblankSignal::Wait(unsigned int nrvblanks /*= -1*/)
     m_prevvblank = vblankcount;
   }
   else if (!m_isreset) //if it didn't update, we try to detach and attach the glx context
-  {
+  {                    //because on some videodrivers (nvidia) glXWaitVideoSyncSGI breaks when the displaymode changes
     returnv = glXMakeCurrent(m_dpy, None, NULL);
     if (returnv != True)
     {
