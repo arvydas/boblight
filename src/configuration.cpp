@@ -61,8 +61,7 @@ bool CConfig::LoadConfigFromFile(string file)
     getline(configfile, buff);
     if (configfile.fail())
     {
-      log("%s: %s", file.c_str(), GetErrno().c_str());
-      return false;
+      break;
     }
     linenr++;
 
