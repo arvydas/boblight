@@ -30,6 +30,7 @@
 
 using namespace std;
 
+int  Run(vector<string>& options, int priority, char* address, int port, int color);
 void PrintHelpMessage();
 void SignalHandler(int signum);
 
@@ -97,9 +98,12 @@ int main(int argc, char *argv[])
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
-  //load the color into int array
-  int rgb[3] = {(color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF};
+  //keep running until we want to quit
+  return Run(options, priority, address, port, color);
+}
 
+int Run(vector<string>& options, int priority, char* address, int port, int color)
+{
   while(!stop)
   {
     //init boblight
@@ -126,6 +130,9 @@ int main(int argc, char *argv[])
       return 1;
     }
 
+    //load the color into int array
+    int rgb[3] = {(color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF};
+   
     //set all lights to the color we want and send it
     boblight_addpixel(boblight, -1, rgb);
     if (!boblight_sendrgb(boblight))
@@ -141,15 +148,16 @@ int main(int argc, char *argv[])
       if (!boblight_ping(boblight))
       {
         PrintError(boblight_geterror(boblight));
-        boblight_destroy(boblight);
         break;
       }
       sleep(10);
     }
+
+    boblight_destroy(boblight);
   }
 
   cout << "Exiting\n";
-
+  
   return 0;
 }
 
