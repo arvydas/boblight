@@ -172,7 +172,7 @@ void PrintHelpMessage()
   cout << "\n";
   cout << "  options:\n";
   cout << "\n";
-  cout << "  -p  priority, from 0 to 255\n";
+  cout << "  -p  priority, from 0 to 255, default is 128\n";
   cout << "  -s  address[:port], set the address and optional port to connect to\n";
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";

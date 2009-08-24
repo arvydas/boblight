@@ -242,11 +242,11 @@ void PrintHelpMessage()
   cout << "\n";
   cout << "  options:\n";
   cout << "\n";
-  cout << "  -p  priority, from 0 to 255\n";
+  cout << "  -p  priority, from 0 to 255, default is 128\n";
   cout << "  -s  address:[port], set the address and optional port to connect to\n";
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
-  cout << "  -i  set the interval in seconds\n";
+  cout << "  -i  set the interval in seconds, default is 0.1\n";
   cout << "  -u  set the number of pixels/rows to use, default is 16\n";
   cout << "\n";
 }
