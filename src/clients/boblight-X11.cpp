@@ -21,6 +21,7 @@
 
 #include <stdint.h>
 #include <iostream>
+#include <signal.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -35,6 +36,9 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels);
 int  Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer);
 bool Grabber(void* boblight, int pixels, CAsyncTimer& timer);
 void PrintHelpMessage();
+void SignalHandler(int signum);
+
+volatile bool stop = false;
 
 int main (int argc, char *argv[])
 {
@@ -85,6 +89,10 @@ int main (int argc, char *argv[])
   CAsyncTimer timer;
   timer.StartTimer(Round<int64_t>(interval * 1000000.0));
 
+  //set up signal handlers
+  signal(SIGTERM, SignalHandler);
+  signal(SIGINT, SignalHandler);
+
   //keeps running until some unrecoverable error happens
   return Run(options, priority, address, port, pixels, timer);
 
@@ -128,7 +136,7 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
 
 int Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer)
 {
-  while(1)
+  while(!stop)
   {
     //init boblight
     void* boblight = boblight_init();
@@ -160,6 +168,8 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
     boblight_destroy(boblight);
   }
 
+  cout << "Exiting\n";
+  
   return 0;
 }
 
@@ -180,7 +190,7 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
     return false;
   }
 
-  while(1)
+  while(!stop)
   {
     rootwin = RootWindow(dpy, DefaultScreen(dpy));
     XGetWindowAttributes(dpy, rootwin, &rootattr);
@@ -214,6 +224,10 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
     
     timer.Wait();
   }
+
+  XCloseDisplay(dpy);
+
+  return true;
 }
 
 void PrintHelpMessage()
@@ -232,4 +246,18 @@ void PrintHelpMessage()
   cout << "  -i  set the interval in seconds\n";
   cout << "  -u  set the number of pixels/rows to use, default is 16\n";
   cout << "\n";
-}  
+}
+
+void SignalHandler(int signum)
+{
+  if (signum == SIGTERM)
+  {
+    cout << "caught SIGTERM\n";
+    stop = true;
+  }
+  else if (signum == SIGINT)
+  {
+    cout << "caught SIGINT\n";
+    stop = true;
+  }
+}
