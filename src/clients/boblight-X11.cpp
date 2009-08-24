@@ -33,8 +33,8 @@
 using namespace std;
 
 bool ParseFlags(int argc, char *argv[], double& interval, int& pixels);
-int  Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer);
-bool Grabber(void* boblight, int pixels, CAsyncTimer& timer);
+int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval);
+bool Grabber(void* boblight, int pixels, double interval);
 void PrintHelpMessage();
 void SignalHandler(int signum);
 
@@ -86,15 +86,12 @@ int main (int argc, char *argv[])
   else
     address = const_cast<char*>(straddress.c_str());
 
-  CAsyncTimer timer;
-  timer.StartTimer(Round<int64_t>(interval * 1000000.0));
-
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
   //keeps running until some unrecoverable error happens
-  return Run(options, priority, address, port, pixels, timer);
+  return Run(options, priority, address, port, pixels, interval);
 
 }
 
@@ -134,7 +131,7 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
   return true;
 }
 
-int Run(vector<string>& options, int priority, char* address, int port, int pixels, CAsyncTimer& timer)
+int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval)
 {
   while(!stop)
   {
@@ -162,7 +159,7 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
       return 1;
     }
 
-    if (!Grabber(boblight, pixels, timer)) //if grabber returns false we give up
+    if (!Grabber(boblight, pixels, interval)) //if grabber returns false we give up
     {
       boblight_destroy(boblight);
       return 1;
@@ -176,7 +173,7 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
   return 0;
 }
 
-bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
+bool Grabber(void* boblight, int pixels, double interval)
 {
   Display*          dpy;
   Window            rootwin;
@@ -185,6 +182,7 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
   unsigned long     pixel;
   int               rgb[3];
   int               usedpixels;
+  CTimer            timer;
 
   dpy = XOpenDisplay(NULL);
   if (dpy == NULL)
@@ -193,6 +191,8 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
     return false;
   }
 
+  timer.SetInterval(Round<int64_t>(interval * 1000000.0));
+  
   while(!stop)
   {
     rootwin = RootWindow(dpy, DefaultScreen(dpy));
@@ -224,7 +224,7 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
       PrintError(boblight_geterror(boblight));
       return true;
     }
-    
+
     timer.Wait();
   }
 
