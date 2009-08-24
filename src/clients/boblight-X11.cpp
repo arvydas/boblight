@@ -163,7 +163,10 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
     }
 
     if (!Grabber(boblight, pixels, timer)) //if grabber returns false we give up
+    {
+      boblight_destroy(boblight);
       return 1;
+    }
 
     boblight_destroy(boblight);
   }
