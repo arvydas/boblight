@@ -215,7 +215,7 @@ bool Grabber(void* boblight, int pixels, CAsyncTimer& timer)
         rgb[1] = (pixel >>  8) & 0xff;
         rgb[2] = (pixel >>  0) & 0xff;
 
-        boblight_addpixelxy(boblight, x / 16, y / 16, rgb);
+        boblight_addpixelxy(boblight, x / usedpixels, y / usedpixels, rgb);
       }
     }
 
