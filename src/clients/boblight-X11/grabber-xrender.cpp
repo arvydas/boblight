@@ -125,8 +125,6 @@ bool CGrabberXRender::Run(volatile bool& stop)
     //more debug code
     //XCopyArea(m_dpy, m_pixmap, window, gc, 0, 0, m_size, m_size, 0, 0);
     
-    usleep(1000);
-    
     xim = XGetImage(m_dpy, m_pixmap, 0, 0, m_size, m_size, AllPlanes, ZPixmap);
 
     for (int y = 0; y < m_size && !stop; y++)
@@ -156,7 +154,6 @@ bool CGrabberXRender::Run(volatile bool& stop)
       m_error = m_vblanksignal.GetError();
       return false;
     }
-    usleep(7000);
   }
 
   m_error.clear();
