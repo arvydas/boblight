@@ -75,7 +75,7 @@ bool CDeviceRS232::WriteOutput()
   }
 
   //write the channel values out the serial port
-  if (m_serialport.Write(&m_prefix[0], m_prefix.size()) == -1 || m_serialport.Write(m_buff, m_channels.size()) == -1)
+  if (m_serialport.Write(m_buff, m_channels.size()) == -1)
   {
     log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
