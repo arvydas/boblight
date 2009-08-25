@@ -254,8 +254,9 @@ void PrintHelpMessage()
   cout << "  -l  list libboblight options\n";
   cout << "  -i  set the interval in seconds, default is 0.1\n";
   cout << "      prefix the value with v to wait for a number of vertical blanks instead\n";
-  cout << "  -u  set the number of pixels/rows to use, default is 16\n";
-  cout << "  -x  use XGetImage instead of the XRender extension\n";
+  cout << "  -u  set the number of pixels/rows to use\n";
+  cout << "      default is 64 for xrender and 16 for xgetimage\n";
+  cout << "  -x  use XGetImage instead of XRender\n";
   cout << "\n";
 }
 
