@@ -43,6 +43,16 @@ bool ParseFlags(int argc, char *argv[], bool& help, string& configfile);
 
 int main (int argc, char *argv[])
 {
+  //read flags
+  string configfile;
+  bool   help;
+
+  if (!ParseFlags(argc, argv, help, configfile) || help)
+  {
+    PrintHelpMessage();
+    return 1;
+  }
+
   //init our logfile
   logtostdout = true;
   SetLogFile("boblightd.log");
@@ -59,15 +69,6 @@ int main (int argc, char *argv[])
   CClientsHandler     clients(lights);
   CConnectionHandler  connectionhandler(clients);
 
-  string configfile;
-  bool   help;
-
-  if (!ParseFlags(argc, argv, help, configfile) || help)
-  {
-    PrintHelpMessage();
-    return 1;
-  }
-  
   //load and parse config
   if (!config.LoadConfigFromFile(configfile))
     return 1;
