@@ -104,6 +104,11 @@ bool CGrabberXRender::Run(volatile bool& stop)
   XImage* xim;
   unsigned long pixel;
   int rgb[3];
+
+  //debug code
+/*Window window = XCreateSimpleWindow(m_dpy, m_rootwin, 200, 200, m_size, m_size, 0, 0, 0);
+  GC gc = XCreateGC(m_dpy, window, 0, NULL);
+  XMapWindow(m_dpy, window);*/
   
   while(!stop)
   {
@@ -117,6 +122,9 @@ bool CGrabberXRender::Run(volatile bool& stop)
     XRenderComposite(m_dpy, PictOpSrc, m_srcpicture, None, m_dstpicture, 0, 0, 0, 0, 0, 0, m_size, m_size);
     XSync(m_dpy, False);
 
+    //more debug code
+    //XCopyArea(m_dpy, m_pixmap, window, gc, 0, 0, m_size, m_size, 0, 0);
+    
     usleep(1000);
     
     xim = XGetImage(m_dpy, m_pixmap, 0, 0, m_size, m_size, AllPlanes, ZPixmap);
