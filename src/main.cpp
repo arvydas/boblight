@@ -28,6 +28,9 @@
 #include "client.h"
 #include "configuration.h"
 #include "device/device.h"
+#include "config.h"
+
+#define DEFAULTCONF "/etc/boblight.conf"
 
 using namespace std;
 
@@ -35,6 +38,8 @@ bool stop = false;
 
 void PrintFlags(int argc, char *argv[]);
 void SignalHandler(int signum);
+void PrintHelpMessage();
+bool ParseFlags(int argc, char *argv[], bool& help, string& configfile);
 
 int main (int argc, char *argv[])
 {
@@ -54,8 +59,17 @@ int main (int argc, char *argv[])
   CClientsHandler     clients(lights);
   CConnectionHandler  connectionhandler(clients);
 
+  string configfile;
+  bool   help;
+
+  if (!ParseFlags(argc, argv, help, configfile) || help)
+  {
+    PrintHelpMessage();
+    return 1;
+  }
+  
   //load and parse config
-  if (!config.LoadConfigFromFile("./boblight.conf"))
+  if (!config.LoadConfigFromFile(configfile))
     return 1;
   if (!config.CheckConfig())
     return 1;
@@ -128,4 +142,52 @@ void SignalHandler(int signum)
   {
     log("caught %i", signum);
   }
+}
+
+void PrintHelpMessage()
+{
+  cout << "\n";
+  cout << "boblightd " << VERSION << "\n";
+  cout << "\n";
+  cout << "Usage: boblightd [OPTION]\n";
+  cout << "\n";
+  cout << "  options:\n";
+  cout << "\n";
+  cout << "  -c  set the config file, default is " << DEFAULTCONF << "\n";
+  cout << "\n";
+}
+
+bool ParseFlags(int argc, char *argv[], bool& help, string& configfile)
+{
+  help = false;
+  configfile = DEFAULTCONF;
+
+  int c;
+
+  while ((c = getopt (argc, argv, "c:h")) != -1)
+  {
+    if (c == 'c')
+    {
+      configfile = optarg;
+    }
+    else if (c == 'h')
+    {
+      help = true;
+      return true;
+    }
+    else if (c == '?')
+    {
+      if (optopt == 'c')
+      {
+        PrintError("Option " + ToString((char)optopt) + " requires an argument");
+      }
+      else
+      {
+        PrintError("Unknown option " + ToString((char)optopt));
+      }
+      return false;
+    }
+  }
+
+  return true;
 }
