@@ -35,7 +35,13 @@ boblight_X11_SOURCES = \
 	clients/flags.cpp \
 	clients/flags.h \
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	clients/boblight-X11/grabber-base.cpp \
+	clients/boblight-X11/grabber-base.h \
+	clients/boblight-X11/grabber-xgetimage.cpp \
+	clients/boblight-X11/grabber-xgetimage.h \
+	clients/boblight-X11/grabber-xrender.cpp \
+	clients/boblight-X11/grabber-xrender.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
