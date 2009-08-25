@@ -61,10 +61,10 @@ am_libboblight_la_OBJECTS = libboblight_la-boblight.lo \
 libboblight_la_OBJECTS = $(am_libboblight_la_OBJECTS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) timer.$(OBJEXT) \
-	clock.$(OBJEXT) condition.$(OBJEXT) mutex.$(OBJEXT) \
-	thread.$(OBJEXT) flags.$(OBJEXT) misc.$(OBJEXT) \
-	vblanksignal.$(OBJEXT)
+am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
+	vblanksignal.$(OBJEXT) timer.$(OBJEXT) clock.$(OBJEXT) \
+	condition.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
+	flags.$(OBJEXT) misc.$(OBJEXT)
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT) \
@@ -251,7 +251,9 @@ boblight_constant_SOURCES = \
 	clients/flags.h
 
 boblight_X11_SOURCES = \
-	clients/boblight-X11.cpp\
+	clients/boblight-X11/boblight-X11.cpp\
+	clients/boblight-X11/vblanksignal.cpp \
+	clients/boblight-X11/vblanksignal.h \
 	util/timer.cpp \
 	util/clock.cpp \
 	util/condition.cpp \
@@ -260,9 +262,7 @@ boblight_X11_SOURCES = \
 	clients/flags.cpp \
 	clients/flags.h \
 	util/misc.cpp \
-	util/misc.h \
-	util/vblanksignal.cpp \
-	util/vblanksignal.h
+	util/misc.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
@@ -543,19 +543,33 @@ libboblight_la-tcpsocket.lo: util/tcpsocket.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-tcpsocket.lo `test -f 'util/tcpsocket.cpp' || echo '$(srcdir)/'`util/tcpsocket.cpp
 
-boblight-X11.o: clients/boblight-X11.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-X11.o -MD -MP -MF $(DEPDIR)/boblight-X11.Tpo -c -o boblight-X11.o `test -f 'clients/boblight-X11.cpp' || echo '$(srcdir)/'`clients/boblight-X11.cpp
+boblight-X11.o: clients/boblight-X11/boblight-X11.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-X11.o -MD -MP -MF $(DEPDIR)/boblight-X11.Tpo -c -o boblight-X11.o `test -f 'clients/boblight-X11/boblight-X11.cpp' || echo '$(srcdir)/'`clients/boblight-X11/boblight-X11.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-X11.Tpo $(DEPDIR)/boblight-X11.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11.cpp' object='boblight-X11.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11/boblight-X11.cpp' object='boblight-X11.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-X11.o `test -f 'clients/boblight-X11.cpp' || echo '$(srcdir)/'`clients/boblight-X11.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-X11.o `test -f 'clients/boblight-X11/boblight-X11.cpp' || echo '$(srcdir)/'`clients/boblight-X11/boblight-X11.cpp
 
-boblight-X11.obj: clients/boblight-X11.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-X11.obj -MD -MP -MF $(DEPDIR)/boblight-X11.Tpo -c -o boblight-X11.obj `if test -f 'clients/boblight-X11.cpp'; then $(CYGPATH_W) 'clients/boblight-X11.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11.cpp'; fi`
+boblight-X11.obj: clients/boblight-X11/boblight-X11.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-X11.obj -MD -MP -MF $(DEPDIR)/boblight-X11.Tpo -c -o boblight-X11.obj `if test -f 'clients/boblight-X11/boblight-X11.cpp'; then $(CYGPATH_W) 'clients/boblight-X11/boblight-X11.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11/boblight-X11.cpp'; fi`
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-X11.Tpo $(DEPDIR)/boblight-X11.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11.cpp' object='boblight-X11.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11/boblight-X11.cpp' object='boblight-X11.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-X11.obj `if test -f 'clients/boblight-X11.cpp'; then $(CYGPATH_W) 'clients/boblight-X11.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-X11.obj `if test -f 'clients/boblight-X11/boblight-X11.cpp'; then $(CYGPATH_W) 'clients/boblight-X11/boblight-X11.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11/boblight-X11.cpp'; fi`
+
+vblanksignal.o: clients/boblight-X11/vblanksignal.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vblanksignal.o -MD -MP -MF $(DEPDIR)/vblanksignal.Tpo -c -o vblanksignal.o `test -f 'clients/boblight-X11/vblanksignal.cpp' || echo '$(srcdir)/'`clients/boblight-X11/vblanksignal.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vblanksignal.Tpo $(DEPDIR)/vblanksignal.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11/vblanksignal.cpp' object='vblanksignal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vblanksignal.o `test -f 'clients/boblight-X11/vblanksignal.cpp' || echo '$(srcdir)/'`clients/boblight-X11/vblanksignal.cpp
+
+vblanksignal.obj: clients/boblight-X11/vblanksignal.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vblanksignal.obj -MD -MP -MF $(DEPDIR)/vblanksignal.Tpo -c -o vblanksignal.obj `if test -f 'clients/boblight-X11/vblanksignal.cpp'; then $(CYGPATH_W) 'clients/boblight-X11/vblanksignal.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11/vblanksignal.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vblanksignal.Tpo $(DEPDIR)/vblanksignal.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-X11/vblanksignal.cpp' object='vblanksignal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vblanksignal.obj `if test -f 'clients/boblight-X11/vblanksignal.cpp'; then $(CYGPATH_W) 'clients/boblight-X11/vblanksignal.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11/vblanksignal.cpp'; fi`
 
 timer.o: util/timer.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT timer.o -MD -MP -MF $(DEPDIR)/timer.Tpo -c -o timer.o `test -f 'util/timer.cpp' || echo '$(srcdir)/'`util/timer.cpp
@@ -654,20 +668,6 @@ misc.obj: util/misc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/misc.cpp' object='misc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o misc.obj `if test -f 'util/misc.cpp'; then $(CYGPATH_W) 'util/misc.cpp'; else $(CYGPATH_W) '$(srcdir)/util/misc.cpp'; fi`
-
-vblanksignal.o: util/vblanksignal.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vblanksignal.o -MD -MP -MF $(DEPDIR)/vblanksignal.Tpo -c -o vblanksignal.o `test -f 'util/vblanksignal.cpp' || echo '$(srcdir)/'`util/vblanksignal.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vblanksignal.Tpo $(DEPDIR)/vblanksignal.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/vblanksignal.cpp' object='vblanksignal.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vblanksignal.o `test -f 'util/vblanksignal.cpp' || echo '$(srcdir)/'`util/vblanksignal.cpp
-
-vblanksignal.obj: util/vblanksignal.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vblanksignal.obj -MD -MP -MF $(DEPDIR)/vblanksignal.Tpo -c -o vblanksignal.obj `if test -f 'util/vblanksignal.cpp'; then $(CYGPATH_W) 'util/vblanksignal.cpp'; else $(CYGPATH_W) '$(srcdir)/util/vblanksignal.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vblanksignal.Tpo $(DEPDIR)/vblanksignal.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/vblanksignal.cpp' object='vblanksignal.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vblanksignal.obj `if test -f 'util/vblanksignal.cpp'; then $(CYGPATH_W) 'util/vblanksignal.cpp'; else $(CYGPATH_W) '$(srcdir)/util/vblanksignal.cpp'; fi`
 
 boblight-constant.o: clients/boblight-constant.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.o -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.o `test -f 'clients/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant.cpp

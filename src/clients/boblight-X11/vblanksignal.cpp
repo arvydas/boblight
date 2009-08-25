@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include "vblanksignal.h"
-#include "misc.h"
+#include "util/misc.h"
 
 using namespace std;
 

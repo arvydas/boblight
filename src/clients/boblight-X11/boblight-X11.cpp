@@ -17,7 +17,7 @@
  */
 
 #define BOBLIGHT_DLOPEN
-#include "../lib/libboblight.h"
+#include "lib/libboblight.h"
 
 #include <stdint.h>
 #include <iostream>
@@ -27,9 +27,9 @@
 
 #include "util/misc.h"
 #include "util/timer.h"
-#include "util/vblanksignal.h"
+#include "vblanksignal.h"
 #include "config.h"
-#include "flags.h"
+#include "clients/flags.h"
 
 using namespace std;
 

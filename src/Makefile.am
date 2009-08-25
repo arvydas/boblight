@@ -24,7 +24,9 @@ boblight_constant_SOURCES = \
 	clients/flags.h
 
 boblight_X11_SOURCES = \
-	clients/boblight-X11.cpp\
+	clients/boblight-X11/boblight-X11.cpp\
+	clients/boblight-X11/vblanksignal.cpp \
+	clients/boblight-X11/vblanksignal.h \
 	util/timer.cpp \
 	util/clock.cpp \
 	util/condition.cpp \
@@ -33,9 +35,7 @@ boblight_X11_SOURCES = \
 	clients/flags.cpp \
 	clients/flags.h \
 	util/misc.cpp \
-	util/misc.h \
-	util/vblanksignal.cpp \
-	util/vblanksignal.h
+	util/misc.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\
