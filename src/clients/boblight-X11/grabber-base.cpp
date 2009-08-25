@@ -16,4 +16,68 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdint.h>
+#include <iostream>
+
+#include "util/misc.h"
 #include "grabber-base.h"
+
+using namespace std;
+
+volatile bool xerror = false;
+
+CGrabber::CGrabber(void* boblight)
+{
+  m_boblight = boblight;
+
+  m_dpy = NULL;
+}
+
+CGrabber::~CGrabber()
+{
+  if (m_dpy)
+  {
+    XCloseDisplay(m_dpy);
+    m_dpy = NULL;
+  }
+}
+
+bool CGrabber::Setup()
+{
+  m_dpy = XOpenDisplay(NULL);
+  if (m_dpy == NULL)
+  {
+    m_error = "unable to open display";
+    return false;
+  }
+
+  m_rootwin = RootWindow(m_dpy, DefaultScreen(m_dpy));
+  UpdateDimensions();
+
+  if (m_interval > 0.0)
+  {
+    m_timer.SetInterval(Round<int64_t>(m_interval * 1000000.0));
+  }
+  else
+  {
+    if (!m_vblanksignal.Setup())
+    {
+      m_error = m_vblanksignal.GetError();
+      return false;
+    }
+  }
+
+  m_error.clear();
+
+  return true;
+}
+
+void CGrabber::UpdateDimensions()
+{
+  XGetWindowAttributes(m_dpy, m_rootwin, &m_rootattr);
+}
+
+bool CGrabber::Run(volatile bool& stop)
+{
+  return false;
+}

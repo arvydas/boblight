@@ -23,6 +23,10 @@
 
 class CGrabberXGetImage : public CGrabber
 {
+  public:
+    CGrabberXGetImage(void* boblight);
+    
+    bool Run(volatile bool& stop);
 };
 
 #endif //GRABBERXGETIMAGE

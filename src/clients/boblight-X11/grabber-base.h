@@ -19,8 +19,47 @@
 #ifndef GRABBER
 #define GRABBER
 
+#include <string>
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#include "util/timer.h"
+#include "vblanksignal.h"
+
+extern volatile bool xerror;
+
 class CGrabber
 {
+  public:
+    CGrabber(void* boblight);
+    ~CGrabber();
+
+    std::string& GetError() { return m_error; }
+    
+    void SetInterval(double interval) { m_interval = interval; }
+    void SetSize(int size)            { m_size = size; }
+
+    bool Setup();
+    virtual bool Run(volatile bool& stop);
+
+  protected:
+
+    void              UpdateDimensions();
+
+    std::string       m_error;
+    
+    void*             m_boblight;
+    
+    Display*          m_dpy;
+    Window            m_rootwin;
+    XWindowAttributes m_rootattr;
+    int               m_size;
+
+    double            m_interval;
+    CTimer            m_timer;
+    CVblankSignal     m_vblanksignal;    
+    
 };
 
 #endif //GRABBER

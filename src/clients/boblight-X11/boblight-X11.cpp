@@ -31,17 +31,19 @@
 #include "config.h"
 #include "clients/flags.h"
 
+#include "grabber-base.h"
+#include "grabber-xgetimage.h"
+#include "grabber-xrender.h"
+
 using namespace std;
 
 bool ParseFlags(int argc, char *argv[], double& interval, int& pixels);
 int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval);
-bool Grabber(void* boblight, int pixels, double interval);
 void PrintHelpMessage();
 void SignalHandler(int signum);
 int  ErrorHandler(Display* dpy, XErrorEvent* error);
 
 volatile bool stop = false;
-volatile bool xerror = false;
 
 int main (int argc, char *argv[])
 {
@@ -179,11 +181,33 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
       return 1;
     }
 
-    if (!Grabber(boblight, pixels, interval)) //if grabber returns false we give up
+    CGrabber* grabber = reinterpret_cast<CGrabber*>(new CGrabberXGetImage(boblight));
+
+    grabber->SetInterval(interval);
+    grabber->SetSize(pixels);
+
+    if (!grabber->Setup())
     {
+      PrintError(grabber->GetError());
+      delete grabber;
       boblight_destroy(boblight);
       return 1;
     }
+
+    if (!grabber->Run(stop))
+    {
+      PrintError(grabber->GetError());
+      delete grabber;
+      boblight_destroy(boblight);
+      return 1;
+    }
+    else
+    {
+      if (!grabber->GetError().empty())
+        PrintError(grabber->GetError());
+    }
+
+    delete grabber;
 
     boblight_destroy(boblight);
   }
@@ -191,101 +215,6 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
   cout << "Exiting\n";
   
   return 0;
-}
-
-bool Grabber(void* boblight, int pixels, double interval)
-{
-  Display*          dpy;
-  Window            rootwin;
-  XWindowAttributes rootattr;
-  XImage*           xim;
-  unsigned long     pixel;
-  int               rgb[3];
-  int               usedpixels;
-  CTimer            timer;
-  CVblankSignal     vblanksignal;
-
-  //positive interval means seconds, negative means vblank interval
-  if (interval > 0.0)
-  {
-    timer.SetInterval(Round<int64_t>(interval * 1000000.0));
-  }
-  else
-  {
-    if (!vblanksignal.Setup())
-    {
-      PrintError(vblanksignal.GetError());
-      return false;
-    }
-  }
-  
-  dpy = XOpenDisplay(NULL);
-  if (dpy == NULL)
-  {
-    PrintError("Unable to open display");
-    return false;
-  }
-
-  //set error handler in case we read beyond the dimensions of the display
-  XSetErrorHandler(ErrorHandler);
-  
-  while(!stop)
-  {
-    rootwin = RootWindow(dpy, DefaultScreen(dpy));
-    XGetWindowAttributes(dpy, rootwin, &rootattr);
-
-    //we want at least four pixels
-    usedpixels = Min(rootattr.width / 2, rootattr.height / 2, pixels);
-    
-    boblight_setscanrange(boblight, rootattr.width / usedpixels, rootattr.height / usedpixels);
-
-    for (int y = 0; y < rootattr.height && !stop; y += rootattr.height / usedpixels)
-    {
-      for (int x = 0; x < rootattr.width && !stop; x += rootattr.width / usedpixels)
-      {
-        xim = XGetImage(dpy, rootwin, x, y, 1, 1, AllPlanes, ZPixmap);
-        if (xerror) //size of the root window probably changed and we read beyond it
-        {
-          xerror = false;
-          sleep(1);
-          XGetWindowAttributes(dpy, rootwin, &rootattr);
-          continue;
-        }
-        
-        pixel = XGetPixel(xim, 0, 0);
-        XDestroyImage(xim);
-
-        rgb[0] = (pixel >> 16) & 0xff;
-        rgb[1] = (pixel >>  8) & 0xff;
-        rgb[2] = (pixel >>  0) & 0xff;
-
-        boblight_addpixelxy(boblight, x / usedpixels, y / usedpixels, rgb);
-      }
-    }
-
-    if (!boblight_sendrgb(boblight))
-    {
-      PrintError(boblight_geterror(boblight));
-      return true;
-    }
-
-    if (interval > 0.0)
-    {
-      timer.Wait();
-    }
-    else
-    {
-      if (!vblanksignal.Wait(Round<unsigned int>(interval * -1.0)))
-      {
-        PrintError(vblanksignal.GetError());
-        return false;
-      }
-    }
-  }
-
-  XCloseDisplay(dpy);
-
-  return true;
 }
 
 void PrintHelpMessage()
