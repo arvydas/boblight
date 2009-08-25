@@ -69,6 +69,11 @@ bool CGrabber::Setup()
 
   m_error.clear();
 
+  return ExtendedSetup();
+}
+
+bool CGrabber::ExtendedSetup()
+{
   return true;
 }
 
@@ -80,4 +85,22 @@ void CGrabber::UpdateDimensions()
 bool CGrabber::Run(volatile bool& stop)
 {
   return false;
+}
+
+bool CGrabber::Wait()
+{
+  if (m_interval > 0.0)
+  {
+    m_timer.Wait();
+  }
+  else
+  {
+    if (!m_vblanksignal.Wait(Round<unsigned int>(m_interval * -1.0)))
+    {
+      m_error = m_vblanksignal.GetError();
+      return false;
+    }
+  }
+
+  return true;
 }

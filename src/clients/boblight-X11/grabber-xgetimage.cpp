@@ -71,17 +71,10 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
       return true;
     }
 
-    if (m_interval > 0.0)
+    if (!Wait())
     {
-      m_timer.Wait();
-    }
-    else
-    {
-      if (!m_vblanksignal.Wait(Round<unsigned int>(m_interval * -1.0)))
-      {
-        m_error = m_vblanksignal.GetError();
-        return false;
-      }
+      m_error = m_vblanksignal.GetError();
+      return false;
     }
   }
 

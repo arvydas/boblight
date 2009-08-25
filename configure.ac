@@ -20,6 +20,7 @@ AC_CHECK_LIB(m,[main])
 AC_CHECK_LIB(dl,[main])
 AC_CHECK_LIB(X11,[main])
 AC_CHECK_LIB(GL,[main])
+AC_CHECK_LIB(Xrender,[main])
 
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 

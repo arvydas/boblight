@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `X11' library (-lX11). */
 #undef HAVE_LIBX11
 
+/* Define to 1 if you have the `Xrender' library (-lXrender). */
+#undef HAVE_LIBXRENDER
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

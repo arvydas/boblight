@@ -41,11 +41,13 @@ class CGrabber
     void SetSize(int size)            { m_size = size; }
 
     bool Setup();
+    virtual bool ExtendedSetup();
     virtual bool Run(volatile bool& stop);
 
   protected:
 
     void              UpdateDimensions();
+    bool              Wait();
 
     std::string       m_error;
     

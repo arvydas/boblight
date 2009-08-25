@@ -21,8 +21,28 @@
 
 #include "grabber-base.h"
 
+#include <X11/extensions/Xrender.h>
+
 class CGrabberXRender : public CGrabber
 {
+  public:
+    CGrabberXRender(void* boblight);
+    ~CGrabberXRender();
+    
+    bool ExtendedSetup();
+    bool Run(volatile bool& stop);
+
+  private:
+
+    bool CheckExtensions();
+    
+    XRenderPictFormat*       m_srcformat;
+    XRenderPictFormat*       m_dstformat;
+    Picture                  m_srcpicture;
+    Picture                  m_dstpicture;
+    XRenderPictureAttributes m_pictattr;
+    XTransform               m_transform;
+    Pixmap                   m_pixmap;
 };
 
 #endif //GRABBERXRENDER

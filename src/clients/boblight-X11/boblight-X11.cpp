@@ -35,10 +35,13 @@
 #include "grabber-xgetimage.h"
 #include "grabber-xrender.h"
 
+#define XGETIMAGE 0
+#define XRENDER   1
+
 using namespace std;
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels);
-int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval);
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method);
+int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method);
 void PrintHelpMessage();
 void SignalHandler(int signum);
 int  ErrorHandler(Display* dpy, XErrorEvent* error);
@@ -55,14 +58,15 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-  bool   list = false;   //if we have to print the boblight options
-  bool   help = false;   //if we have to print the help message
-  int    priority = 128; //priority of us as a client of boblightd
-  string straddress;     //address of boblightd
-  char*  address;        //set to NULL for default, or straddress.c_str() otherwise
-  int    port = -1;      //port, -1 is default port
-  double interval = 0.1; //interval of the grabber in seconds
-  int    pixels = 16;      //number of pixels/rows to use
+  bool   list = false;     //if we have to print the boblight options
+  bool   help = false;     //if we have to print the help message
+  int    priority = 128;   //priority of us as a client of boblightd
+  string straddress;       //address of boblightd
+  char*  address;          //set to NULL for default, or straddress.c_str() otherwise
+  int    port = -1;        //port, -1 is default port
+  double interval = 0.1;   //interval of the grabber in seconds
+  int    pixels = -1;      //number of pixels/rows to use
+  int    method = XRENDER; //what method we use to capture pixels
   vector<string> options;
 
   //parse default boblight flags, if it fails we're screwed
@@ -83,8 +87,16 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-  if (!ParseFlags(argc, argv, interval, pixels))
+  if (!ParseFlags(argc, argv, interval, pixels, method))
     return 1;
+
+  if (pixels == -1) //set default pixels
+  {
+    if (method == XGETIMAGE)
+      pixels = 16;
+    else
+      pixels = 64;
+  }  
   
   if (straddress.empty())
     address = NULL;
@@ -96,16 +108,16 @@ int main (int argc, char *argv[])
   signal(SIGINT, SignalHandler);
 
   //keeps running until some unrecoverable error happens
-  return Run(options, priority, address, port, pixels, interval);
+  return Run(options, priority, address, port, pixels, interval, method);
 
 }
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method)
 {
   int c;
   optind = 0; //ParseBoblightFlags already did getopt
 
-  while ((c = getopt (argc, argv, "i:u:")) != -1)
+  while ((c = getopt (argc, argv, "i:u:x")) != -1)
   {
     if (c == 'i')
     {
@@ -130,6 +142,7 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
           return false;
         }
         interval *= -1.0; //negative interval means vblank
+        optarg--;
       }
     }
     else if (c == 'u')
@@ -139,6 +152,10 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
         PrintError("Wrong value " + string(optarg) + " for pixels");
         return false;
       }
+    }
+    else if (c == 'x')
+    {
+      method = XGETIMAGE;
     }
     else if (c == '?')
     {
@@ -153,7 +170,7 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels)
   return true;
 }
 
-int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval)
+int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method)
 {
   while(!stop)
   {
@@ -181,7 +198,12 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
       return 1;
     }
 
-    CGrabber* grabber = reinterpret_cast<CGrabber*>(new CGrabberXGetImage(boblight));
+    CGrabber* grabber;
+    
+    if (method == XGETIMAGE)
+      grabber = reinterpret_cast<CGrabber*>(new CGrabberXGetImage(boblight));
+    else if (method == XRENDER)
+      grabber = reinterpret_cast<CGrabber*>(new CGrabberXRender(boblight));
 
     grabber->SetInterval(interval);
     grabber->SetSize(pixels);
@@ -233,6 +255,7 @@ void PrintHelpMessage()
   cout << "  -i  set the interval in seconds, default is 0.1\n";
   cout << "      prefix the value with v to wait for a number of vertical blanks instead\n";
   cout << "  -u  set the number of pixels/rows to use, default is 16\n";
+  cout << "  -x  use XGetImage instead of the XRender extension\n";
   cout << "\n";
 }
 
