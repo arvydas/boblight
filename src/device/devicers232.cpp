@@ -68,10 +68,13 @@ bool CDeviceRS232::WriteOutput()
   }
 
   //write the prefix out the serial port
-  if (m_prefix.size() > 0 && m_serialport.Write(&m_prefix[0], m_prefix.size()) == -1)
+  if (m_prefix.size() > 0)
   {
-    log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
-    return false;
+    if (m_serialport.Write(&m_prefix[0], m_prefix.size()) == -1)
+    {
+      log("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
+      return false;
+    }
   }
 
   //write the channel values out the serial port
