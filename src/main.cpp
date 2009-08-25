@@ -162,6 +162,7 @@ bool ParseFlags(int argc, char *argv[], bool& help, string& configfile)
   help = false;
   configfile = DEFAULTCONF;
 
+  opterr = 0; //no getopt errors to stdout, we bitch ourselves
   int c;
 
   while ((c = getopt (argc, argv, "c:h")) != -1)
