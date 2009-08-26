@@ -16,27 +16,24 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CTIMER
-#define CTIMER
+#ifndef ASYNCTIMER
+#define ASYNCTIMER
 
-#include <stdint.h>
-#include <unistd.h>
+#include "timer.h"
+#include "thread.h"
+#include "condition.h"
 
-#include "clock.h"
-
-class CTimer
+class CAsyncTimer : public CThread, public CTimer
 {
   public:
-    CTimer();
-    void SetInterval(int64_t usecs);
-    virtual void Wait();
-    void Reset();
+    ~CAsyncTimer();
+    void StartTimer(int64_t usecs = -1);
+    void Wait();
+    void StopTimer();
 
-    int64_t GetInterval();
-  protected:
-    int64_t m_time;
-    int64_t m_interval;
-    CClock  m_clock;
+  private:
+    void Process();
+    CCondition m_signal;
 };
 
-#endif
+#endif //ASYNCTIMER

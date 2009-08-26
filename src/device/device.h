@@ -34,7 +34,7 @@
 //#include "client.h"
 #include "util/thread.h"
 #include "util/clock.h"
-#include "util/timer.h"
+#include "util/asynctimer.h"
 
 class CClientsHandler; //forward declaration
 

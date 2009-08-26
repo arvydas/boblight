@@ -92,7 +92,9 @@ boblightd_SOURCES = \
 	device/devicesound.h    \
 	device/devicers232.cpp    \
 	device/devicers232.h    \
-	protocolversion.h
+	protocolversion.h    \
+	util/asynctimer.cpp    \
+	util/asynctimer.h
 
 boblightd_LDFLAGS = 
 
