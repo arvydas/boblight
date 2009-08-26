@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <string.h>
 
 #include "util/misc.h"
@@ -106,9 +107,11 @@ bool CGrabberXRender::Run(volatile bool& stop)
   int rgb[3];
 
   //debug code
-/*Window window = XCreateSimpleWindow(m_dpy, m_rootwin, 200, 200, m_size, m_size, 0, 0, 0);
-  GC gc = XCreateGC(m_dpy, window, 0, NULL);
-  XMapWindow(m_dpy, window);*/
+  /*Display* dpy = XOpenDisplay(":0.1");
+  assert(dpy);
+  Window window = XCreateSimpleWindow(dpy, RootWindow(dpy, DefaultScreen(dpy)), m_size, m_size, m_size, m_size, 0, 0, 0);
+  GC gc = XCreateGC(dpy, window, 0, NULL);
+  XMapWindow(dpy, window);*/
   
   while(!stop)
   {
@@ -122,11 +125,11 @@ bool CGrabberXRender::Run(volatile bool& stop)
     XRenderComposite(m_dpy, PictOpSrc, m_srcpicture, None, m_dstpicture, 0, 0, 0, 0, 0, 0, m_size, m_size);
     XSync(m_dpy, False);
 
-    //more debug code
-    //XCopyArea(m_dpy, m_pixmap, window, gc, 0, 0, m_size, m_size, 0, 0);
-    
     xim = XGetImage(m_dpy, m_pixmap, 0, 0, m_size, m_size, AllPlanes, ZPixmap);
 
+    //debug code
+    //XPutImage(dpy, window, gc, xim, 0, 0, 0, 0, m_size, m_size);
+    
     for (int y = 0; y < m_size && !stop; y++)
     {
       for (int x = 0; x < m_size && !stop; x++)
