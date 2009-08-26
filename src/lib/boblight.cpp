@@ -518,7 +518,8 @@ void CBoblight::AddPixel(int* rgb, int x, int y)
 {
   for (int i = 0; i < m_lights.size(); i++)
   {
-    if (x >= m_lights[i].m_hscan[0] && x <= m_lights[i].m_hscan[1] && y >= m_lights[i].m_vscan[0] && y <= m_lights[i].m_vscan[1])
+    if (x >= m_lights[i].m_hscanscaled[0] && x <= m_lights[i].m_hscanscaled[1] &&
+        y >= m_lights[i].m_vscanscaled[0] && y <= m_lights[i].m_vscanscaled[1])
     {
       if (rgb[0] >= m_lights[i].m_threshold || rgb[1] >= m_lights[i].m_threshold || rgb[2] >= m_lights[i].m_threshold)
       {
