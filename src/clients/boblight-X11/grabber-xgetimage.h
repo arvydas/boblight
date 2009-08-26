@@ -25,8 +25,14 @@ class CGrabberXGetImage : public CGrabber
 {
   public:
     CGrabberXGetImage(void* boblight);
+    ~CGrabberXGetImage();
     
     bool Run(volatile bool& stop);
+    bool ExtendedSetup();
+    
+  private:
+
+    XImage* m_debugxim;
 };
 
 #endif //GRABBERXGETIMAGE

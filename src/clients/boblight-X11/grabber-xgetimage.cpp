@@ -30,22 +30,39 @@ CGrabberXGetImage::CGrabberXGetImage(void* boblight) : CGrabber(boblight)
 {
 }
 
+CGrabberXGetImage::~CGrabberXGetImage()
+{
+  if (m_debug)
+    XDestroyImage(m_debugxim);
+}
+
+bool CGrabberXGetImage::ExtendedSetup()
+{
+  //set up an ximage of m_size*m_size when debug mode is enabled
+  if (m_debug)
+    m_debugxim = XGetImage(m_debugdpy, RootWindow(m_debugdpy, DefaultScreen(m_debugdpy)), 0, 0, m_size, m_size, AllPlanes, ZPixmap);
+}
+
 bool CGrabberXGetImage::Run(volatile bool& stop)
 {
   XImage* xim;
   unsigned long pixel;
   int rgb[3];
 
+  boblight_setscanrange(m_boblight, m_size, m_size);
+
   while(!stop)
   {
     UpdateDimensions();
-    boblight_setscanrange(m_boblight, m_rootattr.width, m_rootattr.height);
 
-    for (int y = 0; y < m_rootattr.height && !stop; y += m_rootattr.height / m_size)
+    for (int y = 0; y < m_size && !stop; y++)
     {
-      for (int x = 0; x < m_rootattr.width && !stop; x += m_rootattr.width / m_size)
+      for (int x = 0; x < m_size && !stop; x++)
       {
-        xim = XGetImage(m_dpy, m_rootwin, x, y, 1, 1, AllPlanes, ZPixmap);
+        int xpos = (m_rootattr.width  - 1) * x / m_size;
+        int ypos = (m_rootattr.height - 1) * y / m_size;
+        
+        xim = XGetImage(m_dpy, m_rootwin, xpos, ypos, 1, 1, AllPlanes, ZPixmap);
         if (xerror) //size of the root window probably changed and we read beyond it
         {
           xerror = false;
@@ -62,7 +79,18 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
         rgb[2] = (pixel >>  0) & 0xff;
 
         boblight_addpixelxy(m_boblight, x, y, rgb);
+
+        //put pixel on debug image
+        if (m_debug)
+          XPutPixel(m_debugxim, x, y, pixel);
       }
+    }
+
+    //put debug image on debug window
+    if (m_debug)
+    {
+      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_debugxim, 0, 0, 0, 0, m_size, m_size);
+      XSync(m_debugdpy, False);
     }
 
     if (!boblight_sendrgb(m_boblight))

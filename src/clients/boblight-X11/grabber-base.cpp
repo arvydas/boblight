@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <stdint.h>
 #include <iostream>
 
@@ -29,8 +30,8 @@ volatile bool xerror = false;
 CGrabber::CGrabber(void* boblight)
 {
   m_boblight = boblight;
-
   m_dpy = NULL;
+  m_debug = false;
 }
 
 CGrabber::~CGrabber()
@@ -39,6 +40,14 @@ CGrabber::~CGrabber()
   {
     XCloseDisplay(m_dpy);
     m_dpy = NULL;
+  }
+
+  if (m_debug)
+  {
+    XFreeGC(m_debugdpy, m_debuggc);
+    XDestroyWindow(m_debugdpy, m_debugwindow);
+    XCloseDisplay(m_debugdpy);
+    m_debug = false;
   }
 }
 
@@ -103,4 +112,20 @@ bool CGrabber::Wait()
   }
 
   return true;
+}
+
+void CGrabber::SetDebug(const char* display)
+{
+  //set up a display connection, a window and a gc so we can show what we're capturing
+  
+  m_debugdpy = XOpenDisplay(display);
+  assert(m_debugdpy);
+  m_debugwindow = XCreateSimpleWindow(m_debugdpy, RootWindow(m_debugdpy, DefaultScreen(m_debugdpy)),
+                                      m_size, m_size, m_size, m_size, 0, 0, 0);
+  XMapWindow(m_debugdpy, m_debugwindow);
+  XSync(m_debugdpy, False);
+
+  m_debuggc = XCreateGC(m_debugdpy, m_debugwindow, 0, NULL);
+
+  m_debug = true;
 }

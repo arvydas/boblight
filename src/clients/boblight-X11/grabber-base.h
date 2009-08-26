@@ -44,6 +44,8 @@ class CGrabber
     virtual bool ExtendedSetup();
     virtual bool Run(volatile bool& stop);
 
+    void SetDebug(const char* display);
+    
   protected:
 
     void              UpdateDimensions();
@@ -58,6 +60,11 @@ class CGrabber
     XWindowAttributes m_rootattr;
     int               m_size;
 
+    bool              m_debug;
+    Display*          m_debugdpy;
+    Window            m_debugwindow;
+    GC                m_debuggc;
+    
     double            m_interval;
     CTimer            m_timer;
     CVblankSignal     m_vblanksignal;    

@@ -16,7 +16,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <assert.h>
 #include <string.h>
 
 #include "util/misc.h"
@@ -38,12 +37,10 @@ CGrabberXRender::CGrabberXRender(void* boblight) : CGrabber(boblight)
   memset(&m_pictattr, 0, sizeof(m_pictattr));
   m_pictattr.repeat = RepeatNone;
 
-  //m_transform.matrix[0][0] = Round<int>((double)root_window_attributes.width / (double)pixels * 65536.0);
   m_transform.matrix[0][0] = 65536;
   m_transform.matrix[0][1] = 0;
   m_transform.matrix[0][2] = 0;
   m_transform.matrix[1][0] = 0;
-  //m_transform.matrix[1][1] = Round<int>((double)root_window_attributes.height / (double)pixels * 65536.0);
   m_transform.matrix[1][1] = 65536;
   m_transform.matrix[1][2] = 0;
   m_transform.matrix[2][0] = 0;
@@ -106,18 +103,12 @@ bool CGrabberXRender::Run(volatile bool& stop)
   unsigned long pixel;
   int rgb[3];
 
-  //debug code
-  /*Display* dpy = XOpenDisplay(":0.1");
-  assert(dpy);
-  Window window = XCreateSimpleWindow(dpy, RootWindow(dpy, DefaultScreen(dpy)), m_size, m_size, m_size, m_size, 0, 0, 0);
-  GC gc = XCreateGC(dpy, window, 0, NULL);
-  XMapWindow(dpy, window);*/
-  
+  boblight_setscanrange(m_boblight, m_size, m_size);
+
   while(!stop)
   {
     UpdateDimensions();
-    boblight_setscanrange(m_boblight, m_size, m_size);
-    
+
     m_transform.matrix[0][0] = Round<int>((double)m_rootattr.width / (double)m_size * 65536.0);
     m_transform.matrix[1][1] = Round<int>((double)m_rootattr.height / (double)m_size * 65536.0);
     XRenderSetPictureTransform (m_dpy, m_srcpicture, &m_transform);
@@ -127,8 +118,12 @@ bool CGrabberXRender::Run(volatile bool& stop)
 
     xim = XGetImage(m_dpy, m_pixmap, 0, 0, m_size, m_size, AllPlanes, ZPixmap);
 
-    //debug code
-    //XPutImage(dpy, window, gc, xim, 0, 0, 0, 0, m_size, m_size);
+    //when in debug mode, put the captured image on the debug window
+    if (m_debug)
+    {
+      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, xim, 0, 0, 0, 0, m_size, m_size);
+      XSync(m_debugdpy, False);
+    }
     
     for (int y = 0; y < m_size && !stop; y++)
     {

@@ -40,8 +40,8 @@
 
 using namespace std;
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method);
-int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method);
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method, bool& debug, char*& debugdpy);
+int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method, bool debug, char* debugdpy);
 void PrintHelpMessage();
 void SignalHandler(int signum);
 int  ErrorHandler(Display* dpy, XErrorEvent* error);
@@ -67,6 +67,8 @@ int main (int argc, char *argv[])
   double interval = 0.1;   //interval of the grabber in seconds
   int    pixels = -1;      //number of pixels/rows to use
   int    method = XRENDER; //what method we use to capture pixels
+  bool   debug = false;    //if we're in debug mode
+  char*  debugdpy;         //display to use for debug
   vector<string> options;
 
   //parse default boblight flags, if it fails we're screwed
@@ -87,7 +89,7 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-  if (!ParseFlags(argc, argv, interval, pixels, method))
+  if (!ParseFlags(argc, argv, interval, pixels, method, debug, debugdpy))
     return 1;
 
   if (pixels == -1) //set default pixels
@@ -108,16 +110,16 @@ int main (int argc, char *argv[])
   signal(SIGINT, SignalHandler);
 
   //keeps running until some unrecoverable error happens
-  return Run(options, priority, address, port, pixels, interval, method);
+  return Run(options, priority, address, port, pixels, interval, method, debug, debugdpy);
 
 }
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method)
+bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method, bool& debug, char*& debugdpy)
 {
   int c;
   optind = 0; //ParseBoblightFlags already did getopt
 
-  while ((c = getopt (argc, argv, "i:u:x")) != -1)
+  while ((c = getopt (argc, argv, "i:u:xd::")) != -1)
   {
     if (c == 'i')
     {
@@ -157,6 +159,11 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& meth
     {
       method = XGETIMAGE;
     }
+    else if (c == 'd')
+    {
+      debug = true;
+      debugdpy = optarg;
+    }
     else if (c == '?')
     {
       if (optopt == 'u' || optopt == 'i')
@@ -170,7 +177,7 @@ bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& meth
   return true;
 }
 
-int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method)
+int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method, bool debug, char* debugdpy)
 {
   while(!stop)
   {
@@ -208,6 +215,9 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
     grabber->SetInterval(interval);
     grabber->SetSize(pixels);
 
+    if (debug)
+      grabber->SetDebug(debugdpy);
+    
     if (!grabber->Setup())
     {
       PrintError(grabber->GetError());
@@ -257,6 +267,7 @@ void PrintHelpMessage()
   cout << "  -u  set the number of pixels/rows to use\n";
   cout << "      default is 64 for xrender and 16 for xgetimage\n";
   cout << "  -x  use XGetImage instead of XRender\n";
+  cout << "  -d  debug mode\n";
   cout << "\n";
 }
 
