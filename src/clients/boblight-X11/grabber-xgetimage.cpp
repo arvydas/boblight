@@ -86,17 +86,19 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
       }
     }
 
-    //put debug image on debug window
-    if (m_debug)
-    {
-      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_debugxim, 0, 0, 0, 0, m_size, m_size);
-      XSync(m_debugdpy, False);
-    }
-
     if (!boblight_sendrgb(m_boblight))
     {
       m_error = boblight_geterror(m_boblight);
       return true;
+    }
+
+    //put debug image on debug window
+    if (m_debug)
+    {
+      int x = (m_debugwindowwidth - m_size) / 2;
+      int y = (m_debugwindowheight - m_size) / 2;
+      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_debugxim, 0, 0, x, y, m_size, m_size);
+      XSync(m_debugdpy, False);
     }
 
     if (!Wait())
@@ -104,6 +106,8 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
       m_error = m_vblanksignal.GetError();
       return false;
     }
+
+    UpdateDebugFps();
   }
 
   m_error.clear();

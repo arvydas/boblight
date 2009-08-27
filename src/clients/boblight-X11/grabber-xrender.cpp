@@ -141,13 +141,6 @@ bool CGrabberXRender::Run(volatile bool& stop)
 
     XShmGetImage(m_dpy, m_pixmap, m_xim, 0, 0, AllPlanes);
 
-    //when in debug mode, put the captured image on the debug window
-    if (m_debug)
-    {
-      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_xim, 0, 0, 0, 0, m_size, m_size);
-      XSync(m_debugdpy, False);
-    }
-    
     for (int y = 0; y < m_size && !stop; y++)
     {
       for (int x = 0; x < m_size && !stop; x++)
@@ -168,11 +161,22 @@ bool CGrabberXRender::Run(volatile bool& stop)
       return true;
     }
 
+    //when in debug mode, put the captured image on the debug window
+    if (m_debug)
+    {
+      int x = (m_debugwindowwidth - m_size) / 2;
+      int y = (m_debugwindowheight - m_size) / 2;
+      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_xim, 0, 0, x, y, m_size, m_size);
+      XSync(m_debugdpy, False);
+    }
+
     if (!Wait())
     {
       m_error = m_vblanksignal.GetError();
       return false;
     }
+
+    UpdateDebugFps();
   }
 
   m_error.clear();

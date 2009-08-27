@@ -20,12 +20,12 @@
 #define GRABBER
 
 #include <string>
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include "util/timer.h"
 #include "vblanksignal.h"
+#include "util/clock.h"
 
 extern volatile bool xerror;
 
@@ -63,7 +63,16 @@ class CGrabber
     bool              m_debug;
     Display*          m_debugdpy;
     Window            m_debugwindow;
+    int               m_debugwindowwidth;
+    int               m_debugwindowheight;
     GC                m_debuggc;
+
+    void              UpdateDebugFps();
+    CClock            m_fpsclock;
+    long double       m_lastupdate;
+    long double       m_lastmeasurement;
+    long double       m_measurements;
+    int               m_nrmeasurements;
     
     double            m_interval;
     CTimer            m_timer;

@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <iostream>
+#include <X11/Xatom.h>
 
 #include "util/misc.h"
 #include "grabber-base.h"
@@ -120,12 +121,47 @@ void CGrabber::SetDebug(const char* display)
   
   m_debugdpy = XOpenDisplay(display);
   assert(m_debugdpy);
+  m_debugwindowwidth = Max(200, m_size);
+  m_debugwindowheight = Max(200, m_size);
   m_debugwindow = XCreateSimpleWindow(m_debugdpy, RootWindow(m_debugdpy, DefaultScreen(m_debugdpy)),
-                                      m_size, m_size, m_size, m_size, 0, 0, 0);
+                                      0, 0, m_debugwindowwidth, m_debugwindowheight, 0, 0, 0);
   XMapWindow(m_debugdpy, m_debugwindow);
   XSync(m_debugdpy, False);
 
   m_debuggc = XCreateGC(m_debugdpy, m_debugwindow, 0, NULL);
 
+  m_lastupdate = m_fpsclock.GetSecTime();
+  m_lastmeasurement = m_lastupdate;
+  m_measurements = 0.0;
+  m_nrmeasurements = 0.0;
+  
   m_debug = true;
+}
+
+void CGrabber::UpdateDebugFps()
+{
+  if (m_debug)
+  {
+    long double now = m_fpsclock.GetSecTime();
+    long double fps = 1.0 / (now - m_lastmeasurement);
+    m_measurements += fps;
+    m_nrmeasurements++;
+    m_lastmeasurement = now;
+
+    if (now - m_lastupdate >= 1.0)
+    {
+      m_lastupdate = now;
+      string strfps = ToString(m_measurements / m_nrmeasurements) + " fps";
+      m_measurements = 0.0;
+      m_nrmeasurements = 0;
+
+      XTextProperty property;
+      property.value = reinterpret_cast<unsigned char*>(const_cast<char*>(strfps.c_str()));
+      property.encoding = XA_STRING;
+      property.format = 8;
+      property.nitems = strfps.length();
+
+      XSetWMName(m_debugdpy, m_debugwindow, &property);
+    }
+  }
 }
