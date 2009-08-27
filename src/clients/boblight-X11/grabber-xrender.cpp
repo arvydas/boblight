@@ -16,10 +16,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "grabber-xrender.h"
+
 #include <string.h>
 
 #include "util/misc.h"
-#include "grabber-xrender.h"
 
 #define BOBLIGHT_DLOPEN_EXTERN
 #include "lib/libboblight.h"
@@ -54,6 +55,11 @@ CGrabberXRender::~CGrabberXRender()
   XRenderFreePicture(m_dpy, m_dstpicture);
 
   XFreePixmap(m_dpy, m_pixmap);
+
+  XShmDetach(m_dpy, &m_shmseginfo);
+  XDestroyImage(m_xim);
+  shmdt(m_shmseginfo.shmaddr);
+  shmctl(m_shmseginfo.shmid, IPC_RMID, NULL);
 }
 
 bool CGrabberXRender::ExtendedSetup()
@@ -71,6 +77,14 @@ bool CGrabberXRender::ExtendedSetup()
 
   XRenderSetPictureFilter(m_dpy, m_srcpicture, "bilinear", NULL, 0);
 
+  //set up shared memory ximage
+  m_xim = XShmCreateImage(m_dpy, m_rootattr.visual, m_rootattr.depth, ZPixmap, NULL, &m_shmseginfo, m_size, m_size);
+  m_shmseginfo.shmid = shmget(IPC_PRIVATE, m_xim->bytes_per_line * m_xim->height, IPC_CREAT | 0777);
+  m_shmseginfo.shmaddr = reinterpret_cast<char*>(shmat(m_shmseginfo.shmid, NULL, 0));
+  m_xim->data = m_shmseginfo.shmaddr;
+  m_shmseginfo.readOnly = False;
+  XShmAttach(m_dpy, &m_shmseginfo);
+  
   return true;
 }
 
@@ -97,6 +111,12 @@ bool CGrabberXRender::CheckExtensions()
     return false;
   }
 
+  if (!XShmQueryExtension(m_dpy))
+  {
+    m_error = "Shared memory extension not supported";
+    return false;
+  }
+  
   return true;
 }
 
@@ -119,12 +139,12 @@ bool CGrabberXRender::Run(volatile bool& stop)
     XRenderComposite(m_dpy, PictOpSrc, m_srcpicture, None, m_dstpicture, 0, 0, 0, 0, 0, 0, m_size, m_size);
     XSync(m_dpy, False);
 
-    xim = XGetImage(m_dpy, m_pixmap, 0, 0, m_size, m_size, AllPlanes, ZPixmap);
+    XShmGetImage(m_dpy, m_pixmap, m_xim, 0, 0, AllPlanes);
 
     //when in debug mode, put the captured image on the debug window
     if (m_debug)
     {
-      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, xim, 0, 0, 0, 0, m_size, m_size);
+      XPutImage(m_debugdpy, m_debugwindow, m_debuggc, m_xim, 0, 0, 0, 0, m_size, m_size);
       XSync(m_debugdpy, False);
     }
     
@@ -132,7 +152,7 @@ bool CGrabberXRender::Run(volatile bool& stop)
     {
       for (int x = 0; x < m_size && !stop; x++)
       {
-        pixel = XGetPixel(xim, x, y);
+        pixel = XGetPixel(m_xim, x, y);
         
         rgb[0] = (pixel >> 16) & 0xff;
         rgb[1] = (pixel >>  8) & 0xff;
@@ -142,8 +162,6 @@ bool CGrabberXRender::Run(volatile bool& stop)
       }
     }
 
-    XDestroyImage(xim);
-    
     if (!boblight_sendrgb(m_boblight))
     {
       m_error = boblight_geterror(m_boblight);

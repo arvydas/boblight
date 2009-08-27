@@ -22,6 +22,9 @@
 #include "grabber-base.h"
 
 #include <X11/extensions/Xrender.h>
+#include <X11/extensions/XShm.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 class CGrabberXRender : public CGrabber
 {
@@ -43,6 +46,8 @@ class CGrabberXRender : public CGrabber
     XRenderPictureAttributes m_pictattr;
     XTransform               m_transform;
     Pixmap                   m_pixmap;
+    XShmSegmentInfo          m_shmseginfo;
+    XImage*                  m_xim;
 };
 
 #endif //GRABBERXRENDER
