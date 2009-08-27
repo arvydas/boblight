@@ -50,7 +50,10 @@ CGrabberXRender::CGrabberXRender(void* boblight) : CGrabber(boblight)
 
 CGrabberXRender::~CGrabberXRender()
 {
-  //TODO: fix memleak
+  XRenderFreePicture(m_dpy, m_srcpicture);
+  XRenderFreePicture(m_dpy, m_dstpicture);
+
+  XFreePixmap(m_dpy, m_pixmap);
 }
 
 bool CGrabberXRender::ExtendedSetup()
@@ -66,7 +69,7 @@ bool CGrabberXRender::ExtendedSetup()
   m_srcpicture = XRenderCreatePicture(m_dpy, m_rootwin, m_srcformat, CPRepeat, &m_pictattr);
   m_dstpicture = XRenderCreatePicture(m_dpy, m_pixmap,  m_dstformat, CPRepeat, &m_pictattr);
 
-  XRenderSetPictureFilter (m_dpy, m_srcpicture, "bilinear", NULL, 0);
+  XRenderSetPictureFilter(m_dpy, m_srcpicture, "bilinear", NULL, 0);
 
   return true;
 }
