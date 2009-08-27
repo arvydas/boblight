@@ -143,17 +143,20 @@ void CGrabber::UpdateDebugFps()
   if (m_debug)
   {
     long double now = m_fpsclock.GetSecTime<long double>();
-    long double fps = 1.0 / (now - m_lastmeasurement);
-    m_measurements += fps;
+    m_measurements += now - m_lastmeasurement;
     m_nrmeasurements++;
     m_lastmeasurement = now;
 
     if (now - m_lastupdate >= 1.0)
     {
       m_lastupdate = now;
-      string strfps = ToString(m_measurements / m_nrmeasurements) + " fps";
+
+      long double fps = 0.0;
+      if (m_nrmeasurements > 0) fps = 1.0 / (m_measurements / m_nrmeasurements);
       m_measurements = 0.0;
       m_nrmeasurements = 0;
+
+      string strfps = ToString(fps) + " fps";
 
       XTextProperty property;
       property.value = reinterpret_cast<unsigned char*>(const_cast<char*>(strfps.c_str()));
