@@ -76,22 +76,22 @@ bool CGrabberXRender::ExtendedSetup()
 
 bool CGrabberXRender::CheckExtensions()
 {
-  int render_event_base;
-  int render_error_base;
-  int render_major_ver;
-  int render_minor_ver;
+  int eventbase;
+  int errorbase;
+  int majorver;
+  int minorver;
 
-  if (!XRenderQueryExtension(m_dpy, &render_event_base, &render_error_base))
+  if (!XRenderQueryExtension(m_dpy, &eventbase, &errorbase))
   {
     m_error = "XRender extension not found";
     return false;
   }
-  if (!XRenderQueryVersion (m_dpy, &render_major_ver, &render_minor_ver))
+  if (!XRenderQueryVersion(m_dpy, &majorver, &minorver))
   {
     m_error = "Unable to get XRender version";
     return false;
   }
-  if (render_major_ver != 0 || render_minor_ver < 10)
+  if (majorver != 0 || minorver < 10)
   {
     m_error = "Incompatible XRender extension"; //TODO: verify this
     return false;
