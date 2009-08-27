@@ -45,8 +45,9 @@ namespace boblight
       bool        m_use;
 
       float       m_value;
-      float       m_saturation;
       float       m_valuerange[2];
+      float       m_saturation;
+      float       m_satrange[2];
       int         m_threshold;
 
       int         m_rgbd[4];

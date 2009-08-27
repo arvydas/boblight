@@ -22,6 +22,8 @@ BOBLIGHT_OPTION(autospeed,     bool,   0,              1,                 0,    
 BOBLIGHT_OPTION(interpolation, bool,   0,              1,                 0,      m_interpolation, send = true;)
 BOBLIGHT_OPTION(use,           bool,   0,              1,                 0,      m_use,           send = true;)
 BOBLIGHT_OPTION(saturation,    float,  0.0,            20.0,              1.0,    m_saturation,    m_saturation = Max(m_saturation, 0.0);)
+BOBLIGHT_OPTION(saturationmin, float,  0.0,            1.0,               0.0,    m_satrange[0],   m_satrange[0] = Clamp(m_satrange[0], 0.0, m_satrange[1]);)
+BOBLIGHT_OPTION(saturationmax, float,  0.0,            1.0,               1.0,    m_satrange[1],   m_satrange[1] = Clamp(m_satrange[1], m_satrange[0], 1.0);)
 BOBLIGHT_OPTION(value,         float,  0.0,            20.0,              1.0,    m_value,         m_value = Max(m_value, 0.0);)
 BOBLIGHT_OPTION(valuemin,      float,  0.0,            1.0,               0.0,    m_valuerange[0], m_valuerange[0] = Clamp(m_valuerange[0], 0.0, m_valuerange[1]);)
 BOBLIGHT_OPTION(valuemax,      float,  0.0,            1.0,               1.0,    m_valuerange[1], m_valuerange[1] = Clamp(m_valuerange[0], m_valuerange[0], 1.0);)

@@ -122,7 +122,8 @@ void CLight::GetRGB(float* rgb)
   memset(m_rgbd, 0, sizeof(m_rgbd));
 
   //we need some hsv adjustments
-  if (m_value != 1.0 || m_saturation != 1.0 || m_valuerange[0] != 0.0 || m_valuerange[1] != 1.0)
+  if (m_value != 1.0 || m_valuerange[0] != 0.0 || m_valuerange[1] != 1.0 ||
+      m_saturation != 1.0  || m_satrange[0] != 0.0 || m_satrange[1] != 1.0)
   {
     //rgb - hsv conversion, thanks wikipedia!
     float hsv[3];
@@ -157,8 +158,8 @@ void CLight::GetRGB(float* rgb)
     }
 
     //saturation and value adjustment
-    hsv[1] = Clamp(hsv[1] * m_saturation, 0.0f, 1.0f);
-    hsv[2] = Clamp(hsv[2] * m_value, m_valuerange[0], m_valuerange[1]);
+    hsv[1] = Clamp(hsv[1] * m_saturation, m_satrange[0],   m_satrange[1]);
+    hsv[2] = Clamp(hsv[2] * m_value,      m_valuerange[0], m_valuerange[1]);
 
     if (hsv[0] == -1.0f) //grayscale
     {
