@@ -28,7 +28,12 @@ CCondition::~CCondition()
   pthread_cond_destroy(&m_cond);
 }
 
-void CCondition::Send()
+void CCondition::Signal()
+{
+  pthread_cond_signal(&m_cond);
+}
+
+void CCondition::Broadcast()
 {
   pthread_cond_broadcast(&m_cond);
 }

@@ -64,7 +64,7 @@ void CThread::StopThread()
 void CThread::AsyncStopThread()
 {
   m_stop = true;
-  m_sleepcondition.Send();
+  m_sleepcondition.Broadcast();
 }
 
 void CThread::JoinThread()

@@ -29,7 +29,8 @@ class CCondition : public CMutex
     CCondition();
     ~CCondition();
 
-    void Send();
+    void Signal();
+    void Broadcast();
     bool Wait(int64_t usecs = -1);
 
   private:

@@ -52,7 +52,7 @@ void CAsyncTimer::Process()
     if (sleeptime > 0)
       usleep(sleeptime);
 
-    m_signal.Send();
+    m_signal.Broadcast();
   }
 }
 
