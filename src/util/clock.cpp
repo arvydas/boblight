@@ -36,12 +36,5 @@ int64_t CClock::GetTime()
   struct timespec time;
   clock_gettime(CLOCK_MONOTONIC, &time);
 
-  return ((int64_t)time.tv_sec * 1000000000) + (int64_t)time.tv_nsec;
-}
-
-long double CClock::GetSecTime()
-{
-  int64_t time = GetTime();
-
-  return (long double)time / (long double)m_freq;
+  return ((int64_t)time.tv_sec * 1000000000LL) + (int64_t)time.tv_nsec;
 }

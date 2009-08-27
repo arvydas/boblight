@@ -130,7 +130,7 @@ void CGrabber::SetDebug(const char* display)
 
   m_debuggc = XCreateGC(m_debugdpy, m_debugwindow, 0, NULL);
 
-  m_lastupdate = m_fpsclock.GetSecTime();
+  m_lastupdate = m_fpsclock.GetSecTime<long double>();
   m_lastmeasurement = m_lastupdate;
   m_measurements = 0.0;
   m_nrmeasurements = 0.0;
@@ -142,7 +142,7 @@ void CGrabber::UpdateDebugFps()
 {
   if (m_debug)
   {
-    long double now = m_fpsclock.GetSecTime();
+    long double now = m_fpsclock.GetSecTime<long double>();
     long double fps = 1.0 / (now - m_lastmeasurement);
     m_measurements += fps;
     m_nrmeasurements++;

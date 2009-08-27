@@ -30,7 +30,8 @@ class CClock
     int64_t GetTime(); //value of the clock
     int64_t GetFreq(); //frequency of the clock
 
-    long double GetSecTime(); //value of the clock in seconds
+    //value of the clock in seconds
+    template <class T> T GetSecTime() { return (T)GetTime() / (T)m_freq; }
 
   private:
 
