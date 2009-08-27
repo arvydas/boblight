@@ -47,19 +47,20 @@ void CTimer::Wait()
 {
   int64_t sleeptime;
 
-  //keep looping until we have a timestamp in the future we can wait for
+  //keep looping until we have a timestamp that's not too old
   do
   {
     m_time += m_interval * m_clock.GetFreq() / 1000000;
     sleeptime = (m_time - m_clock.GetTime()) * 1000000 / m_clock.GetFreq();
   }
-  while(sleeptime <= 0);
+  while(sleeptime <= m_interval * -2);
   
   if (sleeptime > m_interval * 2) //failsafe, m_time must be bork if we get here
   {
     sleeptime = m_interval * 2;
     Reset();
   }
-  
-  usleep(sleeptime);
+
+  if (sleeptime > 0)
+    usleep(sleeptime);
 }
