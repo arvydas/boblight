@@ -378,9 +378,10 @@ bool CClientsHandler::ParseSet(CClient* client, CMessage& message)
       log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
       return false;
     }
+    CLock lock(m_mutex);
     client->SetPriority(priority);
+    lock.Leave();
     log("%s:%i priority set to %i", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort(), client->m_priority);
-    
   }
   else if (messagekey == "light")
   {
