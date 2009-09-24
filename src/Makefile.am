@@ -21,7 +21,11 @@ boblight_constant_SOURCES = \
 	util/misc.cpp \
 	util/misc.h \
 	clients/flags.cpp \
-	clients/flags.h
+	clients/flags.h \
+	clients/flagmanager.cpp \
+	clients/flagmanager.h \
+	clients/flagmanager-constant.cpp \
+	clients/flagmanager-constant.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp\

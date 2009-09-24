@@ -27,14 +27,16 @@
 #include "config.h"
 #include "util/misc.h"
 #include "flags.h"
+#include "flagmanager-constant.h"
 
 using namespace std;
 
-int  Run(vector<string>& options, int priority, char* address, int port, int color);
-void PrintHelpMessage();
+int  Run();
 void SignalHandler(int signum);
 
 volatile bool stop = false;
+
+CFlagManagerConstant g_flagmanager;
 
 int main(int argc, char *argv[])
 {
@@ -46,63 +48,38 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  bool   list = false;   //if we have to print the boblight options
-  bool   help = false;   //if we have to print the help message
-  int    priority = 128; //priority of us as a client of boblightd
-  string straddress;     //address of boblightd
-  char*  address;        //set to NULL for default, or straddress.c_str() otherwise
-  int    port = -1;      //port, -1 is default port
-  int    color;          //where we load in the hex color
-  vector<string> options;
-
-  //parse default boblight flags, if it fails we're screwed
-  if (!ParseBoblightFlags(argc, argv, options, priority, straddress, port, list, help))
+  try
   {
-    PrintHelpMessage();
-    return 1;
+    g_flagmanager.ParseFlags(argc, argv);
   }
-
-  if (help)
+  catch (string error)
   {
-    PrintHelpMessage();
-    return 1;
-  }
-  else if (list)
-  {
-    ListBoblightOptions();
-    return 1;
-  }
-
-  //check if a color was given
-  if (optind == argc)
-  {
-    PrintError("no color given");
-    PrintHelpMessage();
+    PrintError(error);
+    g_flagmanager.PrintHelpMessage();
     return 1;
   }
   
-  //check if the color can be loaded
-  if (!HexStrToInt(argv[optind], color) || color & 0xFF000000)
+  if (g_flagmanager.m_printhelp)
   {
-    PrintError("wrong value " + ToString(argv[optind]) + " for color");
-    PrintHelpMessage();
+    g_flagmanager.PrintHelpMessage();
     return 1;
   }
-  
-  if (straddress.empty())
-    address = NULL;
-  else
-    address = const_cast<char*>(straddress.c_str());
+
+  if (g_flagmanager.m_printboblightoptions)
+  {
+    g_flagmanager.PrintBoblightOptions();
+    return 1;
+  }
 
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
   //keep running until we want to quit
-  return Run(options, priority, address, port, color);
+  return Run();
 }
 
-int Run(vector<string>& options, int priority, char* address, int port, int color)
+int Run()
 {
   while(!stop)
   {
@@ -112,7 +89,8 @@ int Run(vector<string>& options, int priority, char* address, int port, int colo
     cout << "Connecting to boblightd\n";
     
     //try to connect, if we can't then bitch to stdout and destroy boblight
-    if (!boblight_connect(boblight, address, port, 5000000) || !boblight_setpriority(boblight, priority))
+    if (!boblight_connect(boblight, g_flagmanager.m_paddress, g_flagmanager.m_port, 5000000) ||
+        !boblight_setpriority(boblight, g_flagmanager.m_priority))
     {
       PrintError(boblight_geterror(boblight));
       cout << "Waiting 10 seconds before trying again\n";
@@ -122,16 +100,19 @@ int Run(vector<string>& options, int priority, char* address, int port, int colo
     }
 
     cout << "Connection to boblightd opened\n";
-    
-    //if we can't parse the boblight option lines (given with -o) properly, just exit
-    if (!ParseBoblightOptions(boblight, options))
+
+    try
     {
-      boblight_destroy(boblight);
+      g_flagmanager.ParseBoblightOptions(boblight);
+    }
+    catch (string error)
+    {
+      PrintError(error);
       return 1;
     }
 
     //load the color into int array
-    int rgb[3] = {(color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF};
+    int rgb[3] = {(g_flagmanager.m_color >> 16) & 0xFF, (g_flagmanager.m_color >> 8) & 0xFF, g_flagmanager.m_color & 0xFF};
    
     //set all lights to the color we want and send it
     boblight_addpixel(boblight, -1, rgb);
@@ -159,24 +140,6 @@ int Run(vector<string>& options, int priority, char* address, int port, int colo
   cout << "Exiting\n";
   
   return 0;
-}
-
-void PrintHelpMessage()
-{
-  cout << "\n";
-  cout << "boblight-constant " << VERSION << "\n";
-  cout << "\n";
-  cout << "Usage: boblight-constant [OPTION] color\n";
-  cout << "\n";
-  cout << "  color is in RRGGBB hex notation\n";
-  cout << "\n";
-  cout << "  options:\n";
-  cout << "\n";
-  cout << "  -p  priority, from 0 to 255, default is 128\n";
-  cout << "  -s  address[:port], set the address and optional port to connect to\n";
-  cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
-  cout << "  -l  list libboblight options\n";
-  cout << "\n";
 }
 
 void SignalHandler(int signum)
