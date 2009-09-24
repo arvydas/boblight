@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+//class for making a copy of argc and argv
 class CArguments
 {
   public:
@@ -37,26 +38,29 @@ class CFlagManager
   public:
     CFlagManager();
 
-    bool         m_printhelp;              //if we need to print the help message
-    bool         m_printboblightoptions;   //if we need to print the boblight options
+    bool         m_printhelp;                               //if we need to print the help message
+    bool         m_printboblightoptions;                    //if we need to print the boblight options
 
-    const char*  m_address;
-    int          m_port;                   //port to connect to
-    int          m_priority;
+    const char*  m_address;                                 //address to connect to, set to NULL if none given for default
+    int          m_port;                                    //port to connect to, set to -1 if none given for default
+    int          m_priority;                                //priority, set to 128 if none given for default
 
-    void         ParseFlags(int tempargc, char** tempargv);
+    void         ParseFlags(int tempargc, char** tempargv); //parsing commandline flags
     virtual void PrintHelpMessage() {};
 
-    void         PrintBoblightOptions();
-    void         ParseBoblightOptions(void* boblight);
+    void         PrintBoblightOptions();                    //printing of boblight options (-o [light:]option=value)
+    void         ParseBoblightOptions(void* boblight);      //parsing of boblight options
 
   protected:
-    std::string  m_flags;
-    std::string  m_straddress;                //address to connect to
 
-    std::vector<std::string> m_options;    //boblight options
+    std::string  m_flags;                                   //string to pass to getopt, for example "c:r:a:p"
+    std::string  m_straddress;                              //place to store address to connect to, because CArguments deletes argv
 
+    std::vector<std::string> m_options;                     //place to store boblight options
+
+    //gets called from ParseFlags, for derived classes
     virtual void ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg){};
+    //gets called after getopt
     virtual void PostGetopt(int optind, int argc, char** argv) {};
 };
 

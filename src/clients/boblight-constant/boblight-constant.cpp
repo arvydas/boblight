@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  //try to parse the flags and bitch to stderr if there's an error
   try
   {
     g_flagmanager.ParseFlags(argc, argv);
@@ -58,13 +59,13 @@ int main(int argc, char *argv[])
     return 1;
   }
   
-  if (g_flagmanager.m_printhelp)
+  if (g_flagmanager.m_printhelp) //print help message
   {
     g_flagmanager.PrintHelpMessage();
     return 1;
   }
 
-  if (g_flagmanager.m_printboblightoptions)
+  if (g_flagmanager.m_printboblightoptions) //print boblight options (-o [light:]option=value)
   {
     g_flagmanager.PrintBoblightOptions();
     return 1;
@@ -87,7 +88,7 @@ int Run()
 
     cout << "Connecting to boblightd\n";
     
-    //try to connect, if we can't then bitch to stdout and destroy boblight
+    //try to connect, if we can't then bitch to stderr and destroy boblight
     if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
         !boblight_setpriority(boblight, g_flagmanager.m_priority))
     {
@@ -100,6 +101,7 @@ int Run()
 
     cout << "Connection to boblightd opened\n";
 
+    //try to parse the boblight flags and bitch to stderr if we can't
     try
     {
       g_flagmanager.ParseBoblightOptions(boblight);
@@ -115,7 +117,7 @@ int Run()
    
     //set all lights to the color we want and send it
     boblight_addpixel(boblight, -1, rgb);
-    if (!boblight_sendrgb(boblight))
+    if (!boblight_sendrgb(boblight)) //some error happened, probably connection broken, so bitch and try again
     {
       PrintError(boblight_geterror(boblight));
       boblight_destroy(boblight);

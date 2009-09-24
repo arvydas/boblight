@@ -30,7 +30,7 @@ void CFlagManagerConstant::PostGetopt(int optind, int argc, char** argv)
   if (optind == argc)
     throw string("no color given");
   
-  //check if the color can be loaded
+  //check if the color can be loaded, should be in RRGGBB hex notation
   if (!HexStrToInt(argv[optind], m_color) || m_color & 0xFF000000)
     throw string("wrong value " + ToString(argv[optind]) + " for color");
 }

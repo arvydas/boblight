@@ -37,13 +37,13 @@ CGrabber::CGrabber(void* boblight)
 
 CGrabber::~CGrabber()
 {
-  if (m_dpy)
+  if (m_dpy) //close display connection if opened
   {
     XCloseDisplay(m_dpy);
     m_dpy = NULL;
   }
 
-  if (m_debug)
+  if (m_debug) //close debug dpy connection if opened
   {
     XFreeGC(m_debugdpy, m_debuggc);
     XDestroyWindow(m_debugdpy, m_debugwindow);
@@ -54,32 +54,32 @@ CGrabber::~CGrabber()
 
 bool CGrabber::Setup()
 {
-  m_dpy = XOpenDisplay(NULL);
+  m_dpy = XOpenDisplay(NULL);  //try to open a dpy connection
   if (m_dpy == NULL)
   {
     m_error = "unable to open display";
-    return false;
+    return false; //unrecoverable error
   }
 
   m_rootwin = RootWindow(m_dpy, DefaultScreen(m_dpy));
   UpdateDimensions();
 
-  if (m_interval > 0.0)
+  if (m_interval > 0.0) //set up timer
   {
     m_timer.SetInterval(Round<int64_t>(m_interval * 1000000.0));
   }
-  else
+  else //interval is negative so sync to vblank instead
   {
     if (!m_vblanksignal.Setup())
     {
       m_error = m_vblanksignal.GetError();
-      return false;
+      return false; //unrecoverable error
     }
   }
 
   m_error.clear();
 
-  return ExtendedSetup();
+  return ExtendedSetup(); //run stuff from derived classes
 }
 
 bool CGrabber::ExtendedSetup()
@@ -87,7 +87,7 @@ bool CGrabber::ExtendedSetup()
   return true;
 }
 
-void CGrabber::UpdateDimensions()
+void CGrabber::UpdateDimensions() //update size of root window
 {
   XGetWindowAttributes(m_dpy, m_rootwin, &m_rootattr);
 }
@@ -99,16 +99,16 @@ bool CGrabber::Run(volatile bool& stop)
 
 bool CGrabber::Wait()
 {
-  if (m_interval > 0.0)
+  if (m_interval > 0.0) //wait for timer
   {
     m_timer.Wait();
   }
-  else
+  else //interval is negative, wait for vblanks
   {
     if (!m_vblanksignal.Wait(Round<unsigned int>(m_interval * -1.0)))
     {
       m_error = m_vblanksignal.GetError();
-      return false;
+      return false; //unrecoverable error
     }
   }
 
@@ -130,6 +130,7 @@ void CGrabber::SetDebug(const char* display)
 
   m_debuggc = XCreateGC(m_debugdpy, m_debugwindow, 0, NULL);
 
+  //set up stuff for measuring fps
   m_lastupdate = m_fpsclock.GetSecTime<long double>();
   m_lastmeasurement = m_lastupdate;
   m_measurements = 0.0;
@@ -142,17 +143,17 @@ void CGrabber::UpdateDebugFps()
 {
   if (m_debug)
   {
-    long double now = m_fpsclock.GetSecTime<long double>();
-    m_measurements += now - m_lastmeasurement;
-    m_nrmeasurements++;
-    m_lastmeasurement = now;
+    long double now = m_fpsclock.GetSecTime<long double>(); //current timestamp
+    m_measurements += now - m_lastmeasurement;              //diff between last time we were here
+    m_nrmeasurements++;                                     //got another measurement
+    m_lastmeasurement = now;                                //save the timestamp
 
-    if (now - m_lastupdate >= 1.0)
+    if (now - m_lastupdate >= 1.0)                          //if we've measured for one second, place fps on debug window title
     {
       m_lastupdate = now;
 
       long double fps = 0.0;
-      if (m_nrmeasurements > 0) fps = 1.0 / (m_measurements / m_nrmeasurements);
+      if (m_nrmeasurements > 0) fps = 1.0 / (m_measurements / m_nrmeasurements); //we need at least one measurement
       m_measurements = 0.0;
       m_nrmeasurements = 0;
 

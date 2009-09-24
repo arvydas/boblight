@@ -25,6 +25,7 @@
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 
+//class for waiting on vertical blanks with glxwaitvideosyncsgi
 class CVblankSignal
 {
   public:
@@ -38,18 +39,19 @@ class CVblankSignal
     std::string& GetError() { return m_error; }
 
   private:
+    //function pointers, because SGI_video_sync is an extension
     int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
     int  (*m_glXGetVideoSyncSGI)(unsigned int*);
 
-    std::string  m_error;
+    std::string  m_error;      //last error
     
-    Display*     m_dpy;
+    Display*     m_dpy;        //our dpy connection
     XVisualInfo* m_vinfo;
     Window       m_window;
     GLXContext   m_context;
 
-    unsigned int m_prevvblank;
-    bool         m_isreset;
+    unsigned int m_prevvblank; //previous value of the vblank counter
+    bool         m_isreset;    //glxwaitvideosyncsgi can break, try to reset once
 };
 
 #endif //CVBLANKSIGNAL

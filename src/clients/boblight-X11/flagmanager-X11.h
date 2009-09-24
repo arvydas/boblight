@@ -29,17 +29,18 @@ class CFlagManagerX11 : public CFlagManager
   public:
     CFlagManagerX11();
     
-    void        ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg);
+    void        ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg); //we load our own flags here
     void        PrintHelpMessage();
 
-    double      m_interval;
-    int         m_pixels;
-    int         m_method;
-    bool        m_debug;
-    const char* m_debugdpy;
+    double      m_interval;           //grab interval in seconds, or vertical blanks when negative
+    int         m_pixels;             //number of pixels on lines to capture
+    int         m_method;             //xrender or xgetimage, xrender is way faster but might be buggy, xgetimage is crap slow
+    bool        m_debug;              //if true we make a little window where we put our captured output on, looks pretty
+    const char* m_debugdpy;           //display to place the debug window on, default is NULL
 
   private:
-    std::string m_strdebugdpy;
+    
+    std::string m_strdebugdpy;        //place to store the debug dpy, cause our copied argv is destroyed
 };
 
 #endif //FLAGMANAGERX11

@@ -35,48 +35,48 @@ class CGrabber
     CGrabber(void* boblight);
     ~CGrabber();
 
-    std::string& GetError() { return m_error; }
+    std::string& GetError()           { return m_error; }        //retrieves the latest error
     
-    void SetInterval(double interval) { m_interval = interval; }
-    void SetSize(int size)            { m_size = size; }
+    void SetInterval(double interval) { m_interval = interval; } //sets interval, negative means vblanks
+    void SetSize(int size)            { m_size = size; }         //sets how many pixels we want to grab
 
-    bool Setup();
-    virtual bool ExtendedSetup();
-    virtual bool Run(volatile bool& stop);
+    bool Setup();                                                //base setup function
+    virtual bool ExtendedSetup();                                //extended stuff for derived classes
+    virtual bool Run(volatile bool& stop);                       //main run function
 
-    void SetDebug(const char* display);
+    void SetDebug(const char* display);                          //turn on debug window
     
   protected:
 
-    void              UpdateDimensions();
-    bool              Wait();
+    void              UpdateDimensions();                        //update the size of the root window
+    bool              Wait();                                    //wait for the timer or on the vblank
 
-    std::string       m_error;
+    std::string       m_error;                                   //latest error
     
-    void*             m_boblight;
+    void*             m_boblight;                                //our handle from libboblight
     
-    Display*          m_dpy;
+    Display*          m_dpy;                                     //main dpy connection
     Window            m_rootwin;
     XWindowAttributes m_rootattr;
-    int               m_size;
+    int               m_size;                                    //nr of pixels on lines to grab
 
-    bool              m_debug;
-    Display*          m_debugdpy;
+    bool              m_debug;                                   //if we have debug mode on
+    Display*          m_debugdpy;                                //dpy connection for debug mode
     Window            m_debugwindow;
     int               m_debugwindowwidth;
     int               m_debugwindowheight;
     GC                m_debuggc;
 
-    void              UpdateDebugFps();
-    CClock            m_fpsclock;
+    void              UpdateDebugFps();                          //the title of the debug window is the fps we capture at
+    CClock            m_fpsclock;                                //we have to measure fps with something
     long double       m_lastupdate;
     long double       m_lastmeasurement;
     long double       m_measurements;
     int               m_nrmeasurements;
     
-    double            m_interval;
-    CTimer            m_timer;
-    CVblankSignal     m_vblanksignal;    
+    double            m_interval;                                //interval in seconds, or negative for vblanks
+    CTimer            m_timer;                                   //our timer
+    CVblankSignal     m_vblanksignal;                            //class that gets vblank signals with glxwaitvideosyncsgi
     
 };
 

@@ -26,6 +26,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
+//class for grabbing with fast xrender
 class CGrabberXRender : public CGrabber
 {
   public:
@@ -39,14 +40,14 @@ class CGrabberXRender : public CGrabber
 
     bool CheckExtensions();
     
-    XRenderPictFormat*       m_srcformat;
+    XRenderPictFormat*       m_srcformat;   //not sure what all this is
     XRenderPictFormat*       m_dstformat;
     Picture                  m_srcpicture;
     Picture                  m_dstpicture;
     XRenderPictureAttributes m_pictattr;
     XTransform               m_transform;
-    Pixmap                   m_pixmap;
-    XShmSegmentInfo          m_shmseginfo;
+    Pixmap                   m_pixmap;      //pixmap we render into
+    XShmSegmentInfo          m_shmseginfo;  //we copy the pixmap to an ximage in shared mem
     XImage*                  m_xim;
 };
 

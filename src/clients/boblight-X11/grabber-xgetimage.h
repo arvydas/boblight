@@ -21,6 +21,7 @@
 
 #include "grabber-base.h"
 
+//class for grabbing with slow xgetimage
 class CGrabberXGetImage : public CGrabber
 {
   public:
@@ -32,7 +33,7 @@ class CGrabberXGetImage : public CGrabber
     
   private:
 
-    XImage* m_debugxim;
+    XImage* m_debugxim;                //this is were we store captured pixels
 };
 
 #endif //GRABBERXGETIMAGE

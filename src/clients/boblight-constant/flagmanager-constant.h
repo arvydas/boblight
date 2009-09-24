@@ -24,7 +24,7 @@
 class CFlagManagerConstant : public CFlagManager
 {
   public:
-    void PostGetopt(int optind, int argc, char** argv);
+    void PostGetopt(int optind, int argc, char** argv); //we load m_color here
     void PrintHelpMessage();
     int  m_color;
 };

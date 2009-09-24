@@ -55,6 +55,7 @@ int main (int argc, char *argv[])
     return 1;
   }
 
+  //try to parse the flags and bitch to stderr if there's an error
   try
   {
     g_flagmanager.ParseFlags(argc, argv);
@@ -66,13 +67,13 @@ int main (int argc, char *argv[])
     return 1;
   }
   
-  if (g_flagmanager.m_printhelp)
+  if (g_flagmanager.m_printhelp) //print help message
   {
     g_flagmanager.PrintHelpMessage();
     return 1;
   }
 
-  if (g_flagmanager.m_printboblightoptions)
+  if (g_flagmanager.m_printboblightoptions) //print boblight options (-o [light:]option=value)
   {
     g_flagmanager.PrintBoblightOptions();
     return 1;
@@ -80,10 +81,10 @@ int main (int argc, char *argv[])
 
   if (g_flagmanager.m_pixels == -1) //set default pixels
   {
-    if (g_flagmanager.m_method == XGETIMAGE)
+    if (g_flagmanager.m_method == XGETIMAGE) //xgetimage is crap slow so we grab 16x16 pixels
       g_flagmanager.m_pixels = 16;
-    else
-      g_flagmanager.m_pixels = 64;
+    else                                     //xrender is very fast so we scale down the root window
+      g_flagmanager.m_pixels = 64;           //to a 64x64 pixels pixmap
   }  
   
   //set up signal handlers
@@ -104,7 +105,7 @@ int Run()
 
     cout << "Connecting to boblightd\n";
     
-    //try to connect, if we can't then bitch to stdout and destroy boblight
+    //try to connect, if we can't then bitch to stderr and destroy boblight
     if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
         !boblight_setpriority(boblight, g_flagmanager.m_priority))
     {
@@ -128,6 +129,7 @@ int Run()
       return 1;
     }
 
+    //set up grabber, based on whether we want to use xrender or xgetimage
     CGrabber* grabber;
     
     if (g_flagmanager.m_method == XGETIMAGE)
@@ -141,7 +143,7 @@ int Run()
     if (g_flagmanager.m_debug)
       grabber->SetDebug(g_flagmanager.m_debugdpy);
     
-    if (!grabber->Setup())
+    if (!grabber->Setup()) //just exit if we can't set up the grabber
     {
       PrintError(grabber->GetError());
       delete grabber;
@@ -149,14 +151,14 @@ int Run()
       return 1;
     }
 
-    if (!grabber->Run(stop))
+    if (!grabber->Run(stop)) //just exit if some unrecoverable error happens
     {
       PrintError(grabber->GetError());
       delete grabber;
       boblight_destroy(boblight);
       return 1;
     }
-    else
+    else //boblightd probably timed out, so just try to reconnect
     {
       if (!grabber->GetError().empty())
         PrintError(grabber->GetError());

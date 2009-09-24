@@ -75,6 +75,7 @@ bool CGrabberXRender::ExtendedSetup()
   m_srcpicture = XRenderCreatePicture(m_dpy, m_rootwin, m_srcformat, CPRepeat, &m_pictattr);
   m_dstpicture = XRenderCreatePicture(m_dpy, m_pixmap,  m_dstformat, CPRepeat, &m_pictattr);
 
+  //we want bilinear scaling
   XRenderSetPictureFilter(m_dpy, m_srcpicture, "bilinear", NULL, 0);
 
   //set up shared memory ximage
@@ -132,15 +133,19 @@ bool CGrabberXRender::Run(volatile bool& stop)
   {
     UpdateDimensions();
 
+    //we want to scale the root window to the pixmap
     m_transform.matrix[0][0] = Round<int>((double)m_rootattr.width / (double)m_size * 65536.0);
     m_transform.matrix[1][1] = Round<int>((double)m_rootattr.height / (double)m_size * 65536.0);
     XRenderSetPictureTransform (m_dpy, m_srcpicture, &m_transform);
-    
+
+    //render the thing
     XRenderComposite(m_dpy, PictOpSrc, m_srcpicture, None, m_dstpicture, 0, 0, 0, 0, 0, 0, m_size, m_size);
     XSync(m_dpy, False);
 
+    //copy pixmap to the ximage in shared mem
     XShmGetImage(m_dpy, m_pixmap, m_xim, 0, 0, AllPlanes);
 
+    //read out the pixels
     for (int y = 0; y < m_size && !stop; y++)
     {
       for (int x = 0; x < m_size && !stop; x++)
@@ -155,10 +160,11 @@ bool CGrabberXRender::Run(volatile bool& stop)
       }
     }
 
+    //send pixeldata to boblight
     if (!boblight_sendrgb(m_boblight))
     {
       m_error = boblight_geterror(m_boblight);
-      return true;
+      return true; //recoverable error
     }
 
     //when in debug mode, put the captured image on the debug window
@@ -173,7 +179,7 @@ bool CGrabberXRender::Run(volatile bool& stop)
     if (!Wait())
     {
       m_error = m_vblanksignal.GetError();
-      return false;
+      return false; //unrecoverable error
     }
 
     UpdateDebugFps();

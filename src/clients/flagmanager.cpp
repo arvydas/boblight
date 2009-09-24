@@ -27,6 +27,7 @@
 
 using namespace std;
 
+//very simple, store a copy of argc and argv
 CArguments::CArguments(int argc, char** argv)
 {
   m_argc = argc;
@@ -46,6 +47,7 @@ CArguments::CArguments(int argc, char** argv)
   }
 }
 
+//delete the copy of argv
 CArguments::~CArguments()
 {
   if (m_argv)
@@ -60,25 +62,26 @@ CArguments::~CArguments()
 
 CFlagManager::CFlagManager()
 {
-  m_port = -1;
-  m_address = NULL;
-  m_priority = 128;
-  m_printhelp = false;
-  m_printboblightoptions = false;
+  m_port = -1;                    //-1 tells libboblight to use default port
+  m_address = NULL;               //NULL tells libboblight to use default address
+  m_priority = 128;               //default priority
+  m_printhelp = false;            //don't print helpmessage unless asked to
+  m_printboblightoptions = false; //same for libboblight options
 
+  // default getopt flags, can be extended in derived classes
   // p = priority, s = address[:port], o = boblight option, l = list boblight options, h = print help message
   m_flags = "p:s:o:lh";
 }
 
 void CFlagManager::ParseFlags(int tempargc, char** tempargv)
 {
+  //that copy class sure comes in handy now!
   CArguments arguments(tempargc, tempargv);
-
   int    argc = arguments.m_argc;
   char** argv = arguments.m_argv;
 
   string option;
-  int c;
+  int    c;
 
   opterr = 0; //we don't want to print error messages
   
@@ -95,6 +98,7 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     else if (c == 's') //address[:port]
     {
       option = optarg;
+      //store address in string and set the char* to it
       m_straddress = option.substr(0, option.find(':'));
       m_address = m_straddress.c_str();
 
@@ -122,8 +126,9 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
       m_printhelp = true;
       return;
     }
-    else if (c == '?')
+    else if (c == '?') //unknown option
     {
+      //check if we know this option, but expected an argument
       if (m_flags.find(ToString((char)optopt) + ":") != string::npos)
       {
         throw string("Option " + ToString((char)optopt) + "requires an argument");
@@ -135,11 +140,11 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     }
     else
     {
-      ParseFlagsExtended(argc, argv, c, optarg);
+      ParseFlagsExtended(argc, argv, c, optarg); //pass our argument to a derived class
     }
   }
 
-  PostGetopt(optind, argc, argv);
+  PostGetopt(optind, argc, argv); //some postprocessing
 }
 
 //go through all options and print the descriptions to stdout
@@ -201,11 +206,12 @@ void CFlagManager::ParseBoblightOptions(void* boblight)
       throw string("wrong option \"" + option + "\", syntax is [light:]option=value");
     }
 
-    optionname = option.substr(0, option.find('='));
-    optionvalue = option.substr(option.find('=') + 1);
+    optionname = option.substr(0, option.find('='));   //option name is everything before = (already shaved off the lightname here)
+    optionvalue = option.substr(option.find('=') + 1); //value is everything after =
 
-    option = optionname + " " + optionvalue;
+    option = optionname + " " + optionvalue;           //libboblight wants syntax without =
 
+    //bitch if we can't set this option
     if (!boblight_setoption(boblight, lightnr, option.c_str()))
     {
       throw string(boblight_geterror(boblight));

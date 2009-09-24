@@ -59,9 +59,11 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
     {
       for (int x = 0; x < m_size && !stop; x++)
       {
+        //position of pixel to capture
         int xpos = (m_rootattr.width  - 1) * x / m_size;
         int ypos = (m_rootattr.height - 1) * y / m_size;
-        
+
+        //get an image of size 1x1 at the location
         xim = XGetImage(m_dpy, m_rootwin, xpos, ypos, 1, 1, AllPlanes, ZPixmap);
         if (xerror) //size of the root window probably changed and we read beyond it
         {
@@ -71,13 +73,16 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
           continue;
         }
 
+        //read out pixel
         pixel = XGetPixel(xim, 0, 0);
         XDestroyImage(xim);
 
+        //place pixel in rgb array
         rgb[0] = (pixel >> 16) & 0xff;
         rgb[1] = (pixel >>  8) & 0xff;
         rgb[2] = (pixel >>  0) & 0xff;
 
+        //add pixel to boblight
         boblight_addpixelxy(m_boblight, x, y, rgb);
 
         //put pixel on debug image
@@ -86,10 +91,11 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
       }
     }
 
+    //send rgb values to boblightd
     if (!boblight_sendrgb(m_boblight))
     {
       m_error = boblight_geterror(m_boblight);
-      return true;
+      return true; //recoverable error
     }
 
     //put debug image on debug window
@@ -104,7 +110,7 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
     if (!Wait())
     {
       m_error = m_vblanksignal.GetError();
-      return false;
+      return false; //unrecoverable error
     }
 
     UpdateDebugFps();

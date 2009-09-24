@@ -26,19 +26,20 @@ using namespace std;
 
 CFlagManagerX11::CFlagManagerX11()
 {
+  //extend the base getopt flags
   //i = interval, u = pixels, x = xgetimage, d = debug
   m_flags += "i:u:xd::";
 
-  m_interval = 0.1; //default interval is 100 milliseconds
-  m_pixels = -1;    //-1 says to the capture classes to use default
-  m_method = XRENDER;
-  m_debug = false;
-  m_debugdpy = NULL;
+  m_interval = 0.1;    //default interval is 100 milliseconds
+  m_pixels = -1;       //-1 says to the capture classes to use default
+  m_method = XRENDER;  //default method is fast xrender
+  m_debug = false;     //no debugging by default
+  m_debugdpy = NULL;   //default debug dpy is system default
 }
 
 void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
 {
-  if (c == 'i')
+  if (c == 'i') //interval
   {
     bool vblank = false;
     if (optarg[0] == 'v') //starting interval with v means vblank interval
@@ -62,21 +63,21 @@ void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
       optarg--;
     }
   }
-  else if (c == 'u')
+  else if (c == 'u') //nr of pixels to use
   {
     if (!StrToInt(optarg, m_pixels) || m_pixels <= 0)
     {
       throw string("Wrong value " + string(optarg) + " for pixels");
     }
   }
-  else if (c == 'x')
+  else if (c == 'x') //use crap xgetimage instead of sleek xrender
   {
     m_method = XGETIMAGE;
   }
-  else if (c == 'd')
+  else if (c == 'd') //turn on debug mode
   {
     m_debug = true;
-    if (optarg)
+    if (optarg)      //optional debug dpy
     {
       m_strdebugdpy = optarg;
       m_debugdpy = m_strdebugdpy.c_str();
