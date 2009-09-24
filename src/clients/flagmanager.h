@@ -56,7 +56,7 @@ class CFlagManager
 
     std::vector<std::string> m_options;    //boblight options
 
-    virtual void ParseFlagsExtended(int& argc, char**& argv){};
+    virtual void ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg){};
     virtual void PostGetopt(int optind, int argc, char** argv) {};
 };
 

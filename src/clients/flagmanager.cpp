@@ -135,7 +135,7 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     }
     else
     {
-      ParseFlagsExtended(argc, argv);
+      ParseFlagsExtended(argc, argv, c, optarg);
     }
   }
 

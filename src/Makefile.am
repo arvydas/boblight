@@ -34,8 +34,6 @@ boblight_X11_SOURCES = \
 	util/condition.cpp \
 	util/mutex.cpp \
 	util/thread.cpp \
-	clients/flags.cpp \
-	clients/flags.h \
 	util/misc.cpp \
 	util/misc.h \
 	clients/boblight-X11/grabber-base.cpp \
@@ -43,7 +41,11 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/grabber-xgetimage.cpp \
 	clients/boblight-X11/grabber-xgetimage.h \
 	clients/boblight-X11/grabber-xrender.cpp \
-	clients/boblight-X11/grabber-xrender.h
+	clients/boblight-X11/grabber-xrender.h \
+	clients/boblight-X11/flagmanager-X11.cpp \
+	clients/boblight-X11/flagmanager-X11.h \
+	clients/flagmanager.cpp \
+	clients/flagmanager.h
 
 boblighttest_SOURCES = \
 	boblight-test.cpp\

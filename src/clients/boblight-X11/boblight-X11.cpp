@@ -29,24 +29,21 @@
 #include "util/timer.h"
 #include "vblanksignal.h"
 #include "config.h"
-#include "clients/flags.h"
+#include "flagmanager-X11.h"
 
 #include "grabber-base.h"
 #include "grabber-xgetimage.h"
 #include "grabber-xrender.h"
 
-#define XGETIMAGE 0
-#define XRENDER   1
-
 using namespace std;
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method, bool& debug, char*& debugdpy);
-int  Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method, bool debug, char* debugdpy);
-void PrintHelpMessage();
+int  Run();
 void SignalHandler(int signum);
 int  ErrorHandler(Display* dpy, XErrorEvent* error);
 
 volatile bool stop = false;
+
+CFlagManagerX11 g_flagmanager;
 
 int main (int argc, char *argv[])
 {
@@ -58,126 +55,47 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-  bool   list = false;     //if we have to print the boblight options
-  bool   help = false;     //if we have to print the help message
-  int    priority = 128;   //priority of us as a client of boblightd
-  string straddress;       //address of boblightd
-  char*  address;          //set to NULL for default, or straddress.c_str() otherwise
-  int    port = -1;        //port, -1 is default port
-  double interval = 0.1;   //interval of the grabber in seconds
-  int    pixels = -1;      //number of pixels/rows to use
-  int    method = XRENDER; //what method we use to capture pixels
-  bool   debug = false;    //if we're in debug mode
-  char*  debugdpy;         //display to use for debug
-  vector<string> options;
-
-  //parse default boblight flags, if it fails we're screwed
-  if (!ParseBoblightFlags(argc, argv, options, priority, straddress, port, list, help))
+  try
   {
-    PrintHelpMessage();
+    g_flagmanager.ParseFlags(argc, argv);
+  }
+  catch (string error)
+  {
+    PrintError(error);
+    g_flagmanager.PrintHelpMessage();
+    return 1;
+  }
+  
+  if (g_flagmanager.m_printhelp)
+  {
+    g_flagmanager.PrintHelpMessage();
     return 1;
   }
 
-  if (help)
+  if (g_flagmanager.m_printboblightoptions)
   {
-    PrintHelpMessage();
-    return 1;
-  }
-  else if (list)
-  {
-    ListBoblightOptions();
+    g_flagmanager.PrintBoblightOptions();
     return 1;
   }
 
-  if (!ParseFlags(argc, argv, interval, pixels, method, debug, debugdpy))
-    return 1;
-
-  if (pixels == -1) //set default pixels
+  if (g_flagmanager.m_pixels == -1) //set default pixels
   {
-    if (method == XGETIMAGE)
-      pixels = 16;
+    if (g_flagmanager.m_method == XGETIMAGE)
+      g_flagmanager.m_pixels = 16;
     else
-      pixels = 64;
+      g_flagmanager.m_pixels = 64;
   }  
   
-  if (straddress.empty())
-    address = NULL;
-  else
-    address = const_cast<char*>(straddress.c_str());
-
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
   //keeps running until some unrecoverable error happens
-  return Run(options, priority, address, port, pixels, interval, method, debug, debugdpy);
+  return Run();
 
 }
 
-bool ParseFlags(int argc, char *argv[], double& interval, int& pixels, int& method, bool& debug, char*& debugdpy)
-{
-  int c;
-  optind = 0; //ParseBoblightFlags already did getopt
-
-  while ((c = getopt (argc, argv, "i:u:xd::")) != -1)
-  {
-    if (c == 'i')
-    {
-      bool vblank = false;
-      if (optarg[0] == 'v') //starting interval with v means vblank interval
-      {
-        optarg++;
-        vblank = true;
-      }
-
-      if (!StrToFloat(optarg, interval) || interval <= 0.0)
-      {
-        PrintError("Wrong value " + string(optarg) + " for interval");
-        return false;
-      }
-
-      if (vblank)
-      {
-        if (interval < 1.0)
-        {
-          PrintError("Wrong value " + string(optarg) + " for vblank interval");
-          return false;
-        }
-        interval *= -1.0; //negative interval means vblank
-        optarg--;
-      }
-    }
-    else if (c == 'u')
-    {
-      if (!StrToInt(optarg, pixels) || pixels <= 0)
-      {
-        PrintError("Wrong value " + string(optarg) + " for pixels");
-        return false;
-      }
-    }
-    else if (c == 'x')
-    {
-      method = XGETIMAGE;
-    }
-    else if (c == 'd')
-    {
-      debug = true;
-      debugdpy = optarg;
-    }
-    else if (c == '?')
-    {
-      if (optopt == 'u' || optopt == 'i')
-      {
-        PrintError("Option " + ToString((char)optopt) + " requires an argument");
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-int Run(vector<string>& options, int priority, char* address, int port, int pixels, double interval, int method, bool debug, char* debugdpy)
+int Run()
 {
   while(!stop)
   {
@@ -187,7 +105,8 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
     cout << "Connecting to boblightd\n";
     
     //try to connect, if we can't then bitch to stdout and destroy boblight
-    if (!boblight_connect(boblight, address, port, 5000000) || !boblight_setpriority(boblight, priority))
+    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
+        !boblight_setpriority(boblight, g_flagmanager.m_priority))
     {
       PrintError(boblight_geterror(boblight));
       cout << "Waiting 10 seconds before trying again\n";
@@ -199,24 +118,28 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
     cout << "Connection to boblightd opened\n";
     
     //if we can't parse the boblight option lines (given with -o) properly, just exit
-    if (!ParseBoblightOptions(boblight, options))
+    try
     {
-      boblight_destroy(boblight);
+      g_flagmanager.ParseBoblightOptions(boblight);
+    }
+    catch (string error)
+    {
+      PrintError(error);
       return 1;
     }
 
     CGrabber* grabber;
     
-    if (method == XGETIMAGE)
+    if (g_flagmanager.m_method == XGETIMAGE)
       grabber = reinterpret_cast<CGrabber*>(new CGrabberXGetImage(boblight));
-    else if (method == XRENDER)
+    else if (g_flagmanager.m_method == XRENDER)
       grabber = reinterpret_cast<CGrabber*>(new CGrabberXRender(boblight));
 
-    grabber->SetInterval(interval);
-    grabber->SetSize(pixels);
+    grabber->SetInterval(g_flagmanager.m_interval);
+    grabber->SetSize(g_flagmanager.m_pixels);
 
-    if (debug)
-      grabber->SetDebug(debugdpy);
+    if (g_flagmanager.m_debug)
+      grabber->SetDebug(g_flagmanager.m_debugdpy);
     
     if (!grabber->Setup())
     {
@@ -247,28 +170,6 @@ int Run(vector<string>& options, int priority, char* address, int port, int pixe
   cout << "Exiting\n";
   
   return 0;
-}
-
-void PrintHelpMessage()
-{
-  cout << "\n";
-  cout << "boblight-X11 " << VERSION << "\n";
-  cout << "\n";
-  cout << "Usage: boblight-X11 [OPTION]\n";
-  cout << "\n";
-  cout << "  options:\n";
-  cout << "\n";
-  cout << "  -p  priority, from 0 to 255, default is 128\n";
-  cout << "  -s  address:[port], set the address and optional port to connect to\n";
-  cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
-  cout << "  -l  list libboblight options\n";
-  cout << "  -i  set the interval in seconds, default is 0.1\n";
-  cout << "      prefix the value with v to wait for a number of vertical blanks instead\n";
-  cout << "  -u  set the number of pixels/rows to use\n";
-  cout << "      default is 64 for xrender and 16 for xgetimage\n";
-  cout << "  -x  use XGetImage instead of XRender\n";
-  cout << "  -d  debug mode\n";
-  cout << "\n";
 }
 
 void SignalHandler(int signum)
