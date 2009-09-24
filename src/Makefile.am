@@ -17,15 +17,13 @@ bin_PROGRAMS = boblightd \
 	boblight-constant
 
 boblight_constant_SOURCES = \
-	clients/boblight-constant.cpp\
-	util/misc.cpp \
-	util/misc.h \
-	clients/flags.cpp \
-	clients/flags.h \
+	clients/boblight-constant/boblight-constant.cpp\
 	clients/flagmanager.cpp \
 	clients/flagmanager.h \
-	clients/flagmanager-constant.cpp \
-	clients/flagmanager-constant.h
+	clients/boblight-constant/flagmanager-constant.cpp \
+	clients/boblight-constant/flagmanager-constant.h \
+	util/misc.cpp \
+	util/misc.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp\

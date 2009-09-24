@@ -69,8 +69,8 @@ am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT) \
-	misc.$(OBJEXT) flags.$(OBJEXT) flagmanager.$(OBJEXT) \
-	flagmanager-constant.$(OBJEXT)
+	flagmanager.$(OBJEXT) flagmanager-constant.$(OBJEXT) \
+	misc.$(OBJEXT)
 boblight_constant_OBJECTS = $(am_boblight_constant_OBJECTS)
 boblight_constant_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
@@ -246,15 +246,13 @@ AM_CFLAGS = \
 	 -g
 
 boblight_constant_SOURCES = \
-	clients/boblight-constant.cpp\
-	util/misc.cpp \
-	util/misc.h \
-	clients/flags.cpp \
-	clients/flags.h \
+	clients/boblight-constant/boblight-constant.cpp\
 	clients/flagmanager.cpp \
 	clients/flagmanager.h \
-	clients/flagmanager-constant.cpp \
-	clients/flagmanager-constant.h
+	clients/boblight-constant/flagmanager-constant.cpp \
+	clients/boblight-constant/flagmanager-constant.h \
+	util/misc.cpp \
+	util/misc.h
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp\
@@ -731,19 +729,19 @@ grabber-xrender.obj: clients/boblight-X11/grabber-xrender.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o grabber-xrender.obj `if test -f 'clients/boblight-X11/grabber-xrender.cpp'; then $(CYGPATH_W) 'clients/boblight-X11/grabber-xrender.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-X11/grabber-xrender.cpp'; fi`
 
-boblight-constant.o: clients/boblight-constant.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.o -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.o `test -f 'clients/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant.cpp
+boblight-constant.o: clients/boblight-constant/boblight-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.o -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.o `test -f 'clients/boblight-constant/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant/boblight-constant.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-constant.Tpo $(DEPDIR)/boblight-constant.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant.cpp' object='boblight-constant.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant/boblight-constant.cpp' object='boblight-constant.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.o `test -f 'clients/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.o `test -f 'clients/boblight-constant/boblight-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant/boblight-constant.cpp
 
-boblight-constant.obj: clients/boblight-constant.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.obj -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.obj `if test -f 'clients/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant.cpp'; fi`
+boblight-constant.obj: clients/boblight-constant/boblight-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boblight-constant.obj -MD -MP -MF $(DEPDIR)/boblight-constant.Tpo -c -o boblight-constant.obj `if test -f 'clients/boblight-constant/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant/boblight-constant.cpp'; fi`
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/boblight-constant.Tpo $(DEPDIR)/boblight-constant.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant.cpp' object='boblight-constant.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant/boblight-constant.cpp' object='boblight-constant.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.obj `if test -f 'clients/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boblight-constant.obj `if test -f 'clients/boblight-constant/boblight-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant/boblight-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant/boblight-constant.cpp'; fi`
 
 flagmanager.o: clients/flagmanager.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flagmanager.o -MD -MP -MF $(DEPDIR)/flagmanager.Tpo -c -o flagmanager.o `test -f 'clients/flagmanager.cpp' || echo '$(srcdir)/'`clients/flagmanager.cpp
@@ -759,19 +757,19 @@ flagmanager.obj: clients/flagmanager.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager.obj `if test -f 'clients/flagmanager.cpp'; then $(CYGPATH_W) 'clients/flagmanager.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/flagmanager.cpp'; fi`
 
-flagmanager-constant.o: clients/flagmanager-constant.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flagmanager-constant.o -MD -MP -MF $(DEPDIR)/flagmanager-constant.Tpo -c -o flagmanager-constant.o `test -f 'clients/flagmanager-constant.cpp' || echo '$(srcdir)/'`clients/flagmanager-constant.cpp
+flagmanager-constant.o: clients/boblight-constant/flagmanager-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flagmanager-constant.o -MD -MP -MF $(DEPDIR)/flagmanager-constant.Tpo -c -o flagmanager-constant.o `test -f 'clients/boblight-constant/flagmanager-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant/flagmanager-constant.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/flagmanager-constant.Tpo $(DEPDIR)/flagmanager-constant.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/flagmanager-constant.cpp' object='flagmanager-constant.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant/flagmanager-constant.cpp' object='flagmanager-constant.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager-constant.o `test -f 'clients/flagmanager-constant.cpp' || echo '$(srcdir)/'`clients/flagmanager-constant.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager-constant.o `test -f 'clients/boblight-constant/flagmanager-constant.cpp' || echo '$(srcdir)/'`clients/boblight-constant/flagmanager-constant.cpp
 
-flagmanager-constant.obj: clients/flagmanager-constant.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flagmanager-constant.obj -MD -MP -MF $(DEPDIR)/flagmanager-constant.Tpo -c -o flagmanager-constant.obj `if test -f 'clients/flagmanager-constant.cpp'; then $(CYGPATH_W) 'clients/flagmanager-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/flagmanager-constant.cpp'; fi`
+flagmanager-constant.obj: clients/boblight-constant/flagmanager-constant.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT flagmanager-constant.obj -MD -MP -MF $(DEPDIR)/flagmanager-constant.Tpo -c -o flagmanager-constant.obj `if test -f 'clients/boblight-constant/flagmanager-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant/flagmanager-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant/flagmanager-constant.cpp'; fi`
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/flagmanager-constant.Tpo $(DEPDIR)/flagmanager-constant.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/flagmanager-constant.cpp' object='flagmanager-constant.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-constant/flagmanager-constant.cpp' object='flagmanager-constant.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager-constant.obj `if test -f 'clients/flagmanager-constant.cpp'; then $(CYGPATH_W) 'clients/flagmanager-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/flagmanager-constant.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager-constant.obj `if test -f 'clients/boblight-constant/flagmanager-constant.cpp'; then $(CYGPATH_W) 'clients/boblight-constant/flagmanager-constant.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-constant/flagmanager-constant.cpp'; fi`
 
 log.o: util/log.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT log.o -MD -MP -MF $(DEPDIR)/log.Tpo -c -o log.o `test -f 'util/log.cpp' || echo '$(srcdir)/'`util/log.cpp

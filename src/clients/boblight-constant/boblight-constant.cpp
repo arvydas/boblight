@@ -17,7 +17,7 @@
  */
 
 #define BOBLIGHT_DLOPEN
-#include "../lib/libboblight.h"
+#include "lib/libboblight.h"
 
 #include <iostream>
 #include <string>
@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include "util/misc.h"
-#include "flags.h"
 #include "flagmanager-constant.h"
 
 using namespace std;

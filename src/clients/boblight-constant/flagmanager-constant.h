@@ -19,7 +19,7 @@
 #ifndef FLAGMANAGERCONSTANT
 #define FLAGMANAGERCONSTANT
 
-#include "flagmanager.h"
+#include "clients/flagmanager.h"
 
 class CFlagManagerConstant : public CFlagManager
 {
