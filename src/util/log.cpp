@@ -112,19 +112,31 @@ void SetLogFile(std::string filename)
 
 void PrintLog(const char* fmt, const char* function, ...)
 {
-  string  logstr;
-  string  funcstr;
-  char    buff[100000];
-  va_list args;
-  int     nrspaces;
-  
-  static vector<string> logstrings; //we save any log lines here while the log isn't open
+  string                logstr;
+  string                funcstr;
+  va_list               args;
+  int                   nrspaces;
+
+  static int            logbuffsize = 128; //size of the buffer
+  static char*          logbuff = reinterpret_cast<char*>(malloc(logbuffsize)); //buffer for vsnprintf
+  static vector<string> logstrings;      //we save any log lines here while the log isn't open
+
+  CLock lock(g_logmutex);
   
   va_start(args, function);
-  vsnprintf(buff, sizeof(buff), fmt, args);
+
+  //print to the logbuffer and check if our buffer is large enough
+  int neededbuffsize = vsnprintf(logbuff, logbuffsize, fmt, args);
+  if (neededbuffsize + 1 > logbuffsize)
+  {
+    logbuffsize = neededbuffsize + 1;
+    logbuff = reinterpret_cast<char*>(realloc(logbuff, logbuffsize)); //resize the buffer to the needed size
+    vsnprintf(logbuff, logbuffsize, fmt, args);                       //write to the buffer again
+  }
+  
   va_end(args);
 
-  logstr = GetStrTime() + " " + buff;
+  logstr = GetStrTime() + " " + logbuff;
   funcstr = PruneFunction(function);
 
   //we try to place the function name at the right of an 80 char terminal
@@ -135,7 +147,6 @@ void PrintLog(const char* fmt, const char* function, ...)
   
   logstr += " (" + funcstr + ")\n";
 
-  CLock lock(g_logmutex);
 
   if (g_logfile.is_open() && printlogtofile)
   {
