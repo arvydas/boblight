@@ -88,7 +88,7 @@ int Run()
     cout << "Connecting to boblightd\n";
     
     //try to connect, if we can't then bitch to stdout and destroy boblight
-    if (!boblight_connect(boblight, g_flagmanager.m_paddress, g_flagmanager.m_port, 5000000) ||
+    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
         !boblight_setpriority(boblight, g_flagmanager.m_priority))
     {
       PrintError(boblight_geterror(boblight));

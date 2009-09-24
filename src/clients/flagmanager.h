@@ -40,7 +40,7 @@ class CFlagManager
     bool         m_printhelp;              //if we need to print the help message
     bool         m_printboblightoptions;   //if we need to print the boblight options
 
-    const char*  m_paddress;
+    const char*  m_address;
     int          m_port;                   //port to connect to
     int          m_priority;
 
@@ -50,9 +50,9 @@ class CFlagManager
     void         PrintBoblightOptions();
     void         ParseBoblightOptions(void* boblight);
 
-  private:
+  protected:
     std::string  m_flags;
-    std::string  m_address;                //address to connect to
+    std::string  m_straddress;                //address to connect to
 
     std::vector<std::string> m_options;    //boblight options
 

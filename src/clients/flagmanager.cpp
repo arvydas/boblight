@@ -61,7 +61,7 @@ CArguments::~CArguments()
 CFlagManager::CFlagManager()
 {
   m_port = -1;
-  m_paddress = NULL;
+  m_address = NULL;
   m_priority = 128;
   m_printhelp = false;
   m_printboblightoptions = false;
@@ -95,8 +95,8 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     else if (c == 's') //address[:port]
     {
       option = optarg;
-      m_address = option.substr(0, option.find(':'));
-      m_paddress = m_address.c_str();
+      m_straddress = option.substr(0, option.find(':'));
+      m_address = m_straddress.c_str();
 
       if (option.find(':') != string::npos) //check if we have a port
       {
