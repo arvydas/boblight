@@ -19,6 +19,7 @@
 #include <iostream>
 #include <string>
 #include <signal.h>
+#include <unistd.h>
 
 #include "util/log.h"
 #include "util/tcpsocket.h"
@@ -39,20 +40,27 @@ bool stop = false;
 void PrintFlags(int argc, char *argv[]);
 void SignalHandler(int signum);
 void PrintHelpMessage();
-bool ParseFlags(int argc, char *argv[], bool& help, string& configfile);
+bool ParseFlags(int argc, char *argv[], bool& help, string& configfile, bool& fork);
 
 int main (int argc, char *argv[])
 {
   //read flags
   string configfile;
   bool   help;
+  bool   bfork;
 
-  if (!ParseFlags(argc, argv, help, configfile) || help)
+  if (!ParseFlags(argc, argv, help, configfile, bfork) || help)
   {
     PrintHelpMessage();
     return 1;
   }
 
+  if (bfork)
+  {
+    if (fork())
+      return 0;
+  }
+  
   //init our logfile
   logtostdout = true;
   SetLogFile("boblightd.log");
@@ -159,15 +167,16 @@ void PrintHelpMessage()
   cout << "\n";
 }
 
-bool ParseFlags(int argc, char *argv[], bool& help, string& configfile)
+bool ParseFlags(int argc, char *argv[], bool& help, string& configfile, bool& fork)
 {
   help = false;
+  fork = false;
   configfile = DEFAULTCONF;
 
   opterr = 0; //no getopt errors to stdout, we bitch ourselves
   int c;
 
-  while ((c = getopt (argc, argv, "c:h")) != -1)
+  while ((c = getopt (argc, argv, "c:hf")) != -1)
   {
     if (c == 'c')
     {
@@ -177,6 +186,10 @@ bool ParseFlags(int argc, char *argv[], bool& help, string& configfile)
     {
       help = true;
       return true;
+    }
+    else if (c == 'f')
+    {
+      fork = true;
     }
     else if (c == '?')
     {
