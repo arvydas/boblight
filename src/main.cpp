@@ -166,6 +166,7 @@ void PrintHelpMessage()
   cout << "  options:\n";
   cout << "\n";
   cout << "  -c  set the config file, default is " << DEFAULTCONF << "\n";
+  cout << "  -f  fork\n";
   cout << "\n";
 }
 
