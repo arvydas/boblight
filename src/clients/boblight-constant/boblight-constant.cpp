@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <signal.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "util/misc.h"
@@ -69,6 +70,12 @@ int main(int argc, char *argv[])
   {
     g_flagmanager.PrintBoblightOptions();
     return 1;
+  }
+
+  if (g_flagmanager.m_fork)
+  {
+    if (fork())
+      return 0;
   }
 
   //set up signal handlers

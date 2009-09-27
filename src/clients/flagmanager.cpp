@@ -67,10 +67,11 @@ CFlagManager::CFlagManager()
   m_priority = 128;               //default priority
   m_printhelp = false;            //don't print helpmessage unless asked to
   m_printboblightoptions = false; //same for libboblight options
+  m_fork = false;                 //don't fork by default
 
   // default getopt flags, can be extended in derived classes
-  // p = priority, s = address[:port], o = boblight option, l = list boblight options, h = print help message
-  m_flags = "p:s:o:lh";
+  // p = priority, s = address[:port], o = boblight option, l = list boblight options, h = print help message, f = fork
+  m_flags = "p:s:o:lhf";
 }
 
 void CFlagManager::ParseFlags(int tempargc, char** tempargv)
@@ -125,6 +126,10 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     {
       m_printhelp = true;
       return;
+    }
+    else if (c == 'f')
+    {
+      m_fork = true;
     }
     else if (c == '?') //unknown option
     {

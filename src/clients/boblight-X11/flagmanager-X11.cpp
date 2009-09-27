@@ -104,5 +104,6 @@ void CFlagManagerX11::PrintHelpMessage()
   cout << "      default is 64 for xrender and 16 for xgetimage\n";
   cout << "  -x  use XGetImage instead of XRender\n";
   cout << "  -d  debug mode\n";
+  cout << "  -f  fork\n";
   cout << "\n";
 }

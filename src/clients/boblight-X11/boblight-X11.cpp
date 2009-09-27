@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <signal.h>
+#include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -77,6 +78,12 @@ int main (int argc, char *argv[])
   {
     g_flagmanager.PrintBoblightOptions();
     return 1;
+  }
+
+  if (g_flagmanager.m_fork)
+  {
+    if (fork())
+      return 0;
   }
 
   if (g_flagmanager.m_pixels == -1) //set default pixels
