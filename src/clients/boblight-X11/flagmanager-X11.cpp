@@ -88,7 +88,7 @@ void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
 void CFlagManagerX11::PrintHelpMessage()
 {
   cout << "\n";
-  cout << "boblight-X11 " << VERSION << "\n";
+  cout << "boblight-X11 revision:" << REVISION << "\n";
   cout << "\n";
   cout << "Usage: boblight-X11 [OPTION]\n";
   cout << "\n";

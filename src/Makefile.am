@@ -5,7 +5,8 @@
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" 
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+	-DREVISION="\"`svnversion`\""
 
 AM_CFLAGS =\
 	 -Wall\

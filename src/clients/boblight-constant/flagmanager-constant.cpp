@@ -38,7 +38,7 @@ void CFlagManagerConstant::PostGetopt(int optind, int argc, char** argv)
 void CFlagManagerConstant::PrintHelpMessage()
 {
   cout << "\n";
-  cout << "boblight-constant " << VERSION << "\n";
+  cout << "boblight-constant revision:" << REVISION << "\n";
   cout << "\n";
   cout << "Usage: boblight-constant [OPTION] color\n";
   cout << "\n";
