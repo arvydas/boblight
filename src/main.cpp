@@ -119,6 +119,8 @@ int main (int argc, char *argv[])
 
   //stop the clients handler
   clients.StopThread();
+
+  log("exiting");
   
   return 0;
 }
