@@ -31,12 +31,6 @@ class CLock
     Enter();
   }
 
-  CLock(CCondition& condition) : m_mutex(condition)
-  {
-    m_haslock = false;
-    Enter();
-  }
-
   ~CLock()
   {
     Leave();
