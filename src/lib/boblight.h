@@ -36,6 +36,8 @@ namespace boblight
       std::string SetOption(const char* option, bool& send);
       std::string GetOption(const char* option, std::string& output);
 
+      void        SetScanRange(int width, int height);
+      
       std::string m_name;
       float       m_speed;
       bool        m_autospeed;

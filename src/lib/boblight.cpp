@@ -41,8 +41,6 @@ CLight::CLight()
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
   memset(m_prevrgb, 0, sizeof(m_prevrgb));
-  memset(m_vscan, 0, sizeof(m_vscan));
-  memset(m_hscan, 0, sizeof(m_hscan));
   memset(m_hscanscaled, 0, sizeof(m_hscanscaled));
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
 }
@@ -202,6 +200,17 @@ void CLight::GetRGB(float* rgb)
 
     memcpy(m_prevrgb, rgb, sizeof(m_prevrgb));
   }
+}
+
+void CLight::SetScanRange(int width, int height)
+{
+    m_width = width;
+    m_height = height;
+
+    m_hscanscaled[0] = Round<int>(m_hscan[0] / 100.0 * ((float)height - 1));
+    m_hscanscaled[1] = Round<int>(m_hscan[1] / 100.0 * ((float)height - 1));
+    m_vscanscaled[0] = Round<int>(m_vscan[0] / 100.0 * ((float)width  - 1));
+    m_vscanscaled[1] = Round<int>(m_vscan[1] / 100.0 * ((float)width  - 1));
 }
 
 int CBoblight::Connect(const char* address, int port, int usectimeout)
@@ -469,17 +478,9 @@ bool CBoblight::CheckLightExists(int lightnr, bool printerror /*= true*/)
 
 void CBoblight::SetScanRange(int width, int height)
 {
-  //need to find a better way to do this stuff
-  
   for (int i = 0; i < m_lights.size(); i++)
   {
-    m_lights[i].m_width = width;
-    m_lights[i].m_height = height;
-
-    m_lights[i].m_hscanscaled[0] = Round<int>(m_lights[i].m_hscan[0] / 100.0 * ((float)height - 1));
-    m_lights[i].m_hscanscaled[1] = Round<int>(m_lights[i].m_hscan[1] / 100.0 * ((float)height - 1));
-    m_lights[i].m_vscanscaled[0] = Round<int>(m_lights[i].m_vscan[0] / 100.0 * ((float)width  - 1));
-    m_lights[i].m_vscanscaled[1] = Round<int>(m_lights[i].m_vscan[1] / 100.0 * ((float)width  - 1));
+    m_lights[i].SetScanRange(width, height);
   }
 }
 
