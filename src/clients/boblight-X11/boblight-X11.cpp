@@ -140,9 +140,9 @@ int Run()
     CGrabber* grabber;
     
     if (g_flagmanager.m_method == XGETIMAGE)
-      grabber = reinterpret_cast<CGrabber*>(new CGrabberXGetImage(boblight));
+      grabber = new CGrabberXGetImage(boblight);
     else if (g_flagmanager.m_method == XRENDER)
-      grabber = reinterpret_cast<CGrabber*>(new CGrabberXRender(boblight));
+      grabber = new CGrabberXRender(boblight);
 
     grabber->SetInterval(g_flagmanager.m_interval);
     grabber->SetSize(g_flagmanager.m_pixels);
