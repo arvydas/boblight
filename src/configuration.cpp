@@ -494,6 +494,8 @@ bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler
     return false;
   
   log("built config successfully");
+
+  return true;
 }
 
 void CConfig::BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler)
