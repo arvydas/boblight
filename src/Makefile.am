@@ -15,7 +15,15 @@ AM_CFLAGS =\
 bin_PROGRAMS = boblightd \
 	boblighttest\
 	boblight-X11\
-	boblight-constant
+	boblight-constant\
+	boblight-v4l
+
+boblight_v4l_SOURCES = \
+	clients/boblight-v4l/boblight-v4l.cpp\
+	clients/boblight-v4l/flagmanager-v4l.cpp \
+	clients/boblight-v4l/flagmanager-v4l.h \
+	util/misc.cpp \
+	util/misc.h
 
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\
