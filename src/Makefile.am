@@ -13,7 +13,6 @@ AM_CFLAGS =\
 	 -g
 
 bin_PROGRAMS = boblightd \
-	boblighttest\
 	boblight-X11\
 	boblight-constant\
 	boblight-v4l
@@ -55,11 +54,6 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/flagmanager-X11.h \
 	clients/flagmanager.cpp \
 	clients/flagmanager.h
-
-boblighttest_SOURCES = \
-	boblight-test.cpp\
-	boblight-test2.cpp \
-	util/misc.cpp
 
 boblightd_SOURCES = \
 	util/clock.cpp    \
