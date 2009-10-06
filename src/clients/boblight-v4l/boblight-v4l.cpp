@@ -16,10 +16,20 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
+extern "C"
+{
+  #include <libavcodec/avcodec.h>
+  #include <libavformat/avformat.h>
+  #include <libswscale/swscale.h>
+}
+
 #define BOBLIGHT_DLOPEN
 #include "lib/libboblight.h"
-
 #include "util/misc.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
