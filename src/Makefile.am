@@ -22,7 +22,9 @@ boblight_v4l_SOURCES = \
 	clients/boblight-v4l/flagmanager-v4l.cpp \
 	clients/boblight-v4l/flagmanager-v4l.h \
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	clients/flagmanager.cpp \
+	clients/flagmanager.h
 
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\

@@ -15,3 +15,24 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef FLAGMANAGERV4L
+#define FLAGMANAGERV4L
+
+#include "clients/flagmanager.h"
+
+class CFlagManagerV4l : public CFlagManager
+{
+  public:
+    CFlagManagerV4l();
+
+    void        ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg); //we load our own flags here
+    void        PrintHelpMessage();
+
+    std::string m_device;
+    
+  private:
+    
+};
+
+#endif //FLAGMANAGERV4L

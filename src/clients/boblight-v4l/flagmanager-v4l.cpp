@@ -15,3 +15,31 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <iostream>
+
+#include "flagmanager-v4l.h"
+
+using namespace std;
+
+CFlagManagerV4l::CFlagManagerV4l()
+{
+  //d = device
+  m_flags += "d:";
+
+  //default device
+  m_device = "/dev/video0";
+}
+
+void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
+{
+  if (c == 'd')
+  {
+    m_device = optarg;
+  }
+}
+
+void CFlagManagerV4l::PrintHelpMessage()
+{
+  cout << "Help message to come here\n";
+}

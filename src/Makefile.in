@@ -75,7 +75,7 @@ am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT) \
 boblight_constant_OBJECTS = $(am_boblight_constant_OBJECTS)
 boblight_constant_LDADD = $(LDADD)
 am_boblight_v4l_OBJECTS = boblight-v4l.$(OBJEXT) \
-	flagmanager-v4l.$(OBJEXT) misc.$(OBJEXT)
+	flagmanager-v4l.$(OBJEXT) misc.$(OBJEXT) flagmanager.$(OBJEXT)
 boblight_v4l_OBJECTS = $(am_boblight_v4l_OBJECTS)
 boblight_v4l_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
@@ -252,7 +252,9 @@ boblight_v4l_SOURCES = \
 	clients/boblight-v4l/flagmanager-v4l.cpp \
 	clients/boblight-v4l/flagmanager-v4l.h \
 	util/misc.cpp \
-	util/misc.h
+	util/misc.h \
+	clients/flagmanager.cpp \
+	clients/flagmanager.h
 
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\

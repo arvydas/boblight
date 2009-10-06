@@ -18,6 +18,7 @@
 
 #include <iostream>
 
+//have to sort out these includes, might not need all of them
 extern "C"
 {
   #include <libavcodec/avcodec.h>
@@ -28,6 +29,9 @@ extern "C"
 #define BOBLIGHT_DLOPEN
 #include "lib/libboblight.h"
 #include "util/misc.h"
+#include "flagmanager-v4l.h"
+
+CFlagManagerV4l g_flagmanager;
 
 using namespace std;
 
@@ -40,5 +44,39 @@ int main(int argc, char *argv[])
     PrintError(boblight_error);
     return 1;
   }
+
+  //try to parse the flags and bitch to stderr if there's an error
+  try
+  {
+    g_flagmanager.ParseFlags(argc, argv);
+  }
+  catch (string error)
+  {
+    PrintError(error);
+    g_flagmanager.PrintHelpMessage();
+    return 1;
+  }
+  
+  if (g_flagmanager.m_printhelp) //print help message
+  {
+    g_flagmanager.PrintHelpMessage();
+    return 1;
+  }
+
+  if (g_flagmanager.m_printboblightoptions) //print boblight options (-o [light:]option=value)
+  {
+    g_flagmanager.PrintBoblightOptions();
+    return 1;
+  }
+
+  if (g_flagmanager.m_fork)
+  {
+    if (fork())
+      return 0;
+  }
+
+  av_register_all();
+
+  AVFormatParameters formatParams;
 
 }
