@@ -21,9 +21,10 @@
 //have to sort out these includes, might not need all of them
 extern "C"
 {
-  #include <libavcodec/avcodec.h>
-  #include <libavformat/avformat.h>
-  #include <libswscale/swscale.h>
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavdevice/avdevice.h>
 }
 
 #define BOBLIGHT_DLOPEN
@@ -45,6 +46,8 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  int returnv;
+
   //try to parse the flags and bitch to stderr if there's an error
   try
   {
@@ -56,7 +59,7 @@ int main(int argc, char *argv[])
     g_flagmanager.PrintHelpMessage();
     return 1;
   }
-  
+
   if (g_flagmanager.m_printhelp) //print help message
   {
     g_flagmanager.PrintHelpMessage();
@@ -76,7 +79,41 @@ int main(int argc, char *argv[])
   }
 
   av_register_all();
+  avdevice_register_all();
+  
+  AVFormatParameters formatparams = {};
+  AVInputFormat*     inputformat;
+  AVFormatContext*   formatcontext;
+ 
+  formatparams.channel = 1;
+  formatparams.width = 64;
+  formatparams.height = 64;
+  formatparams.standard = "ntsc";
 
-  AVFormatParameters formatParams;
+  inputformat = av_find_input_format("video4linux2");
+  if (!inputformat)
+    inputformat = av_find_input_format("video4linux");
 
+  if (!inputformat)
+  {
+    PrintError("didn't find video4linux2 or video4linux input formats");
+    return 1;
+  }
+  
+  returnv = av_open_input_file(&formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &formatparams);
+
+  if (returnv)
+  {
+    PrintError("Unable to open " + g_flagmanager.m_device);
+    return 1;
+  }
+
+  AVPacket pkt;
+
+  while(av_read_frame(formatcontext, &pkt) >= 0)
+  {
+    cout << "test\n";
+
+    av_free_packet(&pkt);
+  }
 }
