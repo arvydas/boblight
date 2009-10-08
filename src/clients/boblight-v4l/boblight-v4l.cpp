@@ -17,6 +17,7 @@
  */
 
 #include <iostream>
+#include <stdint.h>
 
 //have to sort out these includes, might not need all of them
 extern "C"
@@ -80,11 +81,11 @@ int main(int argc, char *argv[])
 
   av_register_all();
   avdevice_register_all();
-  
+
   AVFormatParameters formatparams = {};
   AVInputFormat*     inputformat;
   AVFormatContext*   formatcontext;
- 
+
   formatparams.channel = 1;
   formatparams.width = 64;
   formatparams.height = 64;
@@ -99,21 +100,109 @@ int main(int argc, char *argv[])
     PrintError("didn't find video4linux2 or video4linux input formats");
     return 1;
   }
-  
+
   returnv = av_open_input_file(&formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &formatparams);
 
   if (returnv)
   {
-    PrintError("Unable to open " + g_flagmanager.m_device);
+    PrintError("unable to open " + g_flagmanager.m_device);
+    return 1;
+  }
+
+  if(av_find_stream_info(formatcontext) < 0)
+  {
+    PrintError("unable to find stream info");
+    return 1;
+  }
+
+  dump_format(formatcontext, 0, g_flagmanager.m_device.c_str(), false);
+
+  int videostream = -1;
+  for (int i = 0; i < formatcontext->nb_streams; i++)
+  {
+    if (formatcontext->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO)
+    {
+      videostream = i;
+      break;
+    }
+  }
+
+  if (videostream == -1)
+  {
+    PrintError("unable to find a video stream");
+    return 1;
+  }
+
+  AVCodecContext* codeccontext = formatcontext->streams[videostream]->codec;
+  AVCodec *codec;
+
+  codec = avcodec_find_decoder(codeccontext->codec_id);
+  if (!codec)
+  {
+    PrintError("unable to find decoder");
+    return 1;
+  }
+
+  if (codec->capabilities & CODEC_CAP_TRUNCATED)
+    codeccontext->flags |= CODEC_FLAG_TRUNCATED;
+
+  if (avcodec_open(codeccontext, codec) < 0)
+  {
+    PrintError("unable to open codec");
     return 1;
   }
 
   AVPacket pkt;
+  AVFrame* frame;
+  int64_t  prev;
 
+  frame = avcodec_alloc_frame();
+
+  struct SwsContext *sws = sws_getContext(codeccontext->width, codeccontext->height, codeccontext->pix_fmt, 64, 64, PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+  if (!sws)
+  {
+    PrintError("unable to get sws context");
+    return 1;
+  }  
+
+  uint8_t* output[64];
+  int stride[64];
+
+  for (int i = 0; i < 64; i++)
+  {
+    output[i] = new uint8_t[64];
+    stride[i] = 64;
+  }
+  
   while(av_read_frame(formatcontext, &pkt) >= 0)
   {
-    cout << "test\n";
+    if (pkt.stream_index == videostream)
+    {
+      int framefinished;
+      avcodec_decode_video(codeccontext, frame, &framefinished, pkt.data, pkt.size);
 
+      if (framefinished)
+      {
+        sws_scale(sws, frame->data, frame->linesize, 0, codeccontext->height, output, stride);
+      }
+    }
+
+    int rgb[3] = {0, 0, 0};
+    int count = 0;
+    
+    for (int x = 0; x < 64; x++)
+    {
+      for (int y = 0; y < 64; y++)
+      {
+        rgb[0] += output[y][x * 3 + 0];
+        rgb[1] += output[y][x * 3 + 1];
+        rgb[2] += output[y][x * 3 + 2];
+        count++;
+      }
+    }
+
+    cout << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
+    
     av_free_packet(&pkt);
   }
 }

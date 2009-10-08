@@ -19,6 +19,7 @@
 #include <iostream>
 
 #include "flagmanager-v4l.h"
+#include "config.h"
 
 using namespace std;
 
@@ -41,5 +42,18 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
 
 void CFlagManagerV4l::PrintHelpMessage()
 {
-  cout << "Help message to come here\n";
+  cout << "\n";
+  cout << "boblight-v4l revision:" << REVISION << "\n";
+  cout << "\n";
+  cout << "Usage: boblight-v4l [OPTION]\n";
+  cout << "\n";
+  cout << "  options:\n";
+  cout << "\n";
+  cout << "  -p  priority, from 0 to 255, default is 128\n";
+  cout << "  -s  address:[port], set the address and optional port to connect to\n";
+  cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
+  cout << "  -l  list libboblight options\n";
+  cout << "  -f  fork\n";
+  cout << "  -d  set the device to use, default is /dev/video0\n";
+  cout << "\n";
 }
