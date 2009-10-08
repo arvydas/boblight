@@ -19,6 +19,10 @@
 #include <iostream>
 #include <stdint.h>
 
+//debug stuff
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 //have to sort out these includes, might not need all of them
 extern "C"
 {
@@ -37,6 +41,13 @@ CFlagManagerV4l g_flagmanager;
 
 using namespace std;
 
+//debug stuff
+void SetupDebugWindow();
+Display* dpy;
+Window window;
+XImage* xim;
+GC gc;
+
 int main(int argc, char *argv[])
 {
   //load the boblight lib, if it fails we get a char* from dlerror()
@@ -47,6 +58,9 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  av_register_all();
+  avdevice_register_all();
+  
   int returnv;
 
   //try to parse the flags and bitch to stderr if there's an error
@@ -79,16 +93,15 @@ int main(int argc, char *argv[])
       return 0;
   }
 
-  av_register_all();
-  avdevice_register_all();
-
+  SetupDebugWindow();
+  
   AVFormatParameters formatparams = {};
   AVInputFormat*     inputformat;
   AVFormatContext*   formatcontext;
 
   formatparams.channel = 1;
-  formatparams.width = 64;
-  formatparams.height = 64;
+  formatparams.width = g_flagmanager.m_width;
+  formatparams.height = g_flagmanager.m_height;
   formatparams.standard = "ntsc";
 
   inputformat = av_find_input_format("video4linux2");
@@ -97,7 +110,7 @@ int main(int argc, char *argv[])
 
   if (!inputformat)
   {
-    PrintError("didn't find video4linux2 or video4linux input formats");
+    PrintError("didn't find video4linux2 or video4linux input format");
     return 1;
   }
 
@@ -143,8 +156,8 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  if (codec->capabilities & CODEC_CAP_TRUNCATED)
-    codeccontext->flags |= CODEC_FLAG_TRUNCATED;
+  //if (codec->capabilities & CODEC_CAP_TRUNCATED)
+    //codeccontext->flags |= CODEC_FLAG_TRUNCATED;
 
   if (avcodec_open(codeccontext, codec) < 0)
   {
@@ -153,56 +166,86 @@ int main(int argc, char *argv[])
   }
 
   AVPacket pkt;
-  AVFrame* frame;
+  AVFrame* inputframe;
+  AVFrame* outputframe;
   int64_t  prev;
 
-  frame = avcodec_alloc_frame();
+  inputframe = avcodec_alloc_frame();
+  outputframe = avcodec_alloc_frame();
 
-  struct SwsContext *sws = sws_getContext(codeccontext->width, codeccontext->height, codeccontext->pix_fmt, 64, 64, PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+  struct SwsContext *sws = sws_getContext(codeccontext->width, codeccontext->height, codeccontext->pix_fmt, g_flagmanager.m_width, g_flagmanager.m_height, PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
   if (!sws)
   {
     PrintError("unable to get sws context");
     return 1;
   }  
 
-  uint8_t* output[64];
-  int stride[64];
+  xim = XGetImage(dpy, RootWindow(dpy, DefaultScreen(dpy)), 0, 0, g_flagmanager.m_width, g_flagmanager.m_height, AllPlanes, ZPixmap);
 
-  for (int i = 0; i < 64; i++)
-  {
-    output[i] = new uint8_t[64];
-    stride[i] = 64;
-  }
+  uint8_t *buffer;
+  int numBytes;
+  // Determine required buffer size and allocate buffer
+  numBytes=avpicture_get_size(PIX_FMT_RGB24, codeccontext->width, codeccontext->height);
+  buffer=(uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
+  avpicture_fill((AVPicture *)outputframe, buffer, PIX_FMT_RGB24, codeccontext->width, codeccontext->height);
+
   
   while(av_read_frame(formatcontext, &pkt) >= 0)
   {
     if (pkt.stream_index == videostream)
     {
       int framefinished;
-      avcodec_decode_video(codeccontext, frame, &framefinished, pkt.data, pkt.size);
+      avcodec_decode_video(codeccontext, inputframe, &framefinished, pkt.data, pkt.size);
 
       if (framefinished)
       {
-        sws_scale(sws, frame->data, frame->linesize, 0, codeccontext->height, output, stride);
+        sws_scale(sws, inputframe->data, inputframe->linesize, 0, codeccontext->height, outputframe->data, outputframe->linesize);
       }
     }
 
     int rgb[3] = {0, 0, 0};
     int count = 0;
     
-    for (int x = 0; x < 64; x++)
+    for (int x = 0; x < g_flagmanager.m_width; x++)
     {
-      for (int y = 0; y < 64; y++)
+      for (int y = 0; y < g_flagmanager.m_height; y++)
       {
-        rgb[0] += output[y][x * 3 + 0];
-        rgb[1] += output[y][x * 3 + 1];
-        rgb[2] += output[y][x * 3 + 2];
+        int r = outputframe->data[0][y * outputframe->linesize[0] + x * 3 + 0];
+        int g = outputframe->data[0][y * outputframe->linesize[0] + x * 3 + 1];
+        int b = outputframe->data[0][y * outputframe->linesize[0] + x * 3 + 2];
+
+        rgb[0] += r;
+        rgb[1] += g;
+        rgb[2] += b;
         count++;
+
+        int pixel = (r & 0xFF) << 16;
+        pixel |= (g & 0xFF) << 8;
+        pixel |= b & 0xFF;
+
+        XPutPixel(xim, x, y, pixel);
       }
     }
 
+    XPutImage(dpy, window, gc, xim, 0, 0, 0, 0, g_flagmanager.m_width, g_flagmanager.m_height);
+    XSync(dpy, False);
+    
     cout << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
     
     av_free_packet(&pkt);
   }
+}
+
+void SetupDebugWindow()
+{
+  dpy = XOpenDisplay(NULL);
+  if (!dpy) throw string("fail");
+
+  window = XCreateSimpleWindow(dpy, RootWindow(dpy, DefaultScreen(dpy)), 0, 0, g_flagmanager.m_width, g_flagmanager.m_height, 0, 0, 0);
+  gc = XCreateGC(dpy, window, 0, NULL);
+
+  XMapWindow(dpy, window);
+  XSync(dpy, False);
+
+
 }

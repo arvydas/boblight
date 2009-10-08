@@ -26,10 +26,14 @@ using namespace std;
 CFlagManagerV4l::CFlagManagerV4l()
 {
   //d = device
-  m_flags += "d:";
+  m_flags += "d:w:";
 
   //default device
   m_device = "/dev/video0";
+
+  //default size
+  m_width = 64;
+  m_height = 64;
 }
 
 void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
@@ -37,6 +41,13 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   if (c == 'd')
   {
     m_device = optarg;
+  }
+  else if (c == 'w')
+  {
+    if (sscanf(optarg, "%ix%i", &m_width, &m_height) != 2)
+    {
+      throw string("Wrong value " + string(optarg) + " for widthxheight");
+    }
   }
 }
 
@@ -55,5 +66,6 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -l  list libboblight options\n";
   cout << "  -f  fork\n";
   cout << "  -d  set the device to use, default is /dev/video0\n";
+  cout << "  -w  widthxheight of the captured image, example: -w 400x300\n";
   cout << "\n";
 }
