@@ -78,6 +78,18 @@ int main(int argc, char *argv[])
       return 0;
   }
 
+  CVideoGrabber videograbber;
+
+  try
+  {
+    videograbber.Setup();
+  }
+  catch(string error)
+  {
+    PrintError(error);
+    return 1;
+  }
+  
   SetupDebugWindow();
   
   AVFormatParameters formatparams = {};

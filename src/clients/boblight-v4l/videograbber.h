@@ -32,6 +32,7 @@ extern "C"
 #include <libavdevice/avdevice.h>
 }
 
+#include <string>
 #include <stdint.h>
 
 class CVideoGrabber
@@ -44,7 +45,8 @@ class CVideoGrabber
     
   private:
     AVFormatParameters m_formatparams;
-    AVInputFormat*     m_inputformat;
+    AVInputFormat*     m_inputformatv4l;
+    AVInputFormat*     m_inputformatv4l2;
     AVFormatContext*   m_formatcontext;
     int                m_videostream;
 
