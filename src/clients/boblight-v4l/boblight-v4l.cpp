@@ -19,23 +19,11 @@
 #include <iostream>
 #include <stdint.h>
 
-//debug stuff
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
-//have to sort out these includes, might not need all of them
-extern "C"
-{
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
-#include <libavdevice/avdevice.h>
-}
-
 #define BOBLIGHT_DLOPEN
 #include "lib/libboblight.h"
 #include "util/misc.h"
 #include "flagmanager-v4l.h"
+#include "VideoGrabber.h"
 
 CFlagManagerV4l g_flagmanager;
 
@@ -119,7 +107,7 @@ int main(int argc, char *argv[])
   if (returnv)
   {
     PrintError("unable to open " + g_flagmanager.m_device);
-    return 1;
+    return 1; //TODO: should try to open v4l1 here
   }
 
   if(av_find_stream_info(formatcontext) < 0)
@@ -155,9 +143,6 @@ int main(int argc, char *argv[])
     PrintError("unable to find decoder");
     return 1;
   }
-
-  //if (codec->capabilities & CODEC_CAP_TRUNCATED)
-    //codeccontext->flags |= CODEC_FLAG_TRUNCATED;
 
   if (avcodec_open(codeccontext, codec) < 0)
   {
