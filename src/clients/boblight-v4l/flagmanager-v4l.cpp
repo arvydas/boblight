@@ -20,13 +20,14 @@
 
 #include "flagmanager-v4l.h"
 #include "config.h"
+#include "util/misc.h"
 
 using namespace std;
 
 CFlagManagerV4l::CFlagManagerV4l()
 {
-  //d = device
-  m_flags += "d:w:";
+  //d = device, w == widthxheight, v = video standard
+  m_flags += "d:w:v:c:";
 
   //default device
   m_device = "/dev/video0";
@@ -34,6 +35,9 @@ CFlagManagerV4l::CFlagManagerV4l()
   //default size
   m_width = 64;
   m_height = 64;
+
+  //channel of -1 means ffmpeg doesn't change it
+  m_channel = -1;
 }
 
 void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
@@ -47,6 +51,17 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
     if (sscanf(optarg, "%ix%i", &m_width, &m_height) != 2)
     {
       throw string("Wrong value " + string(optarg) + " for widthxheight");
+    }
+  }
+  else if (c == 'v')
+  {
+    m_standard = optarg;
+  }
+  else if (c == 'c')
+  {
+    if (!StrToInt(string(optarg), m_channel))
+    {
+      throw string("Wrong value " + string(optarg) + " for channel");
     }
   }
 }
@@ -67,5 +82,7 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -f  fork\n";
   cout << "  -d  set the device to use, default is /dev/video0\n";
   cout << "  -w  widthxheight of the captured image, example: -w 400x300\n";
+  cout << "  -v  video standard, pal, ntsc or secam\n";
+  cout << "  -c  video input number\n";
   cout << "\n";
 }

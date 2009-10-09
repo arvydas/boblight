@@ -99,10 +99,10 @@ int main(int argc, char *argv[])
   AVInputFormat*     inputformat;
   AVFormatContext*   formatcontext;
 
-  formatparams.channel = 1;
+  formatparams.channel = g_flagmanager.m_channel;
   formatparams.width = g_flagmanager.m_width;
   formatparams.height = g_flagmanager.m_height;
-  formatparams.standard = "ntsc";
+  formatparams.standard = g_flagmanager.m_standard.empty() ? NULL : g_flagmanager.m_standard.c_str();
 
   inputformat = av_find_input_format("video4linux2");
   if (!inputformat)
@@ -230,7 +230,9 @@ int main(int argc, char *argv[])
     XPutImage(dpy, window, gc, xim, 0, 0, 0, 0, g_flagmanager.m_width, g_flagmanager.m_height);
     XSync(dpy, False);
     
-    cout << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
+    cout <<  AV_TIME_BASE / (double)(pkt.pts - prev) << " " << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
+
+    prev = pkt.pts;
     
     av_free_packet(&pkt);
   }

@@ -30,6 +30,8 @@ class CFlagManagerV4l : public CFlagManager
     void        PrintHelpMessage();
 
     std::string m_device;
+    std::string m_standard;
+    int         m_channel;
 
     int         m_width;
     int         m_height;
