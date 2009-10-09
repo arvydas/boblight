@@ -76,7 +76,7 @@ boblight_constant_OBJECTS = $(am_boblight_constant_OBJECTS)
 boblight_constant_LDADD = $(LDADD)
 am_boblight_v4l_OBJECTS = boblight-v4l.$(OBJEXT) \
 	flagmanager-v4l.$(OBJEXT) misc.$(OBJEXT) flagmanager.$(OBJEXT) \
-	VideoGrabber.$(OBJEXT)
+	videograbber.$(OBJEXT)
 boblight_v4l_OBJECTS = $(am_boblight_v4l_OBJECTS)
 boblight_v4l_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
@@ -256,8 +256,8 @@ boblight_v4l_SOURCES = \
 	util/misc.h \
 	clients/flagmanager.cpp \
 	clients/flagmanager.h \
-	clients/boblight-v4l/VideoGrabber.cpp \
-	clients/boblight-v4l/VideoGrabber.h
+	clients/boblight-v4l/videograbber.cpp \
+	clients/boblight-v4l/videograbber.h
 
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\
@@ -469,7 +469,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VideoGrabber.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asynctimer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-X11.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-constant.Po@am__quote@
@@ -509,6 +508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/udpsocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vblanksignal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/videograbber.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -811,19 +811,19 @@ flagmanager-v4l.obj: clients/boblight-v4l/flagmanager-v4l.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o flagmanager-v4l.obj `if test -f 'clients/boblight-v4l/flagmanager-v4l.cpp'; then $(CYGPATH_W) 'clients/boblight-v4l/flagmanager-v4l.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-v4l/flagmanager-v4l.cpp'; fi`
 
-VideoGrabber.o: clients/boblight-v4l/VideoGrabber.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT VideoGrabber.o -MD -MP -MF $(DEPDIR)/VideoGrabber.Tpo -c -o VideoGrabber.o `test -f 'clients/boblight-v4l/VideoGrabber.cpp' || echo '$(srcdir)/'`clients/boblight-v4l/VideoGrabber.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/VideoGrabber.Tpo $(DEPDIR)/VideoGrabber.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-v4l/VideoGrabber.cpp' object='VideoGrabber.o' libtool=no @AMDEPBACKSLASH@
+videograbber.o: clients/boblight-v4l/videograbber.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT videograbber.o -MD -MP -MF $(DEPDIR)/videograbber.Tpo -c -o videograbber.o `test -f 'clients/boblight-v4l/videograbber.cpp' || echo '$(srcdir)/'`clients/boblight-v4l/videograbber.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/videograbber.Tpo $(DEPDIR)/videograbber.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-v4l/videograbber.cpp' object='videograbber.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o VideoGrabber.o `test -f 'clients/boblight-v4l/VideoGrabber.cpp' || echo '$(srcdir)/'`clients/boblight-v4l/VideoGrabber.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o videograbber.o `test -f 'clients/boblight-v4l/videograbber.cpp' || echo '$(srcdir)/'`clients/boblight-v4l/videograbber.cpp
 
-VideoGrabber.obj: clients/boblight-v4l/VideoGrabber.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT VideoGrabber.obj -MD -MP -MF $(DEPDIR)/VideoGrabber.Tpo -c -o VideoGrabber.obj `if test -f 'clients/boblight-v4l/VideoGrabber.cpp'; then $(CYGPATH_W) 'clients/boblight-v4l/VideoGrabber.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-v4l/VideoGrabber.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/VideoGrabber.Tpo $(DEPDIR)/VideoGrabber.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-v4l/VideoGrabber.cpp' object='VideoGrabber.obj' libtool=no @AMDEPBACKSLASH@
+videograbber.obj: clients/boblight-v4l/videograbber.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT videograbber.obj -MD -MP -MF $(DEPDIR)/videograbber.Tpo -c -o videograbber.obj `if test -f 'clients/boblight-v4l/videograbber.cpp'; then $(CYGPATH_W) 'clients/boblight-v4l/videograbber.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-v4l/videograbber.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/videograbber.Tpo $(DEPDIR)/videograbber.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='clients/boblight-v4l/videograbber.cpp' object='videograbber.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o VideoGrabber.obj `if test -f 'clients/boblight-v4l/VideoGrabber.cpp'; then $(CYGPATH_W) 'clients/boblight-v4l/VideoGrabber.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-v4l/VideoGrabber.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o videograbber.obj `if test -f 'clients/boblight-v4l/videograbber.cpp'; then $(CYGPATH_W) 'clients/boblight-v4l/videograbber.cpp'; else $(CYGPATH_W) '$(srcdir)/clients/boblight-v4l/videograbber.cpp'; fi`
 
 log.o: util/log.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT log.o -MD -MP -MF $(DEPDIR)/log.Tpo -c -o log.o `test -f 'util/log.cpp' || echo '$(srcdir)/'`util/log.cpp

@@ -23,7 +23,7 @@
 #include "lib/libboblight.h"
 #include "util/misc.h"
 #include "flagmanager-v4l.h"
-#include "VideoGrabber.h"
+#include "videograbber.h"
 
 CFlagManagerV4l g_flagmanager;
 
@@ -46,9 +46,6 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  av_register_all();
-  avdevice_register_all();
-  
   int returnv;
 
   //try to parse the flags and bitch to stderr if there's an error

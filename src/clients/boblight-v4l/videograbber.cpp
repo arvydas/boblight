@@ -16,8 +16,37 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "VideoGrabber.h"
+#include "flagmanager-v4l.h"
+#include "videograbber.h"
 
 #define BOBLIGHT_DLOPEN_EXTERN
 #include "lib/libboblight.h"
 
+#include <string.h>
+
+extern CFlagManagerV4l g_flagmanager;
+
+CVideoGrabber::CVideoGrabber()
+{
+  av_register_all();
+  avdevice_register_all();
+
+  memset(&m_formatparams, 0, sizeof(m_formatparams));
+  m_inputformat = NULL;
+  m_formatcontext = NULL;
+  m_codeccontext = NULL;
+  m_codec = NULL;
+  m_inputframe = NULL;
+  m_outputframe = NULL;
+  m_sws = NULL;
+  m_framebuffer = NULL;
+}
+
+CVideoGrabber::~CVideoGrabber()
+{
+}
+
+void CVideoGrabber::Setup()
+{
+  
+}

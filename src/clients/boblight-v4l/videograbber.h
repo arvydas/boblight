@@ -40,6 +40,8 @@ class CVideoGrabber
     CVideoGrabber();
     ~CVideoGrabber();
 
+    void Setup();
+    
   private:
     AVFormatParameters m_formatparams;
     AVInputFormat*     m_inputformat;
@@ -55,7 +57,7 @@ class CVideoGrabber
     SwsContext*        m_sws;
     uint8_t*           m_framebuffer;
 
-
+    void*              m_boblight;
       
 };
 
