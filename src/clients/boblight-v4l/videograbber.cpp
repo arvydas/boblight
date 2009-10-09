@@ -67,10 +67,19 @@ void CVideoGrabber::Setup()
     throw string("Didn't find video4linux2 or video4linux input format");
   }
 
-  returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l2, 0, &m_formatparams);
+  returnv = -1;
+  if (m_inputformatv4l2)
+  {
+    returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l2, 0, &m_formatparams);
+  }
+
   if (returnv)
   {
-    returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l, 0, &m_formatparams);
+    if (m_inputformatv4l)
+    {
+      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l, 0, &m_formatparams);
+    }
+
     if (returnv)
     {
       throw string ("Unable to open " + g_flagmanager.m_device);
