@@ -82,7 +82,7 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -f  fork\n";
   cout << "  -d  set the device to use, default is /dev/video0\n";
   cout << "  -w  widthxheight of the captured image, example: -w 400x300\n";
-  cout << "  -v  video standard, pal, ntsc or secam\n";
+  cout << "  -v  video standard\n";
   cout << "  -c  video input number\n";
   cout << "\n";
 }
