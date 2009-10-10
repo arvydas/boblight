@@ -23,15 +23,39 @@
 #include "lib/libboblight.h"
 
 #include <string.h>
+#include <iostream>
 
 extern CFlagManagerV4l g_flagmanager;
 
 using namespace std;
 
+class CXImage
+{
+  public:
+    CXImage (Display* dpy, int width, int height)
+    {
+      m_dpy = dpy;
+      m_xim = NULL;
+      if (m_dpy) //lazy way of creating an ximage
+        m_xim = XGetImage(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0, width, height, AllPlanes, ZPixmap);
+    }
+
+    ~CXImage()
+    {
+      if (m_xim)
+        XDestroyImage(m_xim);
+    }
+
+    Display* m_dpy;
+    XImage* m_xim;
+};
+
+
 CVideoGrabber::CVideoGrabber()
 {
   av_register_all();
   avdevice_register_all();
+  av_log_set_level(AV_LOG_DEBUG);
 
   memset(&m_formatparams, 0, sizeof(m_formatparams));
   m_inputformatv4l = NULL;
@@ -43,6 +67,8 @@ CVideoGrabber::CVideoGrabber()
   m_outputframe = NULL;
   m_sws = NULL;
   m_framebuffer = NULL;
+
+  m_dpy = NULL;
 }
 
 CVideoGrabber::~CVideoGrabber()
@@ -52,13 +78,14 @@ CVideoGrabber::~CVideoGrabber()
 void CVideoGrabber::Setup()
 {
   int returnv;
-  
+
   memset(&m_formatparams, 0, sizeof(m_formatparams));
 
   m_formatparams.channel = g_flagmanager.m_channel;
   m_formatparams.width = g_flagmanager.m_width;
   m_formatparams.height = g_flagmanager.m_height;
   m_formatparams.standard = g_flagmanager.m_standard.empty() ? NULL : g_flagmanager.m_standard.c_str();
+  m_formatparams.pix_fmt = PIX_FMT_BGR24;
 
   m_inputformatv4l  = av_find_input_format("video4linux");
   m_inputformatv4l2 = av_find_input_format("video4linux2");
@@ -118,7 +145,7 @@ void CVideoGrabber::Setup()
   m_outputframe = avcodec_alloc_frame();
 
   m_sws = sws_getContext(m_codeccontext->width, m_codeccontext->height, m_codeccontext->pix_fmt, 
-                         g_flagmanager.m_width, g_flagmanager.m_height, PIX_FMT_RGB24, SWS_POINT, NULL, NULL, NULL);
+                         g_flagmanager.m_width, g_flagmanager.m_height, PIX_FMT_BGR24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
   if (!m_sws)
     throw string("Unable to get sws context");
@@ -126,5 +153,77 @@ void CVideoGrabber::Setup()
   int buffsize = avpicture_get_size(PIX_FMT_RGB24, g_flagmanager.m_width, g_flagmanager.m_height);
   m_framebuffer = (uint8_t*)av_malloc(buffsize);
 
-  avpicture_fill((AVPicture *)m_outputframe, m_framebuffer, PIX_FMT_RGB24, g_flagmanager.m_width, g_flagmanager.m_height);
+  avpicture_fill((AVPicture *)m_outputframe, m_framebuffer, PIX_FMT_BGR24, g_flagmanager.m_width, g_flagmanager.m_height);
+
+  if (g_flagmanager.m_debug)
+  {
+    m_dpy = XOpenDisplay(g_flagmanager.m_debugdpy);
+    if (!m_dpy)
+      throw string("Unable to open display");
+
+    m_window = XCreateSimpleWindow(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0, g_flagmanager.m_width, g_flagmanager.m_height, 0, 0, 0);
+    m_gc = XCreateGC(m_dpy, m_window, 0, NULL);
+
+    XMapWindow(m_dpy, m_window);
+    XSync(m_dpy, False);
+  }
+}
+
+void CVideoGrabber::Run()
+{
+  CXImage  image(m_dpy, g_flagmanager.m_width, g_flagmanager.m_height);
+  AVPacket pkt;
+
+  while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
+  {
+    if (pkt.stream_index == m_videostream)
+    {
+      int framefinished;
+      avcodec_decode_video(m_codeccontext, m_inputframe, &framefinished, pkt.data, pkt.size);
+
+      if (framefinished)
+      {
+        sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0, m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
+
+        int rgb[3] = {0, 0, 0};
+        int count = 0;
+        
+        for (int x = 0; x < g_flagmanager.m_width; x++)
+        {
+          for (int y = 0; y < g_flagmanager.m_height; y++)
+          {
+            int r = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 2];
+            int g = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 1];
+            int b = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 0];
+
+            rgb[0] += r;
+            rgb[1] += g;
+            rgb[2] += b;
+            count++;
+
+            if (m_dpy)
+            {
+              int pixel;
+              pixel  = (r & 0xFF) << 16;
+              pixel |= (g & 0xFF) << 8;
+              pixel |=  b & 0xFF;
+
+              //I'll probably get the annual inefficiency award for this
+              XPutPixel(image.m_xim, x, y, pixel);
+            }
+          }
+        }
+
+        if (m_dpy)
+        {
+          XPutImage(m_dpy, m_window, m_gc, image.m_xim, 0, 0, 0, 0, g_flagmanager.m_width, g_flagmanager.m_height);
+          XSync(m_dpy, False);
+        }
+
+        cout << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
+      }
+    }
+
+    av_free_packet(&pkt);
+  }
 }

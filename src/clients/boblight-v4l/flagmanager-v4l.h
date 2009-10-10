@@ -19,6 +19,8 @@
 #ifndef FLAGMANAGERV4L
 #define FLAGMANAGERV4L
 
+#include <string>
+
 #include "clients/flagmanager.h"
 
 class CFlagManagerV4l : public CFlagManager
@@ -35,8 +37,12 @@ class CFlagManagerV4l : public CFlagManager
 
     int         m_width;
     int         m_height;
+
+    bool        m_debug;
+    const char* m_debugdpy;
     
   private:
+    std::string m_strdebugdpy;
     
 };
 

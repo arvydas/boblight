@@ -257,7 +257,7 @@ boblight_v4l_SOURCES = \
 	clients/flagmanager.cpp \
 	clients/flagmanager.h \
 	clients/boblight-v4l/videograbber.cpp \
-	clients/boblight-v4l/videograbber.h
+	clients/boblight-v4l/videograbber.h 
 
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\

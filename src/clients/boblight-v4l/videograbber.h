@@ -42,7 +42,8 @@ class CVideoGrabber
     ~CVideoGrabber();
 
     void Setup();
-    
+    void Run();
+
   private:
     AVFormatParameters m_formatparams;
     AVInputFormat*     m_inputformatv4l;
@@ -60,7 +61,11 @@ class CVideoGrabber
     uint8_t*           m_framebuffer;
 
     void*              m_boblight;
-      
+
+    Display*           m_dpy;
+    Window             m_window;
+    XImage*            m_xim;
+    GC                 m_gc;
 };
 
 #endif //VIDEOGRABBER

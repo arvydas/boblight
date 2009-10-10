@@ -26,8 +26,8 @@ using namespace std;
 
 CFlagManagerV4l::CFlagManagerV4l()
 {
-  //d = device, w == widthxheight, v = video standard
-  m_flags += "d:w:v:c:";
+  //c = device, w == widthxheight, v = video standard, i = input, d = debug mode
+  m_flags += "c:w:v:i:d::";
 
   //default device
   m_device = "/dev/video0";
@@ -38,11 +38,14 @@ CFlagManagerV4l::CFlagManagerV4l()
 
   //channel of -1 means ffmpeg doesn't change it
   m_channel = -1;
+
+  m_debug = false;
+  m_debugdpy = NULL;
 }
 
 void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
 {
-  if (c == 'd')
+  if (c == 'c')
   {
     m_device = optarg;
   }
@@ -57,11 +60,20 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   {
     m_standard = optarg;
   }
-  else if (c == 'c')
+  else if (c == 'i')
   {
     if (!StrToInt(string(optarg), m_channel))
     {
       throw string("Wrong value " + string(optarg) + " for channel");
+    }
+  }
+  else if (c == 'd')
+  {
+    m_debug = true;
+    if (optarg)      //optional debug dpy
+    {
+      m_strdebugdpy = optarg;
+      m_debugdpy = m_strdebugdpy.c_str();
     }
   }
 }
@@ -80,9 +92,10 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
   cout << "  -f  fork\n";
-  cout << "  -d  set the device to use, default is /dev/video0\n";
+  cout << "  -c  set the device to use, default is /dev/video0\n";
   cout << "  -w  widthxheight of the captured image, example: -w 400x300\n";
   cout << "  -v  video standard\n";
-  cout << "  -c  video input number\n";
+  cout << "  -i  video input number\n";
+  cout << "  -d  debug mode\n";
   cout << "\n";
 }
