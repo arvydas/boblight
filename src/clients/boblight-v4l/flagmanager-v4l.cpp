@@ -51,7 +51,7 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   }
   else if (c == 'w')
   {
-    if (sscanf(optarg, "%ix%i", &m_width, &m_height) != 2)
+    if (sscanf(optarg, "%ix%i", &m_width, &m_height) != 2 || m_width < 1 || m_height < 1)
     {
       throw string("Wrong value " + string(optarg) + " for widthxheight");
     }
