@@ -186,12 +186,12 @@ void CVideoGrabber::Run()
       {
         sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0, m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
 
-        int rgb[3] = {0, 0, 0};
-
-        uint8_t* buffptr = m_framebuffer;
+        int      rgb[3] = {0, 0, 0};
+        uint8_t* buffptr;
         
         for (int y = 0; y < g_flagmanager.m_height; y++)
         {
+          buffptr = m_framebuffer + m_outputframe->linesize[0] * y;
           for (int x = 0; x < g_flagmanager.m_width; x++)
           {
             int b = *(buffptr++);
@@ -213,7 +213,6 @@ void CVideoGrabber::Run()
               XPutPixel(image.m_xim, x, y, pixel);
             }
           }
-          buffptr += m_outputframe->linesize[0] - (g_flagmanager.m_width * 3);
         }
 
         if (m_dpy)
