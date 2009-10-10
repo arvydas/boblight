@@ -188,13 +188,18 @@ void CVideoGrabber::Run()
         int rgb[3] = {0, 0, 0};
         int count = 0;
 
+        uint8_t* buffptr = m_framebuffer;
+        
         for (int y = 0; y < g_flagmanager.m_height; y++)
         {
           for (int x = 0; x < g_flagmanager.m_width; x++)
           {
-            int r = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 2];
-            int g = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 1];
-            int b = m_outputframe->data[0][y * m_outputframe->linesize[0] + x * 3 + 0];
+            int b = *(buffptr++);
+            int g = *(buffptr++);
+            int r = *(buffptr++);
+
+            if (x == g_flagmanager.m_width - 1)
+              buffptr += m_outputframe->linesize[0] - (g_flagmanager.m_width * 3);
 
             rgb[0] += r;
             rgb[1] += g;
