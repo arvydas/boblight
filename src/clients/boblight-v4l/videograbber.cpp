@@ -173,6 +173,7 @@ void CVideoGrabber::Run()
 {
   CXImage  image(m_dpy, g_flagmanager.m_width, g_flagmanager.m_height);
   AVPacket pkt;
+  int      nrpixels = g_flagmanager.m_width * g_flagmanager.m_height;
 
   while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
   {
@@ -186,7 +187,6 @@ void CVideoGrabber::Run()
         sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0, m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
 
         int rgb[3] = {0, 0, 0};
-        int count = 0;
 
         uint8_t* buffptr = m_framebuffer;
         
@@ -198,13 +198,9 @@ void CVideoGrabber::Run()
             int g = *(buffptr++);
             int r = *(buffptr++);
 
-            if (x == g_flagmanager.m_width - 1)
-              buffptr += m_outputframe->linesize[0] - (g_flagmanager.m_width * 3);
-
             rgb[0] += r;
             rgb[1] += g;
             rgb[2] += b;
-            count++;
 
             if (m_dpy)
             {
@@ -217,6 +213,7 @@ void CVideoGrabber::Run()
               XPutPixel(image.m_xim, x, y, pixel);
             }
           }
+          buffptr += m_outputframe->linesize[0] - (g_flagmanager.m_width * 3);
         }
 
         if (m_dpy)
@@ -225,7 +222,7 @@ void CVideoGrabber::Run()
           XSync(m_dpy, False);
         }
 
-        cout << rgb[0] / count << " " << rgb[1] / count << " " << rgb[2] / count << "\n";
+        cout << rgb[0] / nrpixels << " " << rgb[1] / nrpixels << " " << rgb[2] / nrpixels << "\n";
       }
     }
 
