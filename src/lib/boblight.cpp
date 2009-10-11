@@ -353,6 +353,12 @@ bool CBoblight::ReadDataToQueue()
 
     m_messagequeue.AddData(data.GetData());
 
+    if (m_messagequeue.GetRemainingDataSize() > MAXDATA)
+    {
+      m_error = m_address + ":" + ToString(m_port) + " sent too much data";
+      return false;
+    }
+
     now = m_clock.GetTime();
   }
 

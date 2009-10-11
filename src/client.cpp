@@ -221,6 +221,12 @@ void CClientsHandler::RemoveClient(CClient* client)
 //handles client messages
 bool CClientsHandler::HandleMessages(CClient* client)
 {
+  if (client->m_messagequeue.GetRemainingDataSize() > MAXDATA) //client sent too much data
+  {
+    log("%s:%i sent too much data", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    return false;
+  }
+  
   //loop until there are no more messages
   while (client->m_messagequeue.GetNrMessages() > 0)
   {
