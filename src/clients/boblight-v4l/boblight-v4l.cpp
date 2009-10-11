@@ -30,13 +30,6 @@ CFlagManagerV4l g_flagmanager;
 
 using namespace std;
 
-//debug stuff
-void SetupDebugWindow();
-Display* dpy;
-Window window;
-XImage* xim;
-GC gc;
-
 void SignalHandler(int signum);
 int Run();
 
