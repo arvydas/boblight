@@ -24,6 +24,12 @@
 
 #include <string.h>
 #include <iostream>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/videodev2.h>
 
 extern CFlagManagerV4l g_flagmanager;
 
@@ -45,6 +51,7 @@ CVideoGrabber::CVideoGrabber()
   m_outputframe = NULL;
   m_sws = NULL;
   m_framebuffer = NULL;
+  m_fd = -1;
   
   m_dpy = NULL;
 }
@@ -60,12 +67,14 @@ void CVideoGrabber::Setup()
 
   memset(&m_formatparams, 0, sizeof(m_formatparams));
 
+  //set up the format we want
   m_formatparams.channel = g_flagmanager.m_channel;
   m_formatparams.width = g_flagmanager.m_width;
   m_formatparams.height = g_flagmanager.m_height;
   m_formatparams.standard = g_flagmanager.m_standard;
   m_formatparams.pix_fmt = PIX_FMT_BGR24;
 
+  //we need video4linux or video4linux2
   m_inputformatv4l  = av_find_input_format("video4linux");
   m_inputformatv4l2 = av_find_input_format("video4linux2");
   if (!m_inputformatv4l && !m_inputformatv4l2)
@@ -74,19 +83,19 @@ void CVideoGrabber::Setup()
   }
 
   returnv = -1;
-  if (m_inputformatv4l2)
+  if (m_inputformatv4l2) //try to open as video4linux2 when available
   {
     returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l2, 0, &m_formatparams);
   }
 
   if (returnv)
   {
-    if (m_inputformatv4l)
+    if (m_inputformatv4l) //try to open as video4linux when available
     {
       returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l, 0, &m_formatparams);
     }
 
-    if (returnv)
+    if (returnv) //I guess we can't
     {
       throw string ("Unable to open " + g_flagmanager.m_device);
     }
@@ -95,8 +104,10 @@ void CVideoGrabber::Setup()
   if(av_find_stream_info(m_formatcontext) < 0)
     throw string ("Unable to find stream info");
 
+  //print our format to stdout
   dump_format(m_formatcontext, 0, g_flagmanager.m_device.c_str(), false);
 
+  //try to find the video stream
   m_videostream = -1;
   for (int i = 0; i < m_formatcontext->nb_streams; i++)
   {
@@ -120,15 +131,18 @@ void CVideoGrabber::Setup()
   if (returnv < 0)
     throw string("Unable to open codec");
 
+  //check if we need to scale with libswscale
   m_needsscale =
     m_codeccontext->pix_fmt != PIX_FMT_BGR24 ||
     m_codeccontext->width   != g_flagmanager.m_width ||
     m_codeccontext->height  != g_flagmanager.m_height;
-  
+
+  //set up the frame that libavdecide will read the video4linux(2) data into
   m_inputframe = avcodec_alloc_frame();
   
   if (m_needsscale)
   {
+    //set up the frame libswscale will write to
     m_outputframe = avcodec_alloc_frame();
 
     m_sws = sws_getContext(m_codeccontext->width, m_codeccontext->height, m_codeccontext->pix_fmt, 
@@ -143,6 +157,19 @@ void CVideoGrabber::Setup()
     avpicture_fill((AVPicture *)m_outputframe, m_framebuffer, PIX_FMT_BGR24, g_flagmanager.m_width, g_flagmanager.m_height);
   }
 
+  //open video device for signal checking
+  if (g_flagmanager.m_checksignal)
+  {
+    struct v4l2_capability capabilities = {};
+    m_fd = open(g_flagmanager.m_device.c_str(), O_RDWR, 0);
+    if (m_fd == -1)
+      throw string("Unable to open " + g_flagmanager.m_device);
+
+    //check if this is a v4l2 device
+    if (ioctl(m_fd, VIDIOC_QUERYCAP, &capabilities) == -1)
+      throw g_flagmanager.m_device + ":" + string(strerror(errno));
+  }
+  
   if (g_flagmanager.m_debug)
   {
     m_dpy = XOpenDisplay(g_flagmanager.m_debugdpy);
@@ -166,10 +193,39 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
 {
   AVPacket pkt;
 
+  int priority = 255;
+ 
+  //tell libboblight how big our image is
   boblight_setscanrange(boblight, g_flagmanager.m_width, g_flagmanager.m_height);
 
   while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
   {
+    if (stop)
+    {
+      av_free_packet(&pkt);
+      break;
+    }
+    
+    if (!CheckSignal())
+    {
+      av_free_packet(&pkt);
+      if (priority != 255)
+      {
+        priority = 255;
+        cout << "No signal, setting priority to " << priority << "\n";
+        boblight_setpriority(boblight, priority);
+      }
+      sleep(1);
+      continue;
+    }
+
+    if (priority != g_flagmanager.m_priority)
+    {
+      priority = g_flagmanager.m_priority;
+      cout << "Got signal, setting priority to " << priority << "\n";
+      boblight_setpriority(boblight, priority);
+    }
+    
     if (pkt.stream_index == m_videostream)
     {
       int framefinished;
@@ -180,19 +236,20 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
         uint8_t* outputptr;
         int      linesize;
         
-        if (m_needsscale)
+        if (m_needsscale) //scale and assign pointer to output frame
         {
           sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0,
                     m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
           outputptr = m_framebuffer;
           linesize = m_outputframe->linesize[0];
         }
-        else
+        else //assign pointer to input frame
         {
           outputptr = m_inputframe->data[0];
           linesize = m_inputframe->linesize[0];
         }
 
+        //read out pixels and hand them to libboblight
         uint8_t* buffptr;
         for (int y = 0; y < g_flagmanager.m_height; y++)
         {
@@ -229,16 +286,29 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
         if (!boblight_sendrgb(boblight))
         {
           m_error = boblight_geterror(boblight);
+          av_free_packet(&pkt);
           return; //recoverable error
         }
       }
     }
 
     av_free_packet(&pkt);
-
-    if (stop) //need to free the packet, so can't do this from while comparision
-      break;
   }
+}
+
+bool CVideoGrabber::CheckSignal()
+{
+  if (m_fd == -1) //if we're not checking the signal just return true
+    return true;
+
+  struct v4l2_input input = {};
+  
+	if (ioctl(m_fd, VIDIOC_G_INPUT, &input.index) == -1)
+    throw g_flagmanager.m_device + ":" + string(strerror(errno));
+	if (ioctl(m_fd, VIDIOC_ENUMINPUT, &input) == -1)
+	  throw g_flagmanager.m_device + ":" + string(strerror(errno));
+  
+	return (!(input.status & V4L2_IN_ST_NO_SIGNAL));
 }
 
 void CVideoGrabber::Cleanup()
@@ -286,5 +356,11 @@ void CVideoGrabber::Cleanup()
   {
     av_close_input_file(m_formatcontext);
     m_formatcontext = NULL;
+  }
+
+  if (m_fd != -1)
+  {
+    close(m_fd);
+    m_fd = -1;
   }
 }

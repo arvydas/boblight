@@ -27,7 +27,7 @@ using namespace std;
 CFlagManagerV4l::CFlagManagerV4l()
 {
   //c = device, w == widthxheight, v = video standard, i = input, d = debug mode
-  m_flags += "c:w:v:i:d::";
+  m_flags += "c:w:v:i:d::n";
 
   //default device
   m_device = "/dev/video0";
@@ -41,6 +41,8 @@ CFlagManagerV4l::CFlagManagerV4l()
 
   //emptpy standard meands ffmpeg doesn't change it
   m_standard = NULL;
+
+  m_checksignal = false;
   
   m_debug = false;
   m_debugdpy = NULL;
@@ -80,6 +82,10 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
       m_debugdpy = m_strdebugdpy.c_str();
     }
   }
+  else if (c == 'n')
+  {
+    m_checksignal = true;
+  }
 }
 
 void CFlagManagerV4l::PrintHelpMessage()
@@ -100,6 +106,7 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -w  widthxheight of the captured image, example: -w 400x300\n";
   cout << "  -v  video standard\n";
   cout << "  -i  video input number\n";
+  cout << "  -n  only turn on boblight client when there's a video signal\n";
   cout << "  -d  debug mode\n";
   cout << "\n";
 }

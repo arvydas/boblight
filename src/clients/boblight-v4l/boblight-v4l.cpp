@@ -101,8 +101,7 @@ int Run()
     cout << "Connecting to boblightd\n";
     
     //try to connect, if we can't then bitch to stderr and destroy boblight
-    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
-        !boblight_setpriority(boblight, g_flagmanager.m_priority))
+    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000))
     {
       PrintError(boblight_geterror(boblight));
       cout << "Waiting 10 seconds before trying again\n";
@@ -137,11 +136,26 @@ int Run()
       return 1;
     }
 
-    videograbber.Run(stop, boblight);  //this will keep looping until we should stop or boblight gives an error
+    try
+    {
+      videograbber.Run(stop, boblight);  //this will keep looping until we should stop or boblight gives an error
+    }
+    catch (string error)
+    {
+      PrintError(error);
+      boblight_destroy(boblight);
+      return 1;
+    }
+
+    if (!videograbber.GetError().empty())
+      PrintError(videograbber.GetError());
+    
     videograbber.Cleanup();
 
     boblight_destroy(boblight);
   }
+
+  cout << "Exiting\n";
 }
 
 void SignalHandler(int signum)

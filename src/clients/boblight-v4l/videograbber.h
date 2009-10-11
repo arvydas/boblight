@@ -65,11 +65,15 @@ class CVideoGrabber
     bool               m_needsscale;
 
     std::string        m_error;
+
+    int                m_fd;
     
     Display*           m_dpy;
     Window             m_window;
     XImage*            m_xim;
     GC                 m_gc;
+
+    bool               CheckSignal();
 };
 
 #endif //VIDEOGRABBER
