@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <stdint.h>
+#include <signal.h>
 
 #define BOBLIGHT_DLOPEN
 #include "lib/libboblight.h"
@@ -35,6 +36,10 @@ Display* dpy;
 Window window;
 XImage* xim;
 GC gc;
+
+void SignalHandler(int signum);
+
+volatile bool stop = false;
 
 int main(int argc, char *argv[])
 {
@@ -90,8 +95,27 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  videograbber.Run();
+  //set up signal handlers
+  signal(SIGTERM, SignalHandler);
+  signal(SIGINT, SignalHandler);
+  
+  videograbber.Run(stop);
   videograbber.Cleanup();
   
   return 1;
 }
+
+void SignalHandler(int signum)
+{
+  if (signum == SIGTERM)
+  {
+    cout << "caught SIGTERM\n";
+    stop = true;
+  }
+  else if (signum == SIGINT)
+  {
+    cout << "caught SIGINT\n";
+    stop = true;
+  }
+}
+

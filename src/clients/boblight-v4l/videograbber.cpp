@@ -153,12 +153,12 @@ void CVideoGrabber::Setup()
   }
 }
 
-void CVideoGrabber::Run()
+void CVideoGrabber::Run(volatile bool& stop)
 {
   AVPacket pkt;
   int      nrpixels = g_flagmanager.m_width * g_flagmanager.m_height;
 
-  while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
+  while(av_read_frame(m_formatcontext, &pkt) >= 0 && !stop) //read videoframe
   {
     if (pkt.stream_index == m_videostream)
     {

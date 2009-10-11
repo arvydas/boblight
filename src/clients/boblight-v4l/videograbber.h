@@ -42,7 +42,7 @@ class CVideoGrabber
     ~CVideoGrabber();
 
     void Setup();
-    void Run();
+    void Run(volatile bool& stop);
     void Cleanup();
 
   private:
