@@ -63,7 +63,7 @@ void CVideoGrabber::Setup()
   m_formatparams.channel = g_flagmanager.m_channel;
   m_formatparams.width = g_flagmanager.m_width;
   m_formatparams.height = g_flagmanager.m_height;
-  m_formatparams.standard = g_flagmanager.m_standard.empty() ? NULL : g_flagmanager.m_standard.c_str();
+  m_formatparams.standard = g_flagmanager.m_standard;
   m_formatparams.pix_fmt = PIX_FMT_BGR24;
 
   m_inputformatv4l  = av_find_input_format("video4linux");

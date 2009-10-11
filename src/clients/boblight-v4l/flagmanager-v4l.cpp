@@ -39,6 +39,9 @@ CFlagManagerV4l::CFlagManagerV4l()
   //channel of -1 means ffmpeg doesn't change it
   m_channel = -1;
 
+  //emptpy standard meands ffmpeg doesn't change it
+  m_standard = NULL;
+  
   m_debug = false;
   m_debugdpy = NULL;
 }
@@ -58,7 +61,8 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   }
   else if (c == 'v')
   {
-    m_standard = optarg;
+    m_strstandard = optarg;
+    m_standard = m_strstandard.c_str();
   }
   else if (c == 'i')
   {

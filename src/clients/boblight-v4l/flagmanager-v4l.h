@@ -32,7 +32,7 @@ class CFlagManagerV4l : public CFlagManager
     void        PrintHelpMessage();
 
     std::string m_device;
-    std::string m_standard;
+    const char* m_standard;
     int         m_channel;
 
     int         m_width;
@@ -43,6 +43,7 @@ class CFlagManagerV4l : public CFlagManager
     
   private:
     std::string m_strdebugdpy;
+    std::string m_strstandard;
     
 };
 
