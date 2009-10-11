@@ -193,7 +193,7 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
 {
   AVPacket pkt;
 
-  int priority = 255;
+  int priority = -1;
  
   //tell libboblight how big our image is
   boblight_setscanrange(boblight, g_flagmanager.m_width, g_flagmanager.m_height);
