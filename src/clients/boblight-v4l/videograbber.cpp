@@ -122,10 +122,11 @@ void CVideoGrabber::Setup()
 
   m_needsscale =
     m_codeccontext->pix_fmt != PIX_FMT_BGR24 ||
-    m_codeccontext->width != g_flagmanager.m_width ||
-    m_codeccontext->height != g_flagmanager.m_height;
+    m_codeccontext->width   != g_flagmanager.m_width ||
+    m_codeccontext->height  != g_flagmanager.m_height;
   
   m_inputframe = avcodec_alloc_frame();
+  
   if (m_needsscale)
   {
     m_outputframe = avcodec_alloc_frame();
