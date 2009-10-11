@@ -38,6 +38,7 @@ XImage* xim;
 GC gc;
 
 void SignalHandler(int signum);
+int Run();
 
 volatile bool stop = false;
 
@@ -83,26 +84,64 @@ int main(int argc, char *argv[])
       return 0;
   }
 
-  CVideoGrabber videograbber;
-
-  try
-  {
-    videograbber.Setup();
-  }
-  catch(string error)
-  {
-    PrintError(error);
-    return 1;
-  }
-
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
-  
-  videograbber.Run(stop);
-  videograbber.Cleanup();
-  
-  return 1;
+
+  return Run();
+}
+
+int Run()
+{
+  while(!stop)
+  {
+    //init boblight
+    void* boblight = boblight_init();
+
+    cout << "Connecting to boblightd\n";
+    
+    //try to connect, if we can't then bitch to stderr and destroy boblight
+    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
+        !boblight_setpriority(boblight, g_flagmanager.m_priority))
+    {
+      PrintError(boblight_geterror(boblight));
+      cout << "Waiting 10 seconds before trying again\n";
+      boblight_destroy(boblight);
+      sleep(10);
+      continue;
+    }
+
+    cout << "Connection to boblightd opened\n";
+    
+    //if we can't parse the boblight option lines (given with -o) properly, just exit
+    try
+    {
+      g_flagmanager.ParseBoblightOptions(boblight);
+    }
+    catch (string error)
+    {
+      PrintError(error);
+      return 1;
+    }
+
+    //set up videograbber
+    CVideoGrabber videograbber;
+    try
+    {
+      videograbber.Setup();
+    }
+    catch(string error)
+    {
+      PrintError(error);
+      boblight_destroy(boblight);
+      return 1;
+    }
+
+    videograbber.Run(stop, boblight);  //this will keep looping until we should stop or boblight gives an error
+    videograbber.Cleanup();
+
+    boblight_destroy(boblight);
+  }
 }
 
 void SignalHandler(int signum)

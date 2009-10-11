@@ -153,11 +153,12 @@ void CVideoGrabber::Setup()
   }
 }
 
-void CVideoGrabber::Run(volatile bool& stop)
+void CVideoGrabber::Run(volatile bool& stop, void* boblight)
 {
   AVPacket pkt;
-  int      nrpixels = g_flagmanager.m_width * g_flagmanager.m_height;
 
+  boblight_setscanrange(boblight, g_flagmanager.m_width, g_flagmanager.m_height);
+  
   while(av_read_frame(m_formatcontext, &pkt) >= 0 && !stop) //read videoframe
   {
     if (pkt.stream_index == m_videostream)
@@ -169,29 +170,26 @@ void CVideoGrabber::Run(volatile bool& stop)
       {
         sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0, m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
 
-        int      rgb[3] = {0, 0, 0};
         uint8_t* buffptr;
-        
         for (int y = 0; y < g_flagmanager.m_height; y++)
         {
           buffptr = m_framebuffer + m_outputframe->linesize[0] * y;
           for (int x = 0; x < g_flagmanager.m_width; x++)
           {
-            int b = *(buffptr++);
-            int g = *(buffptr++);
-            int r = *(buffptr++);
+            int rgb[3];
+            rgb[2] = *(buffptr++);
+            rgb[1] = *(buffptr++);
+            rgb[0] = *(buffptr++);
 
-            rgb[0] += r;
-            rgb[1] += g;
-            rgb[2] += b;
-
+            boblight_addpixelxy(boblight, x, y, rgb);
+            
             if (m_dpy)
             {
               int pixel;
-              pixel  = (r & 0xFF) << 16;
-              pixel |= (g & 0xFF) << 8;
-              pixel |=  b & 0xFF;
-
+              pixel  = (rgb[0] & 0xFF) << 16;
+              pixel |= (rgb[1] & 0xFF) << 8;
+              pixel |=  rgb[2] & 0xFF;
+              
               //I'll probably get the annual inefficiency award for this
               XPutPixel(m_xim, x, y, pixel);
             }
@@ -204,7 +202,12 @@ void CVideoGrabber::Run(volatile bool& stop)
           XSync(m_dpy, False);
         }
 
-        cout << rgb[0] / nrpixels << " " << rgb[1] / nrpixels << " " << rgb[2] / nrpixels << "\n";
+        //send rgb values to boblightd
+        if (!boblight_sendrgb(boblight))
+        {
+          m_error = boblight_geterror(boblight);
+          return; //recoverable error
+        }
       }
     }
 

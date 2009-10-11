@@ -42,9 +42,11 @@ class CVideoGrabber
     ~CVideoGrabber();
 
     void Setup();
-    void Run(volatile bool& stop);
+    void Run(volatile bool& stop, void* boblight);
     void Cleanup();
 
+    std::string GetError() { return m_error; }
+    
   private:
     AVFormatParameters m_formatparams;
     AVInputFormat*     m_inputformatv4l;
@@ -61,8 +63,8 @@ class CVideoGrabber
     SwsContext*        m_sws;
     uint8_t*           m_framebuffer;
 
-    void*              m_boblight;
-
+    std::string        m_error;
+    
     Display*           m_dpy;
     Window             m_window;
     XImage*            m_xim;
