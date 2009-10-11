@@ -159,7 +159,7 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
 
   boblight_setscanrange(boblight, g_flagmanager.m_width, g_flagmanager.m_height);
   
-  while(av_read_frame(m_formatcontext, &pkt) >= 0 && !stop) //read videoframe
+  while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
   {
     if (pkt.stream_index == m_videostream)
     {
@@ -212,6 +212,9 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
     }
 
     av_free_packet(&pkt);
+
+    if (stop) //need to free the packet, so can't do this from while comparision
+      break;
   }
 }
 
