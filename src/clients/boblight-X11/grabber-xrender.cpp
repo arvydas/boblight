@@ -38,15 +38,15 @@ CGrabberXRender::CGrabberXRender(void* boblight) : CGrabber(boblight)
   memset(&m_pictattr, 0, sizeof(m_pictattr));
   m_pictattr.repeat = RepeatNone;
 
-  m_transform.matrix[0][0] = 65536;
+  m_transform.matrix[0][0] = 0;
   m_transform.matrix[0][1] = 0;
   m_transform.matrix[0][2] = 0;
   m_transform.matrix[1][0] = 0;
-  m_transform.matrix[1][1] = 65536;
+  m_transform.matrix[1][1] = 0;
   m_transform.matrix[1][2] = 0;
   m_transform.matrix[2][0] = 0;
   m_transform.matrix[2][1] = 0;
-  m_transform.matrix[2][2] = 65536;
+  m_transform.matrix[2][2] = 0;
 }
 
 CGrabberXRender::~CGrabberXRender()
@@ -134,8 +134,10 @@ bool CGrabberXRender::Run(volatile bool& stop)
     UpdateDimensions();
 
     //we want to scale the root window to the pixmap
-    m_transform.matrix[0][0] = Round<int>((double)m_rootattr.width / (double)m_size * 65536.0);
-    m_transform.matrix[1][1] = Round<int>((double)m_rootattr.height / (double)m_size * 65536.0);
+    m_transform.matrix[0][0] = m_rootattr.width;
+    m_transform.matrix[1][1] = m_rootattr.height;
+    m_transform.matrix[2][2] = m_size;
+    
     XRenderSetPictureTransform (m_dpy, m_srcpicture, &m_transform);
 
     //render the thing
