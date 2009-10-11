@@ -249,32 +249,7 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
           linesize = m_inputframe->linesize[0];
         }
 
-        //read out pixels and hand them to libboblight
-        uint8_t* buffptr;
-        for (int y = 0; y < g_flagmanager.m_height; y++)
-        {
-          buffptr = outputptr + linesize * y;
-          for (int x = 0; x < g_flagmanager.m_width; x++)
-          {
-            int rgb[3];
-            rgb[2] = *(buffptr++);
-            rgb[1] = *(buffptr++);
-            rgb[0] = *(buffptr++);
-
-            boblight_addpixelxy(boblight, x, y, rgb);
-            
-            if (m_dpy)
-            {
-              int pixel;
-              pixel  = (rgb[0] & 0xFF) << 16;
-              pixel |= (rgb[1] & 0xFF) << 8;
-              pixel |=  rgb[2] & 0xFF;
-              
-              //I'll probably get the annual inefficiency award for this
-              XPutPixel(m_xim, x, y, pixel);
-            }
-          }
-        }
+        FrameToBoblight(outputptr, linesize, boblight);
 
         if (m_dpy)
         {
@@ -309,6 +284,36 @@ bool CVideoGrabber::CheckSignal()
 	  throw g_flagmanager.m_device + ":" + string(strerror(errno));
   
 	return (!(input.status & V4L2_IN_ST_NO_SIGNAL));
+}
+
+void CVideoGrabber::FrameToBoblight(uint8_t* outputptr, int linesize, void* boblight)
+{
+  //read out pixels and hand them to libboblight
+  uint8_t* buffptr;
+  for (int y = 0; y < g_flagmanager.m_height; y++)
+  {
+    buffptr = outputptr + linesize * y;
+    for (int x = 0; x < g_flagmanager.m_width; x++)
+    {
+      int rgb[3];
+      rgb[2] = *(buffptr++);
+      rgb[1] = *(buffptr++);
+      rgb[0] = *(buffptr++);
+
+      boblight_addpixelxy(boblight, x, y, rgb);
+
+      if (m_dpy)
+      {
+        int pixel;
+        pixel  = (rgb[0] & 0xFF) << 16;
+        pixel |= (rgb[1] & 0xFF) << 8;
+        pixel |=  rgb[2] & 0xFF;
+
+        //I'll probably get the annual inefficiency award for this
+        XPutPixel(m_xim, x, y, pixel);
+      }
+    }
+  }
 }
 
 void CVideoGrabber::Cleanup()

@@ -74,6 +74,7 @@ class CVideoGrabber
     GC                 m_gc;
 
     bool               CheckSignal();
+    void               FrameToBoblight(uint8_t* outputptr, int linesize, void* boblight);
 };
 
 #endif //VIDEOGRABBER
