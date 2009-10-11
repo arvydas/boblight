@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
   }
 
   videograbber.Run();
+  videograbber.Cleanup();
   
   return 1;
 }

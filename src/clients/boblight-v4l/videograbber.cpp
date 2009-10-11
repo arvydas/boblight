@@ -29,28 +29,6 @@ extern CFlagManagerV4l g_flagmanager;
 
 using namespace std;
 
-class CXImage
-{
-  public:
-    CXImage (Display* dpy, int width, int height)
-    {
-      m_dpy = dpy;
-      m_xim = NULL;
-      if (m_dpy) //lazy way of creating an ximage
-        m_xim = XGetImage(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0, width, height, AllPlanes, ZPixmap);
-    }
-
-    ~CXImage()
-    {
-      if (m_xim)
-        XDestroyImage(m_xim);
-    }
-
-    Display* m_dpy;
-    XImage* m_xim;
-};
-
-
 CVideoGrabber::CVideoGrabber()
 {
   av_register_all();
@@ -67,12 +45,13 @@ CVideoGrabber::CVideoGrabber()
   m_outputframe = NULL;
   m_sws = NULL;
   m_framebuffer = NULL;
-
+  
   m_dpy = NULL;
 }
 
 CVideoGrabber::~CVideoGrabber()
 {
+  Cleanup();
 }
 
 void CVideoGrabber::Setup()
@@ -161,9 +140,14 @@ void CVideoGrabber::Setup()
     if (!m_dpy)
       throw string("Unable to open display");
 
-    m_window = XCreateSimpleWindow(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0, g_flagmanager.m_width, g_flagmanager.m_height, 0, 0, 0);
+    m_window = XCreateSimpleWindow(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0,
+                                   g_flagmanager.m_width, g_flagmanager.m_height, 0, 0, 0);
     m_gc = XCreateGC(m_dpy, m_window, 0, NULL);
 
+    //lazy way of creating an ximage
+    m_xim = XGetImage(m_dpy, RootWindow(m_dpy, DefaultScreen(m_dpy)), 0, 0, g_flagmanager.m_width,
+                      g_flagmanager.m_height, AllPlanes, ZPixmap);
+    
     XMapWindow(m_dpy, m_window);
     XSync(m_dpy, False);
   }
@@ -171,7 +155,6 @@ void CVideoGrabber::Setup()
 
 void CVideoGrabber::Run()
 {
-  CXImage  image(m_dpy, g_flagmanager.m_width, g_flagmanager.m_height);
   AVPacket pkt;
   int      nrpixels = g_flagmanager.m_width * g_flagmanager.m_height;
 
@@ -210,14 +193,14 @@ void CVideoGrabber::Run()
               pixel |=  b & 0xFF;
 
               //I'll probably get the annual inefficiency award for this
-              XPutPixel(image.m_xim, x, y, pixel);
+              XPutPixel(m_xim, x, y, pixel);
             }
           }
         }
 
         if (m_dpy)
         {
-          XPutImage(m_dpy, m_window, m_gc, image.m_xim, 0, 0, 0, 0, g_flagmanager.m_width, g_flagmanager.m_height);
+          XPutImage(m_dpy, m_window, m_gc, m_xim, 0, 0, 0, 0, g_flagmanager.m_width, g_flagmanager.m_height);
           XSync(m_dpy, False);
         }
 
@@ -226,5 +209,53 @@ void CVideoGrabber::Run()
     }
 
     av_free_packet(&pkt);
+  }
+}
+
+void CVideoGrabber::Cleanup()
+{
+  if (m_dpy)
+  {
+    XDestroyImage(m_xim);
+    XDestroyWindow(m_dpy, m_window);
+    XFreeGC(m_dpy, m_gc);
+    XCloseDisplay(m_dpy);
+    m_dpy = NULL;
+  }
+
+  if (m_framebuffer)
+  {
+    av_free(m_framebuffer);
+    m_framebuffer = NULL;
+  }
+
+  if (m_sws)
+  {
+    sws_freeContext(m_sws);
+    m_sws = NULL;
+  }
+
+  if (m_inputframe)
+  {
+    av_free(m_inputframe);
+    m_inputframe = NULL;
+  }
+
+  if (m_outputframe)
+  {
+    av_free(m_outputframe);
+    m_outputframe = NULL;
+  }
+
+  if (m_codeccontext)
+  {
+    avcodec_close(m_codeccontext);
+    m_codeccontext = NULL;
+  }
+
+  if (m_formatcontext)
+  {
+    av_close_input_file(m_formatcontext);
+    m_formatcontext = NULL;
   }
 }

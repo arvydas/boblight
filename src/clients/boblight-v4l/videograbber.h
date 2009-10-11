@@ -43,6 +43,7 @@ class CVideoGrabber
 
     void Setup();
     void Run();
+    void Cleanup();
 
   private:
     AVFormatParameters m_formatparams;
