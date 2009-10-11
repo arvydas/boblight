@@ -120,19 +120,27 @@ void CVideoGrabber::Setup()
   if (returnv < 0)
     throw string("Unable to open codec");
 
+  m_needsscale =
+    m_codeccontext->pix_fmt != PIX_FMT_BGR24 ||
+    m_codeccontext->width != g_flagmanager.m_width ||
+    m_codeccontext->height != g_flagmanager.m_height;
+  
   m_inputframe = avcodec_alloc_frame();
-  m_outputframe = avcodec_alloc_frame();
+  if (m_needsscale)
+  {
+    m_outputframe = avcodec_alloc_frame();
 
-  m_sws = sws_getContext(m_codeccontext->width, m_codeccontext->height, m_codeccontext->pix_fmt, 
-                         g_flagmanager.m_width, g_flagmanager.m_height, PIX_FMT_BGR24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+    m_sws = sws_getContext(m_codeccontext->width, m_codeccontext->height, m_codeccontext->pix_fmt, 
+                           g_flagmanager.m_width, g_flagmanager.m_height, PIX_FMT_BGR24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
-  if (!m_sws)
-    throw string("Unable to get sws context");
+    if (!m_sws)
+      throw string("Unable to get sws context");
 
-  int buffsize = avpicture_get_size(PIX_FMT_RGB24, g_flagmanager.m_width, g_flagmanager.m_height);
-  m_framebuffer = (uint8_t*)av_malloc(buffsize);
+    int buffsize = avpicture_get_size(PIX_FMT_RGB24, g_flagmanager.m_width, g_flagmanager.m_height);
+    m_framebuffer = (uint8_t*)av_malloc(buffsize);
 
-  avpicture_fill((AVPicture *)m_outputframe, m_framebuffer, PIX_FMT_BGR24, g_flagmanager.m_width, g_flagmanager.m_height);
+    avpicture_fill((AVPicture *)m_outputframe, m_framebuffer, PIX_FMT_BGR24, g_flagmanager.m_width, g_flagmanager.m_height);
+  }
 
   if (g_flagmanager.m_debug)
   {
@@ -158,7 +166,7 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
   AVPacket pkt;
 
   boblight_setscanrange(boblight, g_flagmanager.m_width, g_flagmanager.m_height);
-  
+
   while(av_read_frame(m_formatcontext, &pkt) >= 0) //read videoframe
   {
     if (pkt.stream_index == m_videostream)
@@ -168,12 +176,26 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
 
       if (framefinished)
       {
-        sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0, m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
+        uint8_t* outputptr;
+        int      linesize;
+        
+        if (m_needsscale)
+        {
+          sws_scale(m_sws, m_inputframe->data, m_inputframe->linesize, 0,
+                    m_codeccontext->height, m_outputframe->data, m_outputframe->linesize);
+          outputptr = m_framebuffer;
+          linesize = m_outputframe->linesize[0];
+        }
+        else
+        {
+          outputptr = m_inputframe->data[0];
+          linesize = m_inputframe->linesize[0];
+        }
 
         uint8_t* buffptr;
         for (int y = 0; y < g_flagmanager.m_height; y++)
         {
-          buffptr = m_framebuffer + m_outputframe->linesize[0] * y;
+          buffptr = outputptr + linesize * y;
           for (int x = 0; x < g_flagmanager.m_width; x++)
           {
             int rgb[3];

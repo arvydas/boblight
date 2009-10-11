@@ -62,6 +62,7 @@ class CVideoGrabber
 
     SwsContext*        m_sws;
     uint8_t*           m_framebuffer;
+    bool               m_needsscale;
 
     std::string        m_error;
     
