@@ -41,6 +41,8 @@ class CFlagManagerV4l : public CFlagManager
 
     bool        m_debug;
     const char* m_debugdpy;
+
+    std::string m_customcodec;
     
   private:
     std::string m_strdebugdpy;

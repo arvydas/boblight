@@ -26,8 +26,8 @@ using namespace std;
 
 CFlagManagerV4l::CFlagManagerV4l()
 {
-  //c = device, w == widthxheight, v = video standard, i = input, d = debug mode
-  m_flags += "c:w:v:i:d::n";
+  //c = device, w == widthxheight, v = video standard, i = input, d = debug mode, e = codec
+  m_flags += "c:w:v:i:d::ne:";
 
   //default device
   m_device = "/dev/video0";
@@ -86,6 +86,10 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   {
     m_checksignal = true;
   }
+  else if (c == 'e')
+  {
+    m_customcodec = optarg;
+  }
 }
 
 void CFlagManagerV4l::PrintHelpMessage()
@@ -107,6 +111,7 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -v  video standard\n";
   cout << "  -i  video input number\n";
   cout << "  -n  only turn on boblight client when there's a video signal\n";
+  cout << "  -e  use custom codec, default is video4linux2 or video4linux\n";
   cout << "  -d  debug mode\n";
   cout << "\n";
 }

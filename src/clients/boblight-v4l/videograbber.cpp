@@ -42,8 +42,6 @@ CVideoGrabber::CVideoGrabber()
   av_log_set_level(AV_LOG_DEBUG);
 
   memset(&m_formatparams, 0, sizeof(m_formatparams));
-  m_inputformatv4l = NULL;
-  m_inputformatv4l2 = NULL;
   m_formatcontext = NULL;
   m_codeccontext = NULL;
   m_codec = NULL;
@@ -63,41 +61,51 @@ CVideoGrabber::~CVideoGrabber()
 
 void CVideoGrabber::Setup()
 {
-  int returnv;
+  int            returnv;
+  AVInputFormat* inputformat;
 
   memset(&m_formatparams, 0, sizeof(m_formatparams));
 
   //set up the format we want
+  m_formatparams.time_base.num = 1;
+  m_formatparams.time_base.den = 60;
   m_formatparams.channel = g_flagmanager.m_channel;
   m_formatparams.width = g_flagmanager.m_width;
   m_formatparams.height = g_flagmanager.m_height;
   m_formatparams.standard = g_flagmanager.m_standard;
   m_formatparams.pix_fmt = PIX_FMT_BGR24;
 
-  //we need video4linux or video4linux2
-  m_inputformatv4l  = av_find_input_format("video4linux");
-  m_inputformatv4l2 = av_find_input_format("video4linux2");
-  if (!m_inputformatv4l && !m_inputformatv4l2)
+  //open with custom codec when requested
+  if (!g_flagmanager.m_customcodec.empty())
   {
-    throw string("Didn't find video4linux2 or video4linux input format");
-  }
+    inputformat = av_find_input_format(g_flagmanager.m_customcodec.c_str());
+    if (!inputformat)
+      throw string ("Format " + g_flagmanager.m_customcodec + " not found");
 
-  returnv = -1;
-  if (m_inputformatv4l2) //try to open as video4linux2 when available
-  {
-    returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l2, 0, &m_formatparams);
+    returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);    
+    if (returnv)
+      throw string ("Unable to open " + g_flagmanager.m_device);
   }
-
-  if (returnv)
+  else
   {
-    if (m_inputformatv4l) //try to open as video4linux when available
+    //try to open as video4linux2
+    inputformat = av_find_input_format("video4linux2");
+    returnv = -1;
+    if (inputformat) //try to open as video4linux2 when available
     {
-      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), m_inputformatv4l, 0, &m_formatparams);
+      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);
     }
 
-    if (returnv) //I guess we can't
+    if (returnv) //failed, try to open as video4linux instead
     {
-      throw string ("Unable to open " + g_flagmanager.m_device);
+      inputformat = av_find_input_format("video4linux");
+      if (!inputformat)
+        throw string ("Unable to open " + g_flagmanager.m_device);
+
+      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);
+
+      if (returnv)
+        throw string ("Unable to open " + g_flagmanager.m_device);
     }
   }
 
