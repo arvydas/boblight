@@ -26,6 +26,10 @@ class CDeviceSound : public CDevice
   public:
     CDeviceSound(CClientsHandler& clients);
 
+    bool SetupDevice();
+    bool WriteOutput();
+    void CloseDevice();
+
   private:
 };
 

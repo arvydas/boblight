@@ -16,8 +16,29 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "string.h"
+
+#include "util/log.h"
+#include "util/misc.h"
 #include "devicesound.h"
 
 CDeviceSound::CDeviceSound(CClientsHandler& clients) : CDevice(clients)
 {
 }
+
+bool CDeviceSound::SetupDevice()
+{
+  log("sound device not implemented");
+  return false;
+}
+
+bool CDeviceSound::WriteOutput()
+{
+  return false;
+}
+
+void CDeviceSound::CloseDevice()
+{
+  return;
+}
+
