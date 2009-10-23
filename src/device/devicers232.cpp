@@ -16,7 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "string.h"
+#include <string.h>
 
 #include "util/log.h"
 #include "util/misc.h"
