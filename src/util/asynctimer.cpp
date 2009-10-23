@@ -18,6 +18,7 @@
 
 #include "asynctimer.h"
 #include "misc.h"
+#include "lock.h"
 
 CAsyncTimer::~CAsyncTimer()
 {
@@ -55,11 +56,26 @@ void CAsyncTimer::Process()
   }
 }
 
-void CAsyncTimer::Wait()
+void CAsyncTimer::Wait(volatile bool* stop /*= NULL*/)
 {
-  m_signal.Lock();
-  m_signal.Wait(m_interval * 2);
-  m_signal.Unlock();
+  int64_t waittime  = m_interval * 2;
+  int     count     = waittime / 1000000LL;
+  int     remainder = waittime % 1000000LL;
+
+  for (int i = 0; i < count; i++)
+  {
+    CLock lock(m_signal);
+    if (m_signal.Wait(1000000))
+      return;
+
+    if (stop)
+    {
+      if (*stop) return;
+    }
+  }
+
+  CLock lock(m_signal);
+  m_signal.Wait(remainder);
 }
 
 void CAsyncTimer::StopTimer()

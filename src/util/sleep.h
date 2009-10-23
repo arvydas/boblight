@@ -36,7 +36,7 @@ inline void USleep(int64_t usecs, volatile bool* stop = NULL)
   {
     if (stop)
     {
-      if (*stop) return;
+      if (*stop) break;
     }
     sleep(1); 
   }

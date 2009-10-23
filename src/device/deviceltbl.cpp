@@ -86,7 +86,7 @@ bool CDeviceLtbl::WriteOutput()
       return false;
   }
     
-  m_timer.Wait(); //wait for the timer to signal us
+  m_timer.Wait(&m_stop); //wait for the timer to signal us
 
   return true;
 }

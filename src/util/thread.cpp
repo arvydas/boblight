@@ -94,7 +94,20 @@ void CThread::USleep(int64_t usecs)
   }
   else
   {
-    CLock lock(m_sleepcondition);
-    m_sleepcondition.Wait(usecs);
+    int count     = usecs / 1000000LL;
+    int remainder = usecs % 1000000LL;
+
+    for (int i = 0; i < count; i++)
+    {
+      CLock lock(m_sleepcondition);
+      m_sleepcondition.Wait(1000000);
+      if (m_stop) return;
+    }
+
+    if (remainder > 0)
+    {
+      CLock lock(m_sleepcondition);
+      m_sleepcondition.Wait(usecs);
+    }
   }
 }

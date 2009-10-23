@@ -84,7 +84,7 @@ bool CDeviceRS232::WriteOutput()
     return false;
   }
 
-  m_timer.Wait();
+  m_timer.Wait(&m_stop);
   
   return true;
 }
