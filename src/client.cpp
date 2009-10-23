@@ -125,7 +125,7 @@ int CClientsHandler::GetReadableClient()
   if (m_clients.size() == 0) //no clients so we just sleep
   {
     lock.Leave();
-    USleep(WAITTIME);
+    USleep(WAITTIME, &m_stop);
     return -1;
   }
 
@@ -161,7 +161,7 @@ int CClientsHandler::GetReadableClient()
   else if (returnv == -1) //select had an error
   {
     log("select() %s", GetErrno().c_str());
-    USleep(WAITTIME);
+    USleep(WAITTIME, &m_stop);
     return -1;
   }
 
