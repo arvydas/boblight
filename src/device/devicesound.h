@@ -32,12 +32,14 @@ class CDeviceSound : public CDevice
     void CloseDevice();
 
   private:
-    bool m_opened;
-    bool m_initialized;
+    PaStream* m_stream;
+    bool      m_opened;
+    bool      m_initialized;
+    bool      m_started;
 
-    int PaStreamCallback(const void *input, void *output, unsigned long framecount,
-			 const PaStreamCallbackTimeInfo* timeinfo, PaStreamCallbackFlags statusflags,
-			 void *userdata);
+    static int PaStreamCallback(const void *input, void *output, unsigned long framecount,
+			        const PaStreamCallbackTimeInfo* timeinfo, PaStreamCallbackFlags statusflags,
+				void *userdata);
 };
 
 #endif //CDEVICESOUND

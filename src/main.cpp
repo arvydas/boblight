@@ -35,7 +35,7 @@
 
 using namespace std;
 
-bool stop = false;
+volatile bool stop = false;
 
 void PrintFlags(int argc, char *argv[]);
 void SignalHandler(int signum);

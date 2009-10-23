@@ -20,6 +20,7 @@
 #include "util/misc.h"
 #include "util/mutex.h"
 #include "util/lock.h"
+#include "util/sleep.h"
 #include "devicesound.h"
 
 using namespace std;
@@ -48,6 +49,7 @@ CDeviceSound::CDeviceSound(CClientsHandler& clients) : CDevice(clients)
 {
   m_opened = false;
   m_initialized = false;
+  m_started = false;
 }
 
 bool CDeviceSound::SetupDevice()
@@ -75,12 +77,14 @@ bool CDeviceSound::SetupDevice()
   log("%s found %i portaudio devices", m_name.c_str(), nrdevices);
 
   const PaDeviceInfo *deviceinfo;
+  const PaHostApiInfo* hostapiinfo;
   for (int i = 0; i < nrdevices; i++)
   {
     deviceinfo = Pa_GetDeviceInfo(i);
     if (deviceinfo->maxOutputChannels)
     {
-      log("Device %2i: channels:%3i name:%s", i, deviceinfo->maxOutputChannels, deviceinfo->name);
+      hostapiinfo = Pa_GetHostApiInfo(deviceinfo->hostApi);
+      log("n:%2i channels:%3i api:%s name:%s", i, deviceinfo->maxOutputChannels, hostapiinfo->name, deviceinfo->name);
     }
   }
 
@@ -110,19 +114,69 @@ bool CDeviceSound::SetupDevice()
     log("%s using device %i", m_name.c_str(), devicenr);
   }
 
-  return false;
+  PaStreamParameters outputparameters = {};
+  outputparameters.channelCount       = m_channels.size();
+  outputparameters.device             = devicenr;
+  outputparameters.sampleFormat       = paFloat32;
+  outputparameters.suggestedLatency   = deviceinfo->defaultLowOutputLatency;
+
+  int formatsupported = Pa_IsFormatSupported(NULL, &outputparameters, m_rate);
+  if (formatsupported != paFormatIsSupported)
+  {
+    log("%s format not supported: %s", m_name.c_str(), Pa_GetErrorText(formatsupported));
+    return false;
+  }
+
+  err = Pa_OpenStream(&m_stream, NULL, &outputparameters, m_rate, m_period, paNoFlag, PaStreamCallback, (void*)this);
+  if (err != paNoError)
+  {
+    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+    return false;
+  }
+  m_opened = true;
+
+  err = Pa_StartStream(m_stream);
+  if (err != paNoError)
+  {
+    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+    return false;
+  }
+  m_started = true;
+
+  return true;
 }
 
 bool CDeviceSound::WriteOutput()
 {
-  return false;
+  USleep(1000000LL);
+
+  return true;
 }
 
 void CDeviceSound::CloseDevice()
 {
-  if(m_initialized)
+  int err;
+  if (m_started)
   {
-    int err = g_portaudioinit.DeInit();
+    err = Pa_StopStream(m_stream);
+    if (err != paNoError)
+      log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+
+    m_started = false;
+  }
+
+  if (m_opened)
+  {
+    err = Pa_CloseStream(m_stream);
+    if (err != paNoError)
+      log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+
+    m_opened = false;
+  }
+
+  if (m_initialized)
+  {
+    err = g_portaudioinit.DeInit();
     if (err != paNoError)
       log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
 
@@ -137,9 +191,16 @@ int CDeviceSound::PaStreamCallback(const void *input, void *output, unsigned lon
 				   const PaStreamCallbackTimeInfo* timeinfo, PaStreamCallbackFlags statusflags,
 				   void *userdata) 
 {
+  CDeviceSound* thisdevice = (CDeviceSound*)userdata;
   float* out = (float*)output;
   
-  CDeviceSound* thisdevice = (CDeviceSound*)userdata;
-  return 0;
+  memset(out, 0, framecount * thisdevice->m_channels.size() * sizeof(float));
+
+  printf("callback %i\n", framecount);
+
+  if (thisdevice->m_stop)
+    return paAbort;
+  else
+    return paContinue;
 }
 
