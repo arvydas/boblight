@@ -86,14 +86,14 @@ void CClientsHandler::Process()
       RemoveClient(client);
   }
 
-  log("Stopping clients handler");
-
+  log("Disconnecting clients");
   //kick off all clients
   CLock lock(m_mutex);
   while(m_clients.size())
   {
     RemoveClient(m_clients.front());
   }    
+  log("Clients handler stopped");
 }
 
 //called by the connection handler

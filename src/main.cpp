@@ -93,10 +93,12 @@ int main (int argc, char *argv[])
   clients.StartThread();
   
   //start the timers
+  log("Starting timers");
   for (int i = 0; i < timers.size(); i++)
     timers[i].StartTimer();
 
   //start the devices
+  log("Starting devices");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StartThread();
 
@@ -107,31 +109,39 @@ int main (int argc, char *argv[])
   }
 
   //signal that the devices should stop
+  log("Signaling devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->AsyncStopThread();
 
   //signal connection handler to stop
+  log("Signaling connection handler to stop");
   connectionhandler.AsyncStopThread();
 
   //signal clientshandler to stop
+  log("Signaling clientshandler to stop");
   clients.AsyncStopThread();
 
   //signal timers to stop
+  log("Signaling timers to stop");
   for (int i = 0; i < timers.size(); i++)
     timers[i].AsyncStopThread();
 
   //stop the devices
+  log("Waiting for devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
 
   //stop the timers
+  log("Waiting for timers to stop");
   for (int i = 0; i < timers.size(); i++)
     timers[i].StopThread();
 
   //stop the connection handler
+  log("Waiting for connection handler to stop");
   connectionhandler.StopThread();
 
   //stop the clients handler
+  log("Waiting for clients handler to stop");
   clients.StopThread();
 
   log("exiting");

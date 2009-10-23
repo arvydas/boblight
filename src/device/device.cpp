@@ -86,7 +86,7 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
 
 void CDevice::Process()
 {
-  log("starting device %s on \"%s\"", m_name.c_str(), m_output.c_str());
+  log("Starting device %s on \"%s\"", m_name.c_str(), m_output.c_str());
       
   while(!m_stop)
   {
@@ -104,7 +104,7 @@ void CDevice::Process()
       }
     }
 
-    log("device %s opened", m_name.c_str());
+    log("Device %s opened", m_name.c_str());
 
     //keep calling writeoutput until we're asked to stop or writeoutput fails
     while(!m_stop)
@@ -115,9 +115,9 @@ void CDevice::Process()
 
     CloseDevice();
 
-    log("device %s closed", m_name.c_str());
+    log("Device %s closed", m_name.c_str());
   }
 
-  log("device %s stopped", m_name.c_str());
+  log("Device %s stopped", m_name.c_str());
 }
   

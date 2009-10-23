@@ -64,5 +64,5 @@ void CConnectionHandler::Process()
     }
   }
 
-  log("Stopping connection handler");
+  log("Connection handler stopped");
 }
