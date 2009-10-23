@@ -25,9 +25,11 @@ AC_CHECK_LIB(avcodec,[main],,AC_MSG_ERROR([Missing a required library]))
 AC_CHECK_LIB(avformat,[main],,AC_MSG_ERROR([Missing a required library]))
 AC_CHECK_LIB(swscale,[main],,AC_MSG_ERROR([Missing a required library]))
 AC_CHECK_LIB(avdevice,[main],,AC_MSG_ERROR([Missing a required library]))
+AC_CHECK_LIB(portaudio,[main],,AC_MSG_ERROR([Missing a required library]))
 
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h],,AC_MSG_ERROR([Missing a required header]))
+AC_CHECK_HEADERS([portaudio.h],,AC_MSG_ERROR([Missing a required header]))
 
 AC_OUTPUT([
 Makefile
