@@ -340,7 +340,7 @@ bool CBoblight::ReadDataToQueue()
 {
   CTcpData data;
   int64_t  now = m_clock.GetTime();
-  int64_t  target = now + m_usectimeout * m_clock.GetFreq() / 1000000;
+  int64_t  target = now + m_usectimeout; 
   int      nrmessages = m_messagequeue.GetNrMessages();
 
   while (now < target && m_messagequeue.GetNrMessages() == nrmessages)

@@ -40,10 +40,10 @@ void CAsyncTimer::Process()
 
   while(!m_stop)
   {
-    target += m_interval * m_clock.GetFreq() / 1000000;
+    target += m_interval;
 
     now = m_clock.GetTime();
-    sleeptime = (target - now) * 1000000 / m_clock.GetFreq();
+    sleeptime = target - now;
     if (sleeptime > m_interval * 2) //failsafe
     {
       sleeptime = m_interval * 2;

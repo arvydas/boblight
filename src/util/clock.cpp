@@ -26,15 +26,10 @@ CClock::CClock()
   m_freq = 1000000000;
 }
 
-int64_t CClock::GetFreq()
-{
-  return m_freq;
-}
-
 int64_t CClock::GetTime()
 {
   struct timespec time;
   clock_gettime(CLOCK_MONOTONIC, &time);
 
-  return ((int64_t)time.tv_sec * 1000000000LL) + (int64_t)time.tv_nsec;
+  return ((int64_t)time.tv_sec * 1000000LL) + (int64_t)time.tv_nsec / 1000LL;
 }

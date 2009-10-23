@@ -85,7 +85,7 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
   }
 
   int64_t now = m_clock.GetTime();
-  int64_t target = now + (usecs * m_clock.GetFreq() / 1000000);
+  int64_t target = now + usecs;
   int     bytesread = 0;
 
   while (bytesread < len)
@@ -102,8 +102,8 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
         return -1;
       }
       
-      timeout.tv_sec  = (target - now) / m_clock.GetFreq();
-      timeout.tv_usec = ((target - now) * 1000000 / m_clock.GetFreq()) % 1000000;
+      timeout.tv_sec  = (target - now) / 1000000LL;
+      timeout.tv_usec = (target - now) % 1000000LL;
       tv = &timeout;
     }
 

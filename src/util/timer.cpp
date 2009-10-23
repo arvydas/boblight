@@ -51,8 +51,8 @@ void CTimer::Wait()
   //keep looping until we have a timestamp that's not too old
   do
   {
-    m_time += m_interval * m_clock.GetFreq() / 1000000;
-    sleeptime = (m_time - m_clock.GetTime()) * 1000000 / m_clock.GetFreq();
+    m_time += m_interval;
+    sleeptime = m_time - m_clock.GetTime();
   }
   while(sleeptime <= m_interval * -2);
   
@@ -64,3 +64,4 @@ void CTimer::Wait()
 
   USleep(sleeptime);
 }
+

@@ -55,7 +55,7 @@ float CChannel::GetValue(int64_t time)
   else
   {
     float diff = m_wantedvalue - m_currentvalue; //difference between where we want to be, and where we are
-    float timediff = (time - m_lastupdate) * 1000000.0 / (double)m_clock.GetFreq(); //difference in time in seconds between now and the last update
+    float timediff = time - m_lastupdate; //difference in time in microseconds between now and the last update
     float speedadjust = 1.0 - pow(1.0 - (m_speed / 100.0), timediff / 20000.0); //speed adjustment value, corrected for time
 
     //move the current value closer to the wanted value

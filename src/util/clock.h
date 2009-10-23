@@ -27,15 +27,14 @@ class CClock
   public:
     CClock();
 
-    int64_t GetTime(); //value of the clock
-    int64_t GetFreq(); //frequency of the clock
+    int64_t GetTime(); //value of the clock in microseconds
 
     //value of the clock in seconds
-    template <class T> T GetSecTime() { return (T)GetTime() / (T)m_freq; }
+    template <class T> T GetSecTime() { return (T)GetTime() / (T)1000000LL; }
 
   private:
 
-    int64_t m_freq;
+    int64_t m_freq; //frequency of the systemclock
 };
 
 #endif //CCLOCK
