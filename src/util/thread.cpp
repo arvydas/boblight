@@ -19,6 +19,7 @@
 #include "thread.h"
 #include "lock.h"
 #include "misc.h"
+#include "sleep.h"
 
 CThread::CThread()
 {
@@ -78,18 +79,18 @@ void CThread::JoinThread()
 
 void CThread::sleep(int secs)
 {
-  usleep(secs * 1000000);
+  USleep((int64_t)secs * 1000000LL);
 }
 
 //when sleeping for longer than 1 second, wait on a condition variable so we can stop quickly
-void CThread::usleep(int usecs)
+void CThread::USleep(int64_t usecs)
 {
-  if (m_stop)
+  if (m_stop || usecs <= 0)
     return;
   
   if (usecs < 1000000)
   {
-    ::usleep(usecs);
+    ::USleep(usecs);
   }
   else
   {

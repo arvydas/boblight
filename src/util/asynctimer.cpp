@@ -49,8 +49,7 @@ void CAsyncTimer::Process()
       sleeptime = m_interval * 2;
       target = now;
     }
-    if (sleeptime > 0)
-      usleep(sleeptime);
+    USleep(sleeptime);
 
     m_signal.Broadcast();
   }

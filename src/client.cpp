@@ -25,6 +25,7 @@
 #include "client.h"
 #include "util/lock.h"
 #include "util/log.h"
+#include "util/sleep.h"
 #include "protocolversion.h"
 
 #define WAITTIME 100000
@@ -124,7 +125,7 @@ int CClientsHandler::GetReadableClient()
   if (m_clients.size() == 0) //no clients so we just sleep
   {
     lock.Leave();
-    usleep(WAITTIME);
+    USleep(WAITTIME);
     return -1;
   }
 
@@ -160,7 +161,7 @@ int CClientsHandler::GetReadableClient()
   else if (returnv == -1) //select had an error
   {
     log("select() %s", GetErrno().c_str());
-    usleep(WAITTIME);
+    USleep(WAITTIME);
     return -1;
   }
 

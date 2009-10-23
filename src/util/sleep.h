@@ -16,35 +16,27 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CTHREAD
-#define CTHREAD
+#ifndef USLEEP
+#define USLEEP
 
-#include <pthread.h>
-#include <stdint.h>
 #include <unistd.h>
-#include "condition.h"
+#include <stdint.h>
 
-class CThread
+inline void USleep(int64_t usecs)
 {
-  public:
-    CThread();
-    ~CThread();
-    void StartThread();
-    void StopThread();
-    void AsyncStopThread();
-    void JoinThread();
+  if (usecs <= 0)
+    return;
 
-  protected:
-    pthread_t     m_thread;
-    volatile bool m_stop;
+  //usleep() can only sleep up to 999999 microseconds
 
-    static void* ThreadFunction(void* args);
-    void         Thread();
-    virtual void Process();
+  int count     = usecs / 1000000;
+  int remainder = usecs % 1000000;
 
-    void         sleep(int secs);
-    void         USleep(int64_t usecs);
-    CCondition   m_sleepcondition;
-};
+  for (int i = 0; i < count; i++)
+    sleep(1); 
 
-#endif //CTHREAD
+  usleep(remainder);
+}
+
+#endif //USLEEP
+

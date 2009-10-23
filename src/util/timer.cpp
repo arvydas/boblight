@@ -18,6 +18,7 @@
 
 #include "timer.h"
 #include "misc.h"
+#include "sleep.h"
 
 #include <iostream>
 using namespace std;
@@ -61,6 +62,5 @@ void CTimer::Wait()
     Reset();
   }
 
-  if (sleeptime > 0)
-    usleep(sleeptime);
+  USleep(sleeptime);
 }
