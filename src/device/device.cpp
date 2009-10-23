@@ -93,18 +93,20 @@ void CDevice::Process()
     //keep trying to set up the device every 10 seconds
     while(!m_stop)
     {
+      log("Setting up device %s", m_name.c_str());
       if (!SetupDevice())
       {
         CloseDevice();
+	log("Setup failed, retrying in 10 seconds");
         USleep(10000000LL, &m_stop);
       }
       else
       {
+	log("Device %s opened", m_name.c_str());
         break;
       }
     }
 
-    log("Device %s opened", m_name.c_str());
 
     //keep calling writeoutput until we're asked to stop or writeoutput fails
     while(!m_stop)

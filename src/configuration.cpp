@@ -671,6 +671,17 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsy
       }
       devices.push_back(device);
     }
+    else if (type == "sound")
+    {
+      CDevice* device = NULL;
+      if (!BuildSound(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+    }
     else
     {
       log("%s error on line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());

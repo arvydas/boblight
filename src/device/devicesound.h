@@ -19,6 +19,7 @@
 #ifndef CDEVICESOUND
 #define CDEVICESOUND
 
+#include <portaudio.h>
 #include "device.h"
 
 class CDeviceSound : public CDevice
@@ -31,6 +32,12 @@ class CDeviceSound : public CDevice
     void CloseDevice();
 
   private:
+    bool m_opened;
+    bool m_initialized;
+
+    int PaStreamCallback(const void *input, void *output, unsigned long framecount,
+			 const PaStreamCallbackTimeInfo* timeinfo, PaStreamCallbackFlags statusflags,
+			 void *userdata);
 };
 
 #endif //CDEVICESOUND
