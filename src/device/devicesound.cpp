@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdint.h>
 
 #include "util/log.h"
 #include "util/misc.h"
 #include "util/mutex.h"
 #include "util/lock.h"
 #include "util/sleep.h"
+#include "util/misc.h"
 #include "devicesound.h"
 
 using namespace std;
@@ -117,8 +119,8 @@ bool CDeviceSound::SetupDevice()
   PaStreamParameters outputparameters = {};
   outputparameters.channelCount       = m_channels.size();
   outputparameters.device             = devicenr;
-  outputparameters.sampleFormat       = paFloat32;
-  outputparameters.suggestedLatency   = deviceinfo->defaultLowOutputLatency;
+  outputparameters.sampleFormat       = paInt16;
+  outputparameters.suggestedLatency   = (double)m_buffer / m_rate;
 
   int formatsupported = Pa_IsFormatSupported(NULL, &outputparameters, m_rate);
   if (formatsupported != paFormatIsSupported)
@@ -135,6 +137,8 @@ bool CDeviceSound::SetupDevice()
   }
   m_opened = true;
 
+  m_outputvalues.resize(m_channels.size());
+
   err = Pa_StartStream(m_stream);
   if (err != paNoError)
   {
@@ -142,6 +146,10 @@ bool CDeviceSound::SetupDevice()
     return false;
   }
   m_started = true;
+
+  m_pwmphase = 0x7FFF;
+  m_pwmperiod = Round<int>((double)m_rate / 93.75); //this will use 512 samples on 48 kHz
+  m_pwmcount = 0;
 
   return true;
 }
@@ -156,9 +164,10 @@ bool CDeviceSound::WriteOutput()
 void CDeviceSound::CloseDevice()
 {
   int err;
+
   if (m_started)
   {
-    err = Pa_StopStream(m_stream);
+    err = Pa_AbortStream(m_stream);
     if (err != paNoError)
       log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
 
@@ -192,15 +201,47 @@ int CDeviceSound::PaStreamCallback(const void *input, void *output, unsigned lon
 				   void *userdata) 
 {
   CDeviceSound* thisdevice = (CDeviceSound*)userdata;
-  float* out = (float*)output;
-  
-  memset(out, 0, framecount * thisdevice->m_channels.size() * sizeof(float));
+  int16_t* out = (int16_t*)output;
 
-  printf("callback %i\n", framecount);
-
+  thisdevice->FillOutput(out, framecount);
+ 
   if (thisdevice->m_stop)
     return paAbort;
   else
     return paContinue;
+}
+
+void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
+{
+  //get the channel values from the clienshandler
+  int64_t now = m_clock.GetTime();
+  m_clients.FillChannels(m_channels, now);
+
+  for (int i = 0; i < m_channels.size(); i++)
+  {
+    m_outputvalues[i] = Round<int>(m_channels[i].GetValue(now) * m_pwmperiod);
+    m_outputvalues[i] = Clamp(m_outputvalues[i], 0, m_pwmperiod);
+  }
+
+  memset(out, 0, framecount * m_channels.size() * sizeof(int16_t));
+
+  for (int i = 0; i < framecount; i++)
+  {
+    for (int j = 0; j < m_channels.size(); j++)
+    {
+      if (m_pwmcount < m_outputvalues[j])
+      {
+	*out = m_pwmphase;
+      }
+      out++;
+    } 
+
+    m_pwmcount++;
+    if (m_pwmcount == m_pwmperiod)
+    {
+      m_pwmcount = 0;
+      m_pwmphase *= -1;
+    }
+  }
 }
 

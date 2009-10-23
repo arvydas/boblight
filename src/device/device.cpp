@@ -107,7 +107,6 @@ void CDevice::Process()
       }
     }
 
-
     //keep calling writeoutput until we're asked to stop or writeoutput fails
     while(!m_stop)
     {
