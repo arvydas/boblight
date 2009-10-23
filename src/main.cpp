@@ -106,6 +106,16 @@ int main (int argc, char *argv[])
     sleep(1);
   }
 
+  //signal that the devices should stop
+  for (int i = 0; i < devices.size(); i++)
+    devices[i]->AsyncStopThread();
+
+  //signal connection handler to stop
+  connectionhandler.AsyncStopThread();
+
+  //signal clientshandler to stop
+  clients.AsyncStopThread();
+
   //stop the devices
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
