@@ -34,11 +34,12 @@ inline void USleep(int64_t usecs, volatile bool* stop = NULL)
 
   for (int i = 0; i < count; i++)
   {
+    sleep(1); 
+
     if (stop)
     {
       if (*stop) return;
     }
-    sleep(1); 
   }
 
   usleep(remainder);
