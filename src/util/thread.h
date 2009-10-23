@@ -41,10 +41,7 @@ class CThread
     static void* ThreadFunction(void* args);
     void         Thread();
     virtual void Process();
-
-    void         sleep(int secs);
-    void         USleep(int64_t usecs);
-    CCondition   m_sleepcondition;
 };
 
 #endif //CTHREAD
+

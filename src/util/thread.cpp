@@ -55,17 +55,12 @@ void CThread::Process()
 void CThread::StopThread()
 {
   AsyncStopThread();
-  if (m_thread)
-  {
-    pthread_join(m_thread, NULL);
-    m_thread = NULL;
-  }
+  JoinThread();
 }
 
 void CThread::AsyncStopThread()
 {
   m_stop = true;
-  m_sleepcondition.Broadcast();
 }
 
 void CThread::JoinThread()
@@ -77,37 +72,3 @@ void CThread::JoinThread()
   }
 }
 
-void CThread::sleep(int secs)
-{
-  USleep((int64_t)secs * 1000000LL);
-}
-
-//when sleeping for longer than 1 second, wait on a condition variable so we can stop quickly
-void CThread::USleep(int64_t usecs)
-{
-  if (m_stop || usecs <= 0)
-    return;
-  
-  if (usecs < 1000000)
-  {
-    ::USleep(usecs);
-  }
-  else
-  {
-    int count     = usecs / 1000000LL;
-    int remainder = usecs % 1000000LL;
-
-    for (int i = 0; i < count; i++)
-    {
-      CLock lock(m_sleepcondition);
-      m_sleepcondition.Wait(1000000);
-      if (m_stop) return;
-    }
-
-    if (remainder > 0)
-    {
-      CLock lock(m_sleepcondition);
-      m_sleepcondition.Wait(usecs);
-    }
-  }
-}

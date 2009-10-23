@@ -19,6 +19,7 @@
 #include "asynctimer.h"
 #include "misc.h"
 #include "lock.h"
+#include "sleep.h"
 
 CAsyncTimer::~CAsyncTimer()
 {
@@ -50,7 +51,7 @@ void CAsyncTimer::Process()
       sleeptime = m_interval * 2;
       target = now;
     }
-    USleep(sleeptime);
+    USleep(sleeptime, &m_stop);
 
     m_signal.Broadcast();
   }

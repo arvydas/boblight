@@ -20,6 +20,7 @@
 
 #include "device.h"
 #include "util/log.h"
+#include "util/sleep.h"
 
 CChannel::CChannel()
 {
@@ -95,7 +96,7 @@ void CDevice::Process()
       if (!SetupDevice())
       {
         CloseDevice();
-        sleep(10);
+        USleep(10000000LL, &m_stop);
       }
       else
       {
