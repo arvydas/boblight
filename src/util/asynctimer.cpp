@@ -23,7 +23,7 @@
 
 CAsyncTimer::~CAsyncTimer()
 {
-  StopTimer();
+  StopThread();
 }
 
 void CAsyncTimer::StartTimer(int64_t usecs /*= -1*/)
@@ -79,7 +79,3 @@ void CAsyncTimer::Wait(volatile bool* stop /*= NULL*/)
   m_signal.Wait(remainder);
 }
 
-void CAsyncTimer::StopTimer()
-{
-  StopThread();
-}

@@ -29,7 +29,6 @@ class CAsyncTimer : public CThread, public CTimer
     ~CAsyncTimer();
     void StartTimer(int64_t usecs = -1);
     void Wait(volatile bool* stop = NULL);
-    void StopTimer();
 
   private:
     void Process();

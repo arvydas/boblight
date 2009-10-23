@@ -116,13 +116,17 @@ int main (int argc, char *argv[])
   //signal clientshandler to stop
   clients.AsyncStopThread();
 
+  //signal timers to stop
+  for (int i = 0; i < timers.size(); i++)
+    timers[i].AsyncStopThread();
+
   //stop the devices
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
 
   //stop the timers
   for (int i = 0; i < timers.size(); i++)
-    timers[i].StopTimer();
+    timers[i].StopThread();
 
   //stop the connection handler
   connectionhandler.StopThread();
