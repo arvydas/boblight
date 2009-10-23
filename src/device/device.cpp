@@ -97,7 +97,7 @@ void CDevice::Process()
       if (!SetupDevice())
       {
         CloseDevice();
-	log("Setup failed, retrying in 10 seconds");
+	log("Setup %s failed, retrying in 10 seconds", m_name.c_str());
         USleep(10000000LL, &m_stop);
       }
       else
