@@ -161,7 +161,6 @@ int CClientsHandler::GetReadableClient()
   else if (returnv == -1) //select had an error
   {
     log("select() %s", GetErrno().c_str());
-    USleep(WAITTIME, &m_stop);
     return -1;
   }
 
