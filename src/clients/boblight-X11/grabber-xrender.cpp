@@ -27,7 +27,7 @@
 
 using namespace std;
 
-CGrabberXRender::CGrabberXRender(void* boblight) : CGrabber(boblight)
+CGrabberXRender::CGrabberXRender(void* boblight, volatile bool& stop) : CGrabber(boblight, stop)
 {
   m_srcformat = NULL;
   m_dstformat = NULL;
@@ -121,7 +121,7 @@ bool CGrabberXRender::CheckExtensions()
   return true;
 }
 
-bool CGrabberXRender::Run(volatile bool& stop)
+bool CGrabberXRender::Run()
 {
   XImage* xim;
   unsigned long pixel;
@@ -129,7 +129,7 @@ bool CGrabberXRender::Run(volatile bool& stop)
 
   boblight_setscanrange(m_boblight, m_size, m_size);
 
-  while(!stop)
+  while(!m_stop)
   {
     UpdateDimensions();
 
@@ -148,9 +148,9 @@ bool CGrabberXRender::Run(volatile bool& stop)
     XShmGetImage(m_dpy, m_pixmap, m_xim, 0, 0, AllPlanes);
 
     //read out the pixels
-    for (int y = 0; y < m_size && !stop; y++)
+    for (int y = 0; y < m_size && !m_stop; y++)
     {
-      for (int x = 0; x < m_size && !stop; x++)
+      for (int x = 0; x < m_size && !m_stop; x++)
       {
         pixel = XGetPixel(m_xim, x, y);
         

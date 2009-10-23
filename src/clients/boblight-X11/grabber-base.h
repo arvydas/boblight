@@ -32,7 +32,7 @@ extern volatile bool xerror;
 class CGrabber
 {
   public:
-    CGrabber(void* boblight);
+    CGrabber(void* boblight, volatile bool& stop);
     ~CGrabber();
 
     std::string& GetError()           { return m_error; }        //retrieves the latest error
@@ -42,7 +42,7 @@ class CGrabber
 
     bool Setup();                                                //base setup function
     virtual bool ExtendedSetup();                                //extended stuff for derived classes
-    virtual bool Run(volatile bool& stop);                       //main run function
+    virtual bool Run();                       //main run function
 
     void SetDebug(const char* display);                          //turn on debug window
     
@@ -50,6 +50,7 @@ class CGrabber
 
     void              UpdateDimensions();                        //update the size of the root window
     bool              Wait();                                    //wait for the timer or on the vblank
+    volatile bool&    m_stop;
 
     std::string       m_error;                                   //latest error
     

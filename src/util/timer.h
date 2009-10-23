@@ -27,16 +27,18 @@
 class CTimer
 {
   public:
-    CTimer();
+    CTimer(volatile bool* stop = NULL);
     void SetInterval(int64_t usecs);
     virtual void Wait();
     void Reset();
 
     int64_t GetInterval();
+
   protected:
-    int64_t m_time;
-    int64_t m_interval;
-    CClock  m_clock;
+    int64_t        m_time;
+    int64_t        m_interval;
+    CClock         m_clock;
+    volatile bool* m_timerstop;
 };
 
 #endif

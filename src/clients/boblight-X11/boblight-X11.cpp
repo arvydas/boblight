@@ -140,9 +140,9 @@ int Run()
     CGrabber* grabber;
     
     if (g_flagmanager.m_method == XGETIMAGE)
-      grabber = new CGrabberXGetImage(boblight);
+      grabber = new CGrabberXGetImage(boblight, stop);
     else if (g_flagmanager.m_method == XRENDER)
-      grabber = new CGrabberXRender(boblight);
+      grabber = new CGrabberXRender(boblight, stop);
 
     grabber->SetInterval(g_flagmanager.m_interval);
     grabber->SetSize(g_flagmanager.m_pixels);
@@ -158,7 +158,7 @@ int Run()
       return 1;
     }
 
-    if (!grabber->Run(stop)) //just exit if some unrecoverable error happens
+    if (!grabber->Run()) //just exit if some unrecoverable error happens
     {
       PrintError(grabber->GetError());
       delete grabber;

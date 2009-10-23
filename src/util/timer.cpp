@@ -23,9 +23,10 @@
 #include <iostream>
 using namespace std;
 
-CTimer::CTimer()
+CTimer::CTimer(volatile bool* stop /*=NULL*/)
 {
   m_interval = -1;
+  m_timerstop = stop;
 }
 
 void CTimer::SetInterval(int64_t usecs)
@@ -62,6 +63,6 @@ void CTimer::Wait()
     Reset();
   }
 
-  USleep(sleeptime);
+  USleep(sleeptime, m_timerstop);
 }
 

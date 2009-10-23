@@ -30,11 +30,11 @@
 class CGrabberXRender : public CGrabber
 {
   public:
-    CGrabberXRender(void* boblight);
+    CGrabberXRender(void* boblight, volatile bool& stop);
     ~CGrabberXRender();
     
     bool ExtendedSetup();
-    bool Run(volatile bool& stop);
+    bool Run();
 
   private:
 

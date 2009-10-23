@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <stdint.h>
 
-inline void USleep(int64_t usecs)
+inline void USleep(int64_t usecs, volatile bool* stop = NULL)
 {
   if (usecs <= 0)
     return;
@@ -33,7 +33,13 @@ inline void USleep(int64_t usecs)
   int remainder = usecs % 1000000;
 
   for (int i = 0; i < count; i++)
+  {
+    if (stop)
+    {
+      if (*stop) break;
+    }
     sleep(1); 
+  }
 
   usleep(remainder);
 }

@@ -28,7 +28,7 @@ using namespace std;
 
 volatile bool xerror = false;
 
-CGrabber::CGrabber(void* boblight)
+CGrabber::CGrabber(void* boblight, volatile bool& stop) : m_stop(stop), m_timer(&stop)
 {
   m_boblight = boblight;
   m_dpy = NULL;
@@ -92,7 +92,7 @@ void CGrabber::UpdateDimensions() //update size of root window
   XGetWindowAttributes(m_dpy, m_rootwin, &m_rootattr);
 }
 
-bool CGrabber::Run(volatile bool& stop)
+bool CGrabber::Run()
 {
   return false;
 }

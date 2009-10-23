@@ -26,7 +26,7 @@ using namespace std;
 #define BOBLIGHT_DLOPEN_EXTERN
 #include "lib/libboblight.h"
 
-CGrabberXGetImage::CGrabberXGetImage(void* boblight) : CGrabber(boblight)
+CGrabberXGetImage::CGrabberXGetImage(void* boblight, volatile bool& stop) : CGrabber(boblight, stop)
 {
 }
 
@@ -43,7 +43,7 @@ bool CGrabberXGetImage::ExtendedSetup()
     m_debugxim = XGetImage(m_debugdpy, RootWindow(m_debugdpy, DefaultScreen(m_debugdpy)), 0, 0, m_size, m_size, AllPlanes, ZPixmap);
 }
 
-bool CGrabberXGetImage::Run(volatile bool& stop)
+bool CGrabberXGetImage::Run()
 {
   XImage* xim;
   unsigned long pixel;
@@ -51,13 +51,13 @@ bool CGrabberXGetImage::Run(volatile bool& stop)
 
   boblight_setscanrange(m_boblight, m_size, m_size);
 
-  while(!stop)
+  while(!m_stop)
   {
     UpdateDimensions();
 
-    for (int y = 0; y < m_size && !stop; y++)
+    for (int y = 0; y < m_size && !m_stop; y++)
     {
-      for (int x = 0; x < m_size && !stop; x++)
+      for (int x = 0; x < m_size && !m_stop; x++)
       {
         //position of pixel to capture
         int xpos = (m_rootattr.width  - 1) * x / m_size;
