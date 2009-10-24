@@ -177,7 +177,7 @@ bool CDeviceSound::WriteOutput()
 
     if (!m_callbacksignal)
     {
-      log("%s portaudio callback halted", m_name.c_str());
+      log("%s portaudio callback not responding", m_name.c_str());
       return false;
     }
   }
