@@ -29,6 +29,9 @@ class CDeviceSound : public CDevice
   public:
     CDeviceSound(CClientsHandler& clients);
 
+    void SetLatency(float latency) { m_latency = latency; }
+    void SetPeriod(int period)     { m_period = period; }
+ 
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
@@ -41,6 +44,9 @@ class CDeviceSound : public CDevice
     bool       m_started;
     CCondition m_callbacksignal;
 
+    double     m_latency;
+    int        m_period;
+ 
     int        m_pwmphase;
     int        m_pwmperiod;
     int        m_pwmcount;

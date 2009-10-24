@@ -26,7 +26,6 @@
 #include "device/devicepopen.h"
 #include "device/deviceltbl.h"
 #include "device/devicers232.h"
-#include "device/devicesound.h"
 
 using namespace std;
 
@@ -927,27 +926,29 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
 {
   string line, strvalue;
 
-  device = reinterpret_cast<CDevice*>(new CDeviceSound(clients));
+  CDeviceSound* sounddevice = new CDeviceSound(clients);
 
-  if (!SetDeviceName(device, devicenr))
+  if (!SetDeviceName(sounddevice, devicenr))
     return false;
 
-  if (!SetDeviceOutput(device, devicenr))
+  if (!SetDeviceOutput(sounddevice, devicenr))
     return false;
 
-  if (!SetDeviceChannels(device, devicenr))
+  if (!SetDeviceChannels(sounddevice, devicenr))
     return false;
 
-  if (!SetDeviceRate(device, devicenr))
+  if (!SetDeviceRate(sounddevice, devicenr))
     return false;
 
-  if (!SetDevicePeriod(device, devicenr))
+  if (!SetDevicePeriod(sounddevice, devicenr))
     return false;
 
-  if (!SetDeviceLatency(device, devicenr))
+  if (!SetDeviceLatency(sounddevice, devicenr))
     return false;
 
-  device->SetType(SOUND);
+  sounddevice->SetType(SOUND);
+
+  device = sounddevice;
   
   return true;
 }
@@ -1037,7 +1038,7 @@ void CConfig::SetDevicePrefix(CDevice* device, int devicenr)
   device->SetPrefix(prefix);
 }
 
-bool CConfig::SetDevicePeriod(CDevice* device, int devicenr)
+bool CConfig::SetDevicePeriod(CDeviceSound* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("period", m_devicelines[devicenr].lines, line);
@@ -1055,7 +1056,7 @@ bool CConfig::SetDevicePeriod(CDevice* device, int devicenr)
   return true;
 }
 
-bool CConfig::SetDeviceLatency(CDevice* device, int devicenr)
+bool CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("latency", m_devicelines[devicenr].lines, line);
