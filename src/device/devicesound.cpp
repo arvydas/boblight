@@ -27,6 +27,7 @@
 
 using namespace std;
 
+//we can init portaudio from multiple threads, so it needs a lock
 class CPortAudioInit
 {
   public:
@@ -56,6 +57,7 @@ CDeviceSound::CDeviceSound(CClientsHandler& clients) : CDevice(clients)
 
 bool CDeviceSound::SetupDevice()
 {
+  //init portaudio
   int err = g_portaudioinit.Init();
   if (err != paNoError)
   {
@@ -64,10 +66,11 @@ bool CDeviceSound::SetupDevice()
   }
   m_initialized = true;
 
+  //get nr of devices
   int nrdevices = Pa_GetDeviceCount();
   if (nrdevices < 0)
   {
-    log("%s error: %s",m_name.c_str(), Pa_GetErrorText(nrdevices));
+    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(nrdevices));
     return false;
   }
   else if (nrdevices == 0)
@@ -76,8 +79,8 @@ bool CDeviceSound::SetupDevice()
     return false;
   }
 
+  //print info from portaudio to the log
   log("%s found %i portaudio devices", m_name.c_str(), nrdevices);
-
   const PaDeviceInfo *deviceinfo;
   const PaHostApiInfo* hostapiinfo;
   for (int i = 0; i < nrdevices; i++)
@@ -90,6 +93,7 @@ bool CDeviceSound::SetupDevice()
     }
   }
 
+  //get a device which name matches m_output
   int devicenr = -1;
   for (int i = 0; i < nrdevices; i++)
   {
@@ -106,9 +110,9 @@ bool CDeviceSound::SetupDevice()
     log("%s device %s not found", m_name.c_str(), m_output.c_str());
     return false;
   }
-  else if (deviceinfo->maxOutputChannels < 1)
+  else if (deviceinfo->maxOutputChannels < m_channels.size())
   {
-    log("%s device %s has no channels", m_name.c_str(), m_output.c_str());
+    log("%s device %s doesn't have enough channels", m_name.c_str(), m_output.c_str());
     return false;
   }
   else
@@ -116,6 +120,7 @@ bool CDeviceSound::SetupDevice()
     log("%s using device %i", m_name.c_str(), devicenr);
   }
 
+  //set up portaudio the way we want it
   PaStreamParameters outputparameters = {};
   outputparameters.channelCount       = m_channels.size();
   outputparameters.device             = devicenr;
@@ -174,6 +179,8 @@ void CDeviceSound::CloseDevice()
 {
   int err;
 
+  //shut down anything we opened in reverse order
+
   if (m_started)
   {
     err = Pa_AbortStream(m_stream);
@@ -228,14 +235,17 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
   int64_t now = m_clock.GetTime();
   m_clients.FillChannels(m_channels, now);
 
+  //store the values from m_channels, because they get recalculated for each call to GetValue()
   for (int i = 0; i < m_channels.size(); i++)
   {
     m_outputvalues[i] = Round<int>(m_channels[i].GetValue(now) * m_pwmperiod);
     m_outputvalues[i] = Clamp(m_outputvalues[i], 0, m_pwmperiod);
   }
 
+  //set the output buffer to 0
   memset(out, 0, framecount * m_channels.size() * sizeof(int16_t));
 
+  //calculate the pwm wave for each channnel
   for (int i = 0; i < framecount; i++)
   {
     for (int j = 0; j < m_channels.size(); j++)

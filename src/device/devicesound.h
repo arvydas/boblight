@@ -37,25 +37,28 @@ class CDeviceSound : public CDevice
     bool WriteOutput();
     void CloseDevice();
 
-    PaStream*  m_stream;
+    PaStream*  m_stream;          //handle for portaudio
 
-    bool       m_opened;
-    bool       m_initialized;
-    bool       m_started;
-    CCondition m_callbacksignal;
+    bool       m_opened;          //if we have anything opened on m_stream that we need to close
+    bool       m_initialized;     //if portaudio was successfully initialized
+    bool       m_started;         //if we started a stream that we need to stop
+    CCondition m_callbacksignal;  //signal sent from the portaudio callback,
+                                  //used as a check to make sure the callback is still working
 
-    double     m_latency;
-    int        m_period;
+    double     m_latency;         //latency in milliseconds
+    int        m_period;          //period in samples
  
-    int        m_pwmphase;
-    int        m_pwmperiod;
-    int        m_pwmcount;
+    int        m_pwmphase;        //phase of the pwm, gets flipped when pwmcount hits pwmperiod
+    int        m_pwmperiod;       //size of the pwm period in samples
+    int        m_pwmcount;        //current pwm position
 
-    std::vector<int16_t> m_outputvalues;
+    std::vector<int16_t> m_outputvalues; //where we store channel output values
 
+    //portaudio callback
     static int PaStreamCallback(const void *input, void *output, unsigned long framecount,
 			        const PaStreamCallbackTimeInfo* timeinfo, PaStreamCallbackFlags statusflags,
 				void *userdata);
+    //where we fill the buffer going to the soundcard
     void       FillOutput(int16_t* out, unsigned long framecount);
 };
 
