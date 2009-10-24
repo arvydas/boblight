@@ -27,6 +27,7 @@
 #include "client.h"
 #include "device/device.h"
 #include "device/devicesound.h"
+#include "device/devicers232.h"
 
 //place to store relevant lines from the config file
 class CConfigLine
@@ -98,7 +99,7 @@ class CConfig
     bool SetDeviceOutput(CDevice* device, int devicenr);
     bool SetDeviceChannels(CDevice* device, int devicenr);
     bool SetDeviceRate(CDevice* device, int devicenr);
-    void SetDevicePrefix(CDevice* device, int devicenr);
+    void SetDevicePrefix(CDeviceRS232* device, int devicenr);
     bool SetDevicePeriod(CDeviceSound* device, int devicenr);
     bool SetDeviceLatency(CDeviceSound* device, int devicenr);
 

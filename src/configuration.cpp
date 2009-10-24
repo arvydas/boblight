@@ -25,7 +25,6 @@
 
 #include "device/devicepopen.h"
 #include "device/deviceltbl.h"
-#include "device/devicers232.h"
 
 using namespace std;
 
@@ -857,21 +856,21 @@ bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int
     return false;
   }
 
-  device = reinterpret_cast<CDevice*>(new CDeviceRS232(clients, *timer));
+  CDeviceRS232* rs232device = new CDeviceRS232(clients, *timer);
 
-  if (!SetDeviceName(device, devicenr))
+  if (!SetDeviceName(rs232device, devicenr))
     return false;
 
-  if (!SetDeviceOutput(device, devicenr))
+  if (!SetDeviceOutput(rs232device, devicenr))
     return false;
 
-  if (!SetDeviceChannels(device, devicenr))
+  if (!SetDeviceChannels(rs232device, devicenr))
     return false;
 
-  if (!SetDeviceRate(device, devicenr))
+  if (!SetDeviceRate(rs232device, devicenr))
     return false;
 
-  SetDevicePrefix(device, devicenr);
+  SetDevicePrefix(rs232device, devicenr);
 
   if (type == "momo")
     device->SetType(MOMO);
@@ -1019,7 +1018,7 @@ bool CConfig::SetDeviceRate(CDevice* device, int devicenr)
   return true;
 }
 
-void CConfig::SetDevicePrefix(CDevice* device, int devicenr)
+void CConfig::SetDevicePrefix(CDeviceRS232* device, int devicenr)
 {
   string line, strvalue;
   std::vector<unsigned char> prefix;

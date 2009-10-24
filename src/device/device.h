@@ -91,7 +91,6 @@ class CDevice : public CThread
     void SetRate(int rate)             { m_rate = rate; }
     void SetNrChannels(int nrchannels) { m_channels.resize(nrchannels); }
     void SetChannel(CChannel& channel, int channelnr) { m_channels[channelnr] = channel; }
-    void SetPrefix(std::vector<unsigned char> prefix) { m_prefix = prefix; }
 
     int GetNrChannels()   { return m_channels.size(); }
       
@@ -111,7 +110,6 @@ class CDevice : public CThread
     CClock      m_clock;
 
     std::vector<CChannel> m_channels;
-    std::vector<unsigned char> m_prefix;
 
     CClientsHandler& m_clients;
 };
