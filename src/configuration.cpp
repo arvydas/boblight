@@ -285,7 +285,7 @@ bool CConfig::CheckDeviceConfig()
       {
         continue; //can't check these here
       }
-      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "buffer")
+      else if (key == "rate" || key == "channels" || key == "interval" || key == "period")
       { //these are of type integer not lower than 1
         int ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1)
@@ -306,6 +306,15 @@ bool CConfig::CheckDeviceConfig()
           }
           if (!GetWord(line, value))
             break;
+        }
+      }
+      else if (key == "latency")//this is a double
+      {
+        double latency;
+        if (!StrToFloat(value, latency) || latency <= 0.0)
+        {
+          log("%s error on line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          valid = false;
         }
       }
       else //don't know this one
@@ -935,7 +944,7 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
   if (!SetDevicePeriod(device, devicenr))
     return false;
 
-  if (!SetDeviceBuffer(device, devicenr))
+  if (!SetDeviceLatency(device, devicenr))
     return false;
 
   device->SetType(SOUND);
@@ -1046,20 +1055,20 @@ bool CConfig::SetDevicePeriod(CDevice* device, int devicenr)
   return true;
 }
 
-bool CConfig::SetDeviceBuffer(CDevice* device, int devicenr)
+bool CConfig::SetDeviceLatency(CDevice* device, int devicenr)
 {
   string line, strvalue;
-  int linenr = GetLineWithKey("buffer", m_devicelines[devicenr].lines, line);
+  int linenr = GetLineWithKey("latency", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    log("%s error: device %s has no buffer", m_filename.c_str(), device->GetName().c_str());
+    log("%s error: device %s has no latency", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
 
-  int buffer;
-  StrToInt(strvalue, buffer);
-  device->SetBuffer(buffer);
+  float latency;
+  StrToFloat(strvalue, latency);
+  device->SetLatency(latency);
 
   return true;
 }

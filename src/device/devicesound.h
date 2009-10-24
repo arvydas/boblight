@@ -22,6 +22,7 @@
 #include <vector>
 #include <portaudio.h>
 #include "device.h"
+#include "util/condition.h"
 
 class CDeviceSound : public CDevice
 {
@@ -38,6 +39,7 @@ class CDeviceSound : public CDevice
     bool       m_opened;
     bool       m_initialized;
     bool       m_started;
+    CCondition m_callbacksignal;
 
     int        m_pwmphase;
     int        m_pwmperiod;

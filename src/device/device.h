@@ -87,7 +87,7 @@ class CDevice : public CThread
     
     void SetName(std::string name)     { m_name = name; }
     void SetOutput(std::string output) { m_output = output; }
-    void SetBuffer(int buffer)         { m_buffer = buffer; }
+    void SetLatency(float latency)     { m_latency = latency; }
     void SetPeriod(int period)         { m_period = period; }
     virtual void SetType(int type)     { m_type = type; }
     void SetRate(int rate)             { m_rate = rate; }
@@ -107,7 +107,7 @@ class CDevice : public CThread
 
     std::string m_name;
     std::string m_output;
-    int         m_buffer;
+    double      m_latency;
     int         m_period;
     int         m_type;
     int         m_rate;

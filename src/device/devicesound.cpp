@@ -120,7 +120,7 @@ bool CDeviceSound::SetupDevice()
   outputparameters.channelCount       = m_channels.size();
   outputparameters.device             = devicenr;
   outputparameters.sampleFormat       = paInt16;
-  outputparameters.suggestedLatency   = (double)m_buffer / m_rate;
+  outputparameters.suggestedLatency   = m_latency / 1000.0;
 
   int formatsupported = Pa_IsFormatSupported(NULL, &outputparameters, m_rate);
   if (formatsupported != paFormatIsSupported)
@@ -157,6 +157,15 @@ bool CDeviceSound::SetupDevice()
 bool CDeviceSound::WriteOutput()
 {
   USleep(1000000LL);
+
+  //wait for the callback function to signal us
+  //if it doesn't respond twice we know it hangs
+  CLock lock(m_callbacksignal);
+  if (!m_callbacksignal.Wait(500000) && !m_callbacksignal.Wait(500000))
+  {
+    log("%s portaudio callback halted", m_name.c_str());
+    return false;
+  }
 
   return true;
 }
@@ -205,6 +214,8 @@ int CDeviceSound::PaStreamCallback(const void *input, void *output, unsigned lon
 
   thisdevice->FillOutput(out, framecount);
  
+  thisdevice->m_callbacksignal.Signal();
+
   if (thisdevice->m_stop)
     return paAbort;
   else

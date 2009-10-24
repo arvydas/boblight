@@ -99,7 +99,7 @@ class CConfig
     bool SetDeviceRate(CDevice* device, int devicenr);
     void SetDevicePrefix(CDevice* device, int devicenr);
     bool SetDevicePeriod(CDevice* device, int devicenr);
-    bool SetDeviceBuffer(CDevice* device, int devicenr);
+    bool SetDeviceLatency(CDevice* device, int devicenr);
 
     void SetLightSpeed(CLight& light, std::vector<CConfigLine>& lines);
     void SetLightUse(CLight& light, std::vector<CConfigLine>& lines);
