@@ -42,8 +42,9 @@ class CDeviceSound : public CDevice
     bool       m_opened;          //if we have anything opened on m_stream that we need to close
     bool       m_initialized;     //if portaudio was successfully initialized
     bool       m_started;         //if we started a stream that we need to stop
-    CCondition m_callbacksignal;  //signal sent from the portaudio callback,
-                                  //used as a check to make sure the callback is still working
+
+    volatile bool m_callbacksignal;  //signal sent from the portaudio callback,
+                                     //used as a check to make sure the callback is still working
 
     double     m_latency;         //latency in milliseconds
     int        m_period;          //period in samples

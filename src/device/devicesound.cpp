@@ -53,6 +53,7 @@ CDeviceSound::CDeviceSound(CClientsHandler& clients) : CDevice(clients)
   m_opened = false;
   m_initialized = false;
   m_started = false;
+  m_callbacksignal = false;
 }
 
 bool CDeviceSound::SetupDevice()
@@ -161,15 +162,24 @@ bool CDeviceSound::SetupDevice()
 
 bool CDeviceSound::WriteOutput()
 {
-  USleep(1000000LL);
+  m_callbacksignal = false; //reset the callback signal
+  USleep(1000000LL);        //give the callback one second to set the signal
 
-  //wait for the callback function to signal us
-  //if it doesn't respond twice we know it hangs
-  CLock lock(m_callbacksignal);
-  if (!m_callbacksignal.Wait(500000) && !m_callbacksignal.Wait(500000))
+  if (m_stop)
+    return true;
+
+  if (!m_callbacksignal) //if it didn't set it, give it one more second
   {
-    log("%s portaudio callback halted", m_name.c_str());
-    return false;
+    USleep(1000000LL);
+
+    if (m_stop)
+      return true;
+
+    if (!m_callbacksignal)
+    {
+      log("%s portaudio callback halted", m_name.c_str());
+      return false;
+    }
   }
 
   return true;
@@ -221,7 +231,7 @@ int CDeviceSound::PaStreamCallback(const void *input, void *output, unsigned lon
 
   thisdevice->FillOutput(out, framecount);
  
-  thisdevice->m_callbacksignal.Signal();
+  thisdevice->m_callbacksignal = true;
 
   if (thisdevice->m_stop)
     return paAbort;
