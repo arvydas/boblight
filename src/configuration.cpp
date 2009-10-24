@@ -857,6 +857,7 @@ bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int
   }
 
   CDeviceRS232* rs232device = new CDeviceRS232(clients, *timer);
+  device = rs232device;
 
   if (!SetDeviceName(rs232device, devicenr))
     return false;
@@ -924,6 +925,7 @@ bool CConfig::BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int 
 bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   CDeviceSound* sounddevice = new CDeviceSound(clients);
+  device = sounddevice;
 
   if (!SetDeviceName(sounddevice, devicenr))
     return false;
@@ -945,8 +947,6 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
 
   sounddevice->SetType(SOUND);
 
-  device = sounddevice;
-  
   //check if output is in api:device format
   int pos = sounddevice->GetOutput().find(':');
   if (pos == string::npos || sounddevice->GetOutput().size() == pos)
