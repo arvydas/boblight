@@ -92,9 +92,10 @@ class CDevice : public CThread
     void SetNrChannels(int nrchannels) { m_channels.resize(nrchannels); }
     void SetChannel(CChannel& channel, int channelnr) { m_channels[channelnr] = channel; }
 
-    int GetNrChannels()   { return m_channels.size(); }
+    int GetNrChannels()     { return m_channels.size(); }
       
-    std::string GetName() { return m_name; }
+    std::string GetName()   { return m_name; }
+    std::string GetOutput() { return m_output; }
 
   protected:
     void Process();

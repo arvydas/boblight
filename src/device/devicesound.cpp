@@ -94,12 +94,16 @@ bool CDeviceSound::SetupDevice()
     }
   }
 
+  string api  = m_output.substr(0, m_output.find(':'));
+  string name = m_output.substr(api.size() + 1);
+
   //get a device which name matches m_output
   int devicenr = -1;
   for (int i = 0; i < nrdevices; i++)
   {
-    deviceinfo = Pa_GetDeviceInfo(i);
-    if (m_output == string(deviceinfo->name))
+    deviceinfo  = Pa_GetDeviceInfo(i);
+    hostapiinfo = Pa_GetHostApiInfo(deviceinfo->hostApi);
+    if (api == hostapiinfo->name && name == deviceinfo->name)
     {
       devicenr = i;
       break;

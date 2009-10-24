@@ -947,6 +947,15 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
 
   device = sounddevice;
   
+  //check if output is in api:device format
+  int pos = sounddevice->GetOutput().find(':');
+  if (pos == string::npos || sounddevice->GetOutput().size() == pos)
+  {
+    log("%s error: device %s output %s is not in api:device format",
+        m_filename.c_str(), sounddevice->GetName().c_str(), sounddevice->GetOutput().c_str());
+    return false;
+  }
+
   return true;
 }
 
