@@ -94,6 +94,8 @@ bool CDeviceSound::SetupDevice()
     }
   }
 
+  //split api and name from api:name
+  //m_output is already checked for being in that format in CConfig
   string api  = m_output.substr(0, m_output.find(':'));
   string name = m_output.substr(api.size() + 1);
 
