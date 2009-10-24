@@ -258,19 +258,15 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
     m_outputvalues[i] = Clamp(m_outputvalues[i], 0, m_pwmperiod);
   }
 
-  //set the output buffer to 0
-  memset(out, 0, framecount * m_channels.size() * sizeof(int16_t));
-
   //calculate the pwm wave for each channnel
   for (int i = 0; i < framecount; i++)
   {
     for (int j = 0; j < m_channels.size(); j++)
     {
       if (m_pwmcount < m_outputvalues[j])
-      {
-	*out = m_pwmphase;
-      }
-      out++;
+	*out++ = m_pwmphase;
+      else
+        *out++ = 0;
     } 
 
     m_pwmcount++;

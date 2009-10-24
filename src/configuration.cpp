@@ -1080,45 +1080,6 @@ bool CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
   return true;
 }
 
-void CConfig::SetLightSpeed(CLight& light, std::vector<CConfigLine>& lines)
-{
-  string line, strvalue;
-  int linenr = GetLineWithKey("speed", lines, line);
-  if (linenr != -1)
-  {
-    float speed;
-    GetWord(line, strvalue);
-    StrToFloat(strvalue, speed);
-    light.SetSpeed(speed);
-  }
-}
-
-void CConfig::SetLightUse(CLight& light, std::vector<CConfigLine>& lines)
-{
-  string line, strvalue;
-  int linenr = GetLineWithKey("use", lines, line);
-  if (linenr != -1)
-  {
-    bool use;
-    GetWord(line, strvalue);
-    StrToBool(strvalue, use);
-    light.SetUse(use);
-  }
-}
-
-void CConfig::SetLightInterpolation(CLight& light, std::vector<CConfigLine>& lines)
-{
-  string line, strvalue;
-  int linenr = GetLineWithKey("interpolation", lines, line);
-  if (linenr != -1)
-  {
-    bool interpolation;
-    GetWord(line, strvalue);
-    StrToBool(strvalue, interpolation);
-    light.SetInterpolation(interpolation);
-  }
-}
-
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)
 {
   string line, strvalue;
