@@ -273,7 +273,7 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
     if (m_pwmcount == m_pwmperiod)
     {
       m_pwmcount = 0;
-      m_pwmphase *= -1;
+      m_pwmphase = ~m_pwmphase;
     }
   }
 }

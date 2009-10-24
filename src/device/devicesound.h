@@ -49,7 +49,7 @@ class CDeviceSound : public CDevice
     double     m_latency;         //latency in milliseconds
     int        m_period;          //period in samples
  
-    int        m_pwmphase;        //phase of the pwm, gets flipped when pwmcount hits pwmperiod
+    int16_t    m_pwmphase;        //phase of the pwm, gets flipped when pwmcount hits pwmperiod
     int        m_pwmperiod;       //size of the pwm period in samples
     int        m_pwmcount;        //current pwm position
 
