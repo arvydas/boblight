@@ -923,8 +923,6 @@ bool CConfig::BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int 
 
 bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
-  string line, strvalue;
-
   CDeviceSound* sounddevice = new CDeviceSound(clients);
 
   if (!SetDeviceName(sounddevice, devicenr))
