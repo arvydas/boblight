@@ -815,7 +815,7 @@ bool CConfig::BuildPopen(CDevice*& device, std::vector<CAsyncTimer>& timers, int
     return false;
   }
 
-  device = reinterpret_cast<CDevice*>(new CDevicePopen(clients, *timer));
+  device = new CDevicePopen(clients, *timer);
 
   if (!SetDeviceName(device, devicenr))
     return false;
@@ -903,7 +903,7 @@ bool CConfig::BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int 
     return false;
   }
 
-  device = reinterpret_cast<CDevice*>(new CDeviceLtbl(clients, *timer));
+  device = new CDeviceLtbl(clients, *timer);
 
   if (!SetDeviceName(device, devicenr))
     return false;
