@@ -98,6 +98,7 @@ class CDevice : public CThread
 
   protected:
     void Process();
+
     virtual bool SetupDevice() { return false; }
     virtual bool WriteOutput() { return false; }
     virtual void CloseDevice() { return; }

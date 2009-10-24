@@ -32,11 +32,11 @@ class CDeviceSound : public CDevice
     void SetLatency(float latency) { m_latency = latency; }
     void SetPeriod(int period)     { m_period = period; }
  
+  private:
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
 
-  private:
     PaStream*  m_stream;
 
     bool       m_opened;
