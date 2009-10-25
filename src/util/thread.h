@@ -33,10 +33,12 @@ class CThread
     void StopThread();
     void AsyncStopThread();
     void JoinThread();
+    bool IsRunning();
 
   protected:
     pthread_t     m_thread;
     volatile bool m_stop;
+    volatile bool m_running;
 
     static void* ThreadFunction(void* args);
     void         Thread();

@@ -106,6 +106,28 @@ int main (int argc, char *argv[])
   while(!stop)
   {
     sleep(1);
+
+    bool error = false;
+
+    //check that our threads are still running
+
+    if (!connectionhandler.IsRunning())
+      error = true;
+
+    if (!clients.IsRunning())
+      error = true;
+
+    for (int i = 0; i < devices.size(); i++)
+    {
+      if (!devices[i]->IsRunning())
+        error = true;
+    }
+
+    if (error)
+    {
+      PrintError("an error occurred, please check the log");
+      break;
+    }
   }
 
   //signal that the devices should stop

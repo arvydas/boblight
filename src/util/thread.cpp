@@ -24,6 +24,7 @@
 CThread::CThread()
 {
   m_thread = NULL;
+  m_running = false;
 }
 
 CThread::~CThread()
@@ -34,6 +35,7 @@ CThread::~CThread()
 void CThread::StartThread()
 {
   m_stop = false;
+  m_running = true;
   pthread_create(&m_thread, NULL, ThreadFunction, reinterpret_cast<void*>(this));
 }
 
@@ -46,6 +48,7 @@ void* CThread::ThreadFunction(void* args)
 void CThread::Thread()
 {
   Process();
+  m_running = false;
 }
 
 void CThread::Process()
@@ -70,5 +73,10 @@ void CThread::JoinThread()
     pthread_join(m_thread, NULL);
     m_thread = NULL;
   }
+}
+
+bool CThread::IsRunning()
+{
+  return m_running;
 }
 
