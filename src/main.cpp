@@ -118,7 +118,7 @@ int main (int argc, char *argv[])
   connectionhandler.AsyncStopThread();
 
   //signal clientshandler to stop
-  log("Signaling clientshandler to stop");
+  log("Signaling clients handler to stop");
   clients.AsyncStopThread();
 
   //signal timers to stop
