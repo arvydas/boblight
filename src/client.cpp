@@ -54,7 +54,7 @@ CClientsHandler::CClientsHandler(std::vector<CLight>& lights) : m_lights(lights)
 
 void CClientsHandler::Process()
 {
-  log("Starting clients handler");
+  log("starting clients handler");
 
   while (!m_stop)
   {
@@ -86,14 +86,14 @@ void CClientsHandler::Process()
       RemoveClient(client);
   }
 
-  log("Disconnecting clients");
+  log("disconnecting clients");
   //kick off all clients
   CLock lock(m_mutex);
   while(m_clients.size())
   {
     RemoveClient(m_clients.front());
   }    
-  log("Clients handler stopped");
+  log("clients handler stopped");
 }
 
 //called by the connection handler
@@ -103,7 +103,7 @@ void CClientsHandler::AddClient(CClient* client)
 
   if (m_clients.size() >= FD_SETSIZE) //maximum number of clients reached
   {
-    log("number of clients reached maximum %i", FD_SETSIZE);
+    logerror("number of clients reached maximum %i", FD_SETSIZE);
     CTcpData data;
     data.SetData("full\n");
     client->m_socket.Write(data);
@@ -223,7 +223,7 @@ bool CClientsHandler::HandleMessages(CClient* client)
 {
   if (client->m_messagequeue.GetRemainingDataSize() > MAXDATA) //client sent too much data
   {
-    log("%s:%i sent too much data", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent too much data", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
   
@@ -245,7 +245,7 @@ bool CClientsHandler::ParseMessage(CClient* client, CMessage& message)
   //an empty message is invalid
   if (!GetWord(message.message, messagekey))
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -275,7 +275,7 @@ bool CClientsHandler::ParseMessage(CClient* client, CMessage& message)
   }
   else
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -288,7 +288,7 @@ bool CClientsHandler::ParseGet(CClient* client, CMessage& message)
   string messagekey;
   if (!GetWord(message.message, messagekey))
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -302,7 +302,7 @@ bool CClientsHandler::ParseGet(CClient* client, CMessage& message)
   }
   else
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 }
@@ -371,7 +371,7 @@ bool CClientsHandler::ParseSet(CClient* client, CMessage& message)
   string messagekey;
   if (!GetWord(message.message, messagekey))
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -381,7 +381,7 @@ bool CClientsHandler::ParseSet(CClient* client, CMessage& message)
     string strpriority;
     if (!GetWord(message.message, strpriority) || !StrToInt(strpriority, priority))
     {
-      log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
       return false;
     }
     CLock lock(m_mutex);
@@ -395,7 +395,7 @@ bool CClientsHandler::ParseSet(CClient* client, CMessage& message)
   }    
   else
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
   return true;
@@ -409,7 +409,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
 
   if (!GetWord(message.message, lightname) || !GetWord(message.message, lightkey) || (lightnr = client->LightNameToInt(lightname)) == -1)
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -424,7 +424,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
     {
       if (!GetWord(message.message, value) || !StrToFloat(value, rgb[i]))
       {
-        log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+        logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
         return false;
       }
     }
@@ -441,7 +441,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
 
     if (!GetWord(message.message, value) || !StrToFloat(value, speed))
     {
-      log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
       return false;
     }
 
@@ -455,7 +455,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
 
     if (!GetWord(message.message, value) || !StrToBool(value, interpolation))
     {
-      log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
       return false;
     }
 
@@ -469,7 +469,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
 
     if (!GetWord(message.message, value) || !StrToBool(value, use))
     {
-      log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
       return false;
     }
 
@@ -478,7 +478,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
   }
   else
   {
-    log("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+    logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
 
@@ -536,3 +536,4 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
     channels[i].SetBlacklevel(m_clients[clientnr]->m_lights[light].GetBlacklevel(color));
   }
 }
+

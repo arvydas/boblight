@@ -49,7 +49,7 @@ CLight::CLight()
   m_hscan[0] = 0.0;
   m_hscan[1] = 100.0;
   m_vscan[0] = 0.0;
-  m_vscan[1] = 0.0;
+  m_vscan[1] = 100.0;
 }
 
 void CLight::SetRgb(float (&rgb)[3], int64_t time)

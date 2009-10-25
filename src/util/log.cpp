@@ -110,7 +110,7 @@ void SetLogFile(std::string filename)
   }
 }
 
-void PrintLog(const char* fmt, const char* function, ...)
+void PrintLog(const char* fmt, const char* function, bool error, ...)
 {
   string                logstr;
   string                funcstr;
@@ -123,7 +123,7 @@ void PrintLog(const char* fmt, const char* function, ...)
 
   CLock lock(g_logmutex);
   
-  va_start(args, function);
+  va_start(args, error);
 
   //print to the logbuffer and check if our buffer is large enough
   int neededbuffsize = vsnprintf(logbuff, logbuffsize, fmt, args);
@@ -136,7 +136,11 @@ void PrintLog(const char* fmt, const char* function, ...)
   
   va_end(args);
 
-  logstr = GetStrTime() + " " + logbuff;
+  if (error)
+    logstr = GetStrTime() + " ERROR:" + logbuff;
+  else
+    logstr = GetStrTime() + " " + logbuff;
+
   funcstr = PruneFunction(function);
 
   //we try to place the function name at the right of an 80 char terminal

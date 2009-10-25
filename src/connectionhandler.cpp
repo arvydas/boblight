@@ -30,13 +30,13 @@ CConnectionHandler::CConnectionHandler(CClientsHandler& clients): m_clients(clie
 void CConnectionHandler::Process()
 {
   if (m_address.empty())
-    log("Starting connection handler on *:%i", m_port);
+    log("starting connection handler on *:%i", m_port);
   else
-    log("Starting connection handler on %s:%i", m_address.c_str(), m_port);
+    log("starting connection handler on %s:%i", m_address.c_str(), m_port);
 
   if (!m_socket.Open(m_address, m_port, 1000000))
   {
-    log("%s", m_socket.GetError().c_str());
+    logerror("%s", m_socket.GetError().c_str());
     return;
   }
 
@@ -64,5 +64,6 @@ void CConnectionHandler::Process()
     }
   }
 
-  log("Connection handler stopped");
+  log("connection handler stopped");
 }
+

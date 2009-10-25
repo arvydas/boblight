@@ -293,7 +293,7 @@ int CTcpClientSocket::Read(CTcpData& data)
   
   if (m_sock == -1)
   {
-    m_error = "Socket closed";
+    m_error = "socket closed";
     return FAIL;
   }
 
@@ -338,7 +338,7 @@ int CTcpClientSocket::Write(CTcpData& data)
 {
   if (m_sock == -1)
   {
-    m_error = "Socket closed";
+    m_error = "socket closed";
     return FAIL;
   }
 
@@ -452,7 +452,7 @@ int CTcpServerSocket::Accept(CTcpClientSocket& socket)
 
   if (m_sock == -1)
   {
-    m_error = "Socket closed";
+    m_error = "socket closed";
     return FAIL;
   }
 
@@ -475,3 +475,4 @@ int CTcpServerSocket::Accept(CTcpClientSocket& socket)
   
   return SUCCESS;
 }
+

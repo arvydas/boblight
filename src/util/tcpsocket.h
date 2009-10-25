@@ -84,7 +84,6 @@ class CTcpClientSocket : public CTcpSocket
     int SetInfo(std::string address, int port, int sock);
 };
 
-
 class CTcpServerSocket : public CTcpSocket
 {
   public:

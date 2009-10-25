@@ -22,9 +22,10 @@
 #include <string>
 
 //this has to be a macro, because we want __PRETTY_FUNCTION__
-#define log(fmt, ...) PrintLog(fmt, __PRETTY_FUNCTION__, ##__VA_ARGS__)
+#define log(fmt, ...) PrintLog(fmt, __PRETTY_FUNCTION__, false, ##__VA_ARGS__)
+#define logerror(fmt, ...) PrintLog(fmt, __PRETTY_FUNCTION__, true, ##__VA_ARGS__)
 
-void PrintLog (const char* fmt, const char* function, ...) __attribute__ ((format (printf, 1, 3)));
+void PrintLog (const char* fmt, const char* function, bool error, ...) __attribute__ ((format (printf, 1, 4)));
 void SetLogFile(std::string logfile);
 
 extern bool logtostdout;

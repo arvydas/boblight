@@ -62,7 +62,7 @@ bool CDeviceSound::SetupDevice()
   int err = g_portaudioinit.Init();
   if (err != paNoError)
   {
-    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+    logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
     return false;
   }
   m_initialized = true;
@@ -71,17 +71,17 @@ bool CDeviceSound::SetupDevice()
   int nrdevices = Pa_GetDeviceCount();
   if (nrdevices < 0)
   {
-    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(nrdevices));
+    logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(nrdevices));
     return false;
   }
   else if (nrdevices == 0)
   {
-    log("%s no portaudio devices found", m_name.c_str());
+    logerror("%s: no portaudio devices found", m_name.c_str());
     return false;
   }
 
   //print info from portaudio to the log
-  log("%s found %i portaudio devices", m_name.c_str(), nrdevices);
+  log("%s: found %i portaudio devices", m_name.c_str(), nrdevices);
   const PaDeviceInfo *deviceinfo;
   const PaHostApiInfo* hostapiinfo;
   for (int i = 0; i < nrdevices; i++)
@@ -114,12 +114,12 @@ bool CDeviceSound::SetupDevice()
   
   if (devicenr == -1)
   {
-    log("%s \"%s\" not found", m_name.c_str(), m_output.c_str());
+    logerror("%s: \"%s\" not found", m_name.c_str(), m_output.c_str());
     return false;
   }
   else if (deviceinfo->maxOutputChannels < m_channels.size())
   {
-    log("%s \"%s\" doesn't have enough channels", m_name.c_str(), m_output.c_str());
+    logerror("%s: \"%s\" doesn't have enough channels", m_name.c_str(), m_output.c_str());
     return false;
   }
   else
@@ -137,14 +137,14 @@ bool CDeviceSound::SetupDevice()
   int formatsupported = Pa_IsFormatSupported(NULL, &outputparameters, m_rate);
   if (formatsupported != paFormatIsSupported)
   {
-    log("%s format not supported: %s", m_name.c_str(), Pa_GetErrorText(formatsupported));
+    logerror("%s: format not supported: %s", m_name.c_str(), Pa_GetErrorText(formatsupported));
     return false;
   }
 
   err = Pa_OpenStream(&m_stream, NULL, &outputparameters, m_rate, m_period, paNoFlag, PaStreamCallback, (void*)this);
   if (err != paNoError)
   {
-    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+    logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
     return false;
   }
   m_opened = true;
@@ -154,7 +154,7 @@ bool CDeviceSound::SetupDevice()
   err = Pa_StartStream(m_stream);
   if (err != paNoError)
   {
-    log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+    logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
     return false;
   }
   m_started = true;
@@ -183,7 +183,7 @@ bool CDeviceSound::WriteOutput()
 
     if (!m_callbacksignal)
     {
-      log("%s portaudio callback not responding", m_name.c_str());
+      logerror("%s: portaudio callback not responding", m_name.c_str());
       return false;
     }
   }
@@ -201,7 +201,7 @@ void CDeviceSound::CloseDevice()
   {
     err = Pa_AbortStream(m_stream);
     if (err != paNoError)
-      log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+      logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
 
     m_started = false;
   }
@@ -210,7 +210,7 @@ void CDeviceSound::CloseDevice()
   {
     err = Pa_CloseStream(m_stream);
     if (err != paNoError)
-      log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+      logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
 
     m_opened = false;
   }
@@ -219,7 +219,7 @@ void CDeviceSound::CloseDevice()
   {
     err = g_portaudioinit.DeInit();
     if (err != paNoError)
-      log("%s error: %s", m_name.c_str(), Pa_GetErrorText(err));
+      logerror("%s: %s", m_name.c_str(), Pa_GetErrorText(err));
 
     m_initialized = false;
   }
