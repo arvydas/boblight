@@ -90,7 +90,7 @@ bool CDeviceSound::SetupDevice()
     if (deviceinfo->maxOutputChannels)
     {
       hostapiinfo = Pa_GetHostApiInfo(deviceinfo->hostApi);
-      log("n:%2i channels:%3i api:%s name:%s", i, deviceinfo->maxOutputChannels, hostapiinfo->name, deviceinfo->name);
+      log("n:%2i channels:%3i \"%s:%s\"", i, deviceinfo->maxOutputChannels, hostapiinfo->name, deviceinfo->name);
     }
   }
 
@@ -114,17 +114,17 @@ bool CDeviceSound::SetupDevice()
   
   if (devicenr == -1)
   {
-    log("%s device %s not found", m_name.c_str(), m_output.c_str());
+    log("%s \"%s\" not found", m_name.c_str(), m_output.c_str());
     return false;
   }
   else if (deviceinfo->maxOutputChannels < m_channels.size())
   {
-    log("%s device %s doesn't have enough channels", m_name.c_str(), m_output.c_str());
+    log("%s \"%s\" doesn't have enough channels", m_name.c_str(), m_output.c_str());
     return false;
   }
   else
   {
-    log("%s using device %i", m_name.c_str(), devicenr);
+    log("%s using \"%s\"", m_name.c_str(), m_output.c_str());
   }
 
   //set up portaudio the way we want it
