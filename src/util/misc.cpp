@@ -64,8 +64,7 @@ bool GetWord(string& data, string& word)
 //convert . or , to the current locale for correct conversion of ascii float
 void ConvertFloatLocale(std::string& strfloat)
 {
-  static struct lconv* locale = NULL;
-  if (!locale) locale = localeconv();
+  static struct lconv* locale = localeconv();
   
   size_t pos = strfloat.find_first_of(",.");
 
