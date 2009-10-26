@@ -389,15 +389,10 @@ bool CBoblight::WriteDataToSocket(std::string strdata)
   return true;
 }
 
-//TODO:need to clean this, doesn't make sense this way
+//removes one word from the string in the messages, and compares it to wordtocmp
 bool CBoblight::ParseWord(CMessage& message, std::string wordtocmp)
 {
-  string word;
-  return ParseWord(message, wordtocmp, word);
-}
-
-bool CBoblight::ParseWord(CMessage& message, std::string wordtocmp, std::string readword)
-{
+  string readword;
   if (!GetWord(message.message, readword) || readword != wordtocmp)
     return false;
 

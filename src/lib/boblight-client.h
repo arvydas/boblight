@@ -101,7 +101,6 @@ namespace boblight
       bool             ReadDataToQueue();
       bool             WriteDataToSocket(std::string strdata);
       bool             ParseWord(CMessage& message, std::string wordtocmp);
-      bool             ParseWord(CMessage& message, std::string wordtocmp, std::string readword);
       bool             ParseLights(CMessage& message);
       bool             CheckLightExists(int lightnr, bool printerror = true);
 
