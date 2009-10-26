@@ -198,7 +198,7 @@ void CLight::GetRGB(float* rgb)
     //it really works like crap, so don't use it
     if (m_autospeed)
     {
-      float change = Abs((rgb[0] + rgb[1] + rgb[2]) - (m_prevrgb[0] + m_prevrgb[1] + m_prevrgb[2]));
+      float change = Abs(rgb[0] - m_prevrgb[0]) + Abs(rgb[1] - m_prevrgb[1]) + Abs(rgb[2] - m_prevrgb[2]);
       m_autospeedvalue = Clamp(m_speed * 10.0 * change / 3.0, 0.0, 100.0);
     }
 
