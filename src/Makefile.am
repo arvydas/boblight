@@ -115,10 +115,10 @@ lib_LTLIBRARIES = \
 	libboblight.la
 
 libboblight_la_SOURCES = \
-	lib/boblight.cpp\
+	lib/boblight-client.cpp\
+	lib/boblight-client.h \
+	lib/boblight.cpp \
 	lib/boblight.h \
-	lib/libboblight.cpp \
-	lib/libboblight.h \
 	util/clock.cpp \
 	util/clock.h \
 	util/messagequeue.cpp \
@@ -127,7 +127,7 @@ libboblight_la_SOURCES = \
 	util/misc.h \
 	util/tcpsocket.cpp \
 	util/tcpsocket.h \
-	lib/libboblight-functions.h \
+	lib/boblight-functions.h \
 	lib/options.h
 
 libboblight_la_CPPFLAGS = $(AM_CPPFLAGS)

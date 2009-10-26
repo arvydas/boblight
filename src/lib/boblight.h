@@ -16,99 +16,88 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CBOBLIGHT
-#define CBOBLIGHT
+//if you define BOBLIGHT_DLOPEN, all boblight functions are defined as pointers
+//you can then call boblight_loadlibrary to load libboblight with dlopen and the function pointers with dlsym
+//if you pass NULL to boblight_loadlibrary's first argument, the default filename for libboblight is used
+//if boblight_loadlibrary returns NULL, dlopen and dlsym went ok, if not it returns a char* from dlerror
 
-#include <string>
-#include <vector>
+//if you want to use the boblight functions from multiple files, you can define BOBLIGHT_DLOPEN in one file,
+//and define BOBLIGHT_DLOPEN_EXTERN in the other file, the functionpointers are then defined as extern
 
-#include "util/tcpsocket.h"
-#include "util/messagequeue.h"
-#include "util/clock.h"
+#ifndef LIBBOBLIGHT
+#define LIBBOBLIGHT
 
-namespace boblight
-{
-  class CLight
-  {
-    public:
-      CLight();
+  #if !defined(BOBLIGHT_DLOPEN) && !defined(BOBLIGHT_DLOPEN_EXTERN)
 
-      std::string SetOption(const char* option, bool& send);
-      std::string GetOption(const char* option, std::string& output);
+    #ifdef __cplusplus
+      extern "C" {
+    #endif
 
-      void        SetScanRange(int width, int height);
-      
-      std::string m_name;
-      float       m_speed;
-      bool        m_autospeed;
-      float       m_autospeedvalue;
+    //generate normal prototypes
+    #define BOBLIGHT_FUNCTION(returnvalue, name, arguments) returnvalue name arguments
+    #include "boblight-functions.h"
+    #undef BOBLIGHT_FUNCTION
 
-      bool        m_interpolation;
-      bool        m_use;
+    #ifdef __cplusplus
+      }
+    #endif
 
-      float       m_value;
-      float       m_valuerange[2];
-      float       m_saturation;
-      float       m_satrange[2];
-      int         m_threshold;
+  #elif defined(BOBLIGHT_DLOPEN)
 
-      int         m_rgbd[4];
-      float       m_prevrgb[3];
-      void        GetRGB(float* rgb);
+    #include <dlfcn.h>
+    #include <stddef.h>
 
-      float       m_hscan[2];
-      float       m_vscan[2];
-      int         m_width;
-      int         m_height;
-      int         m_hscanscaled[2];
-      int         m_vscanscaled[2];
-  };  
+    //generate function pointers
+    #define BOBLIGHT_FUNCTION(returnvalue, name, arguments) returnvalue (* name ) arguments = NULL
+    #include "boblight-functions.h"
+    #undef BOBLIGHT_FUNCTION
 
-  class CBoblight
-  {
-    public:
-      CBoblight();
+    #ifdef __cplusplus
+      #define BOBLIGHT_CAST(value) reinterpret_cast<value>
+    #else
+      #define BOBLIGHT_CAST(value) (value)
+    #endif
 
-      int         Connect(const char* address, int port, int usectimeout);
-      const char* GetError()                    { return m_error.c_str(); }
+    //gets a functionpointer from dlsym, and returns char* from dlerror if it didn't work
+    #define BOBLIGHT_FUNCTION(returnvalue, name, arguments) \
+    name = BOBLIGHT_CAST(returnvalue (*) arguments)(dlsym(p_boblight, #name)); \
+                        { char* error = dlerror(); if (error) return error; }
 
-      int         GetNrLights()                 { return m_lights.size(); }
-      const char* GetLightName    (int lightnr);
+    void* p_boblight = NULL; //where we put the lib
 
-      int         SetPriority     (int priority);
-      void        SetScanRange    (int width,   int height);
+    //load function pointers
+    char* boblight_loadlibrary(const char* filename)
+    {
+      if (filename == NULL)
+        filename = "libboblight.so";
 
-      int         AddPixel(int lightnr, int* rgb);
-      void        AddPixel(int* rgb, int x, int y);
+      if (p_boblight != NULL)
+      {
+        dlclose(p_boblight);
+        p_boblight = NULL;
+      }
 
-      int         SendRGB();
-      int         Ping();
+      p_boblight = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
+      if (p_boblight == NULL)
+        return dlerror();
 
-      int         GetNrOptions();
-      const char* GetOptionDescription(int option);
-      int         SetOption(int lightnr, const char* option);
-      int         GetOption(int lightnr, const char* option, const char** output);
+      //generate dlsym lines
+      #include "boblight-functions.h"
 
-    private:
-      CTcpClientSocket m_socket;
-      std::string      m_address;
-      int              m_port;
-      std::string      m_error;
-      CMessageQueue    m_messagequeue;
-      CClock           m_clock;
-      int              m_usectimeout;
+      return NULL;
+    }
+    #undef BOBLIGHT_FUNCTION
+    #undef BOBLIGHT_CAST
 
-      bool             ReadDataToQueue();
-      bool             WriteDataToSocket(std::string strdata);
-      bool             ParseWord(CMessage& message, std::string wordtocmp);
-      bool             ParseWord(CMessage& message, std::string wordtocmp, std::string readword);
-      bool             ParseLights(CMessage& message);
-      bool             CheckLightExists(int lightnr, bool printerror = true);
+  //you can define BOBLIGHT_DLOPEN_EXTERN when you load the library in another file
+  #elif defined(BOBLIGHT_DLOPEN_EXTERN)
 
-      std::vector<CLight> m_lights;
+    extern char* boblight_loadlibrary(const char* filename);
+    extern void* p_boblight;
+    #define BOBLIGHT_FUNCTION(returnvalue, name, arguments) extern returnvalue (* name ) arguments
+    #include "boblight-functions.h"
+    #undef BOBLIGHT_FUNCTION
 
-      std::vector<std::string> m_options;
-      std::string              m_lastoption; //place to store the last option retrieved by GetOption
-  };
-}
-#endif //CBOBLIGHT
+  #endif //BOBLIGHT_DLOPEN_EXTERN
+#endif //LIBBOBLIGHT
+

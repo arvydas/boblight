@@ -24,7 +24,7 @@ using namespace std;
 #include "util/misc.h"
 
 #define BOBLIGHT_DLOPEN_EXTERN
-#include "lib/libboblight.h"
+#include "lib/boblight.h"
 
 CGrabberXGetImage::CGrabberXGetImage(void* boblight, volatile bool& stop) : CGrabber(boblight, stop)
 {

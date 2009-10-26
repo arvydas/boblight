@@ -54,8 +54,8 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libboblight_la_LIBADD =
-am_libboblight_la_OBJECTS = libboblight_la-boblight.lo \
-	libboblight_la-libboblight.lo libboblight_la-clock.lo \
+am_libboblight_la_OBJECTS = libboblight_la-boblight-client.lo \
+	libboblight_la-boblight.lo libboblight_la-clock.lo \
 	libboblight_la-messagequeue.lo libboblight_la-misc.lo \
 	libboblight_la-tcpsocket.lo
 libboblight_la_OBJECTS = $(am_libboblight_la_OBJECTS)
@@ -344,10 +344,10 @@ lib_LTLIBRARIES = \
 	libboblight.la
 
 libboblight_la_SOURCES = \
-	lib/boblight.cpp\
+	lib/boblight-client.cpp\
+	lib/boblight-client.h \
+	lib/boblight.cpp \
 	lib/boblight.h \
-	lib/libboblight.cpp \
-	lib/libboblight.h \
 	util/clock.cpp \
 	util/clock.h \
 	util/messagequeue.cpp \
@@ -356,7 +356,7 @@ libboblight_la_SOURCES = \
 	util/misc.h \
 	util/tcpsocket.cpp \
 	util/tcpsocket.h \
-	lib/libboblight-functions.h \
+	lib/boblight-functions.h \
 	lib/options.h
 
 libboblight_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -490,9 +490,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grabber-base.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grabber-xgetimage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grabber-xrender.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-boblight-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-boblight.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-clock.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-libboblight.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-messagequeue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-tcpsocket.Plo@am__quote@
@@ -531,19 +531,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
+libboblight_la-boblight-client.lo: lib/boblight-client.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-boblight-client.lo -MD -MP -MF $(DEPDIR)/libboblight_la-boblight-client.Tpo -c -o libboblight_la-boblight-client.lo `test -f 'lib/boblight-client.cpp' || echo '$(srcdir)/'`lib/boblight-client.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/libboblight_la-boblight-client.Tpo $(DEPDIR)/libboblight_la-boblight-client.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='lib/boblight-client.cpp' object='libboblight_la-boblight-client.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-boblight-client.lo `test -f 'lib/boblight-client.cpp' || echo '$(srcdir)/'`lib/boblight-client.cpp
+
 libboblight_la-boblight.lo: lib/boblight.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-boblight.lo -MD -MP -MF $(DEPDIR)/libboblight_la-boblight.Tpo -c -o libboblight_la-boblight.lo `test -f 'lib/boblight.cpp' || echo '$(srcdir)/'`lib/boblight.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/libboblight_la-boblight.Tpo $(DEPDIR)/libboblight_la-boblight.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='lib/boblight.cpp' object='libboblight_la-boblight.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-boblight.lo `test -f 'lib/boblight.cpp' || echo '$(srcdir)/'`lib/boblight.cpp
-
-libboblight_la-libboblight.lo: lib/libboblight.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-libboblight.lo -MD -MP -MF $(DEPDIR)/libboblight_la-libboblight.Tpo -c -o libboblight_la-libboblight.lo `test -f 'lib/libboblight.cpp' || echo '$(srcdir)/'`lib/libboblight.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/libboblight_la-libboblight.Tpo $(DEPDIR)/libboblight_la-libboblight.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='lib/libboblight.cpp' object='libboblight_la-libboblight.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-libboblight.lo `test -f 'lib/libboblight.cpp' || echo '$(srcdir)/'`lib/libboblight.cpp
 
 libboblight_la-clock.lo: util/clock.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-clock.lo -MD -MP -MF $(DEPDIR)/libboblight_la-clock.Tpo -c -o libboblight_la-clock.lo `test -f 'util/clock.cpp' || echo '$(srcdir)/'`util/clock.cpp

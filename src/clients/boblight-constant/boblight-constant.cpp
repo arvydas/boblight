@@ -17,7 +17,7 @@
  */
 
 #define BOBLIGHT_DLOPEN
-#include "lib/libboblight.h"
+#include "lib/boblight.h"
 
 #include <iostream>
 #include <string>

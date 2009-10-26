@@ -20,7 +20,7 @@
 #include "videograbber.h"
 
 #define BOBLIGHT_DLOPEN_EXTERN
-#include "lib/libboblight.h"
+#include "lib/boblight.h"
 
 #include <string.h>
 #include <iostream>
