@@ -71,8 +71,8 @@ string CLight::SetOption(const char* option, bool& send)
       stream >> value; \
       if (stream.fail()) return "invalid value " + stroption + " for option " + strname + " with type " + #type; \
       \
-      variable = value; \
     }\
+    variable = value; \
     postprocess\
     \
     return ""; \
