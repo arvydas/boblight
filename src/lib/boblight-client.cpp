@@ -105,6 +105,7 @@ std::string CLight::GetOption(const char* option, std::string& output)
 
 void CLight::GetRGB(float* rgb)
 {
+  //if no pixels are set, the denominator is 0, so just return black
   if (m_rgbd[3] == 0)
   {
     for (int i = 0; i < 3; i++)
@@ -114,6 +115,7 @@ void CLight::GetRGB(float* rgb)
     return;
   }
   
+  //convert from numerator/denominator to float
   for (int i = 0; i < 3; i++)
     rgb[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
 
@@ -192,6 +194,8 @@ void CLight::GetRGB(float* rgb)
     for (int i = 0; i < 3; i++)
       rgb[i] = Clamp(rgb[i], 0.0f, 1.0f);
 
+    //this tries to set the speed based on how fast the input is changing
+    //it really works like crap, so don't use it
     if (m_autospeed)
     {
       float change = Abs((rgb[0] + rgb[1] + rgb[2]) - (m_prevrgb[0] + m_prevrgb[1] + m_prevrgb[2]));
@@ -202,6 +206,7 @@ void CLight::GetRGB(float* rgb)
   }
 }
 
+//scale the light's scanrange to the dimensions set with boblight_setscanrange()
 void CLight::SetScanRange(int width, int height)
 {
     m_width = width;
