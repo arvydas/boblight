@@ -17,8 +17,8 @@ EXTRA_DIST = $(boblightddoc_DATA) \
 	$(libboblight_HEADERS)
 
 libboblight_HEADERS = \
-	src/lib/libboblight.h\
-	src/lib/libboblight-functions.h
+	src/lib/boblight.h\
+	src/lib/boblight-functions.h
 
 libboblightdir = \
 	$(prefix)/include/libboblight
