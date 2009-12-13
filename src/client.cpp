@@ -259,7 +259,8 @@ bool CClientsHandler::ParseMessage(CClient* client, CMessage& message)
       return false;
     }
     CLock lock(m_mutex);
-    client->m_connecttime = message.time;
+    if (client->m_connecttime == -1)
+      client->m_connecttime = message.time;
   }
   else if (messagekey == "ping")
   {
