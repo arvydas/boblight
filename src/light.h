@@ -26,6 +26,8 @@
 
 #include "util/misc.h"
 
+class CDevice; //forward declare
+
 class CColor
 {
   public:
@@ -82,6 +84,10 @@ class CLight
     void   SetVscan(float* vscan) { m_vscan[0] = vscan[0]; m_vscan[1] = vscan[1]; }
     float* GetVscan() { return m_vscan; }
     float* GetHscan() { return m_hscan; }
+
+    int    GetNrUsers() { return m_users.size(); }
+    void   AddUser(CDevice* device);
+    void   ClearUser(CDevice* device);
     
   private:
     std::string m_name;
@@ -103,6 +109,8 @@ class CLight
     
     float   FindMultiplier(float *rgb, float ceiling);
     float   FindMultiplier(float *rgb, float *ceiling);
+
+    std::vector<CDevice*> m_users; //devices using this light
 };
 
 #endif //CLIGHT

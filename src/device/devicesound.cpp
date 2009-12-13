@@ -254,7 +254,7 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
 {
   //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
-  m_clients.FillChannels(m_channels, now);
+  m_clients.FillChannels(m_channels, now, this);
 
   //store the values from m_channels, because they get recalculated for each call to GetValue()
   for (int i = 0; i < m_channels.size(); i++)

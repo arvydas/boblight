@@ -50,7 +50,7 @@ bool CDeviceLtbl::WriteOutput()
 
   //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
-  m_clients.FillChannels(m_channels, now);
+  m_clients.FillChannels(m_channels, now, this);
 
   //put channel values in the output buffer
   bool isused = false;

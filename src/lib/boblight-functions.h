@@ -38,4 +38,4 @@ BOBLIGHT_FUNCTION(int,         boblight_addpixel,         (void* vpboblight, int
 BOBLIGHT_FUNCTION(void,        boblight_addpixelxy,       (void* vpboblight, int x, int y, int* rgb));
 
 BOBLIGHT_FUNCTION(int,         boblight_sendrgb,          (void* vpboblight));
-BOBLIGHT_FUNCTION(int,         boblight_ping,             (void* vpboblight));
+BOBLIGHT_FUNCTION(int,         boblight_ping,             (void* vpboblight, int* outputused));

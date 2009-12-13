@@ -57,7 +57,7 @@ bool CDeviceRS232::WriteOutput()
 {
   //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
-  m_clients.FillChannels(m_channels, now);
+  m_clients.FillChannels(m_channels, now, this);
 
   //put the values in 1 byte unsigned in the buffer
   for (int i = 0; i < m_channels.size(); i++)

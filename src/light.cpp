@@ -151,3 +151,28 @@ float CLight::FindMultiplier(float *rgb, float *ceiling)
   }
   return multiplier;
 }
+
+void CLight::AddUser(CDevice* device)
+{
+  //add CDevice pointer to users if it doesn't exist yet
+  for (unsigned int i = 0; i < m_users.size(); i++)
+  {
+    if (m_users[i] == device)
+      return;
+  }
+
+  m_users.push_back(device);
+}
+
+void CLight::ClearUser(CDevice* device)
+{
+  //clear CDevice* from users
+  for (vector<CDevice*>::iterator it = m_users.begin(); it != m_users.end(); it++)
+  {
+    if (*it == device)
+    {
+      m_users.erase(it);
+      return;
+    }
+  }
+}

@@ -51,7 +51,7 @@ class CClientsHandler : public CThread
   public:
     CClientsHandler(std::vector<CLight>& lights);
     void AddClient(CClient* client); //called by the connection handler
-    void FillChannels(std::vector<CChannel>& channels, int64_t time); //called by devices
+    void FillChannels(std::vector<CChannel>& channels, int64_t time, CDevice* device); //called by devices
     
   private:
     void Process();

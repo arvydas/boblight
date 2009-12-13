@@ -45,7 +45,7 @@ bool CDevicePopen::WriteOutput()
 {
   //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
-  m_clients.FillChannels(m_channels, now);
+  m_clients.FillChannels(m_channels, now, this);
 
   //print the values to the process, as float from 0.0 to 1.0
   for (int i = 0; i < m_channels.size(); i++)

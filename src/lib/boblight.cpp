@@ -113,8 +113,8 @@ int boblight_sendrgb(void* vpboblight)
   return boblight->SendRGB();
 }
 
-int boblight_ping(void* vpboblight)
+int boblight_ping(void* vpboblight, int* outputused)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->Ping();
+  return boblight->Ping(outputused);
 }

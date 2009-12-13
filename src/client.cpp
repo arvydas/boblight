@@ -354,9 +354,21 @@ bool CClientsHandler::SendLights(CClient* client)
 
 bool CClientsHandler::SendPing(CClient* client)
 {
-  CTcpData data;
+  CLock lock(m_mutex);
 
-  data.SetData("ping\n");
+  //check if any light is used
+  int lightsused = 0;
+  for (unsigned int i = 0; i < client->m_lights.size(); i++)
+  {
+    if (client->m_lights[i].GetNrUsers() > 0)
+    {
+      lightsused = 1;
+      break; //if one light is used we have enough info
+    }
+  }
+
+  CTcpData data;
+  data.SetData("ping " + ToString(lightsused) + "\n");
 
   if (client->m_socket.Write(data) != SUCCESS)
   {
@@ -487,7 +499,7 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
 }
 
 //called by devices
-void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time)
+void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time, CDevice* device)
 {
   CLock lock(m_mutex);
 
@@ -502,6 +514,10 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
 
     if (light == -1 || color == -1) //unused channel
       continue;
+
+    //clear this device on all clients
+    for (int j = 0; j < m_clients.size(); j++)
+      m_clients[j]->m_lights[light].ClearUser(device);
 
     for (int j = 0; j < m_clients.size(); j++)
     {
@@ -527,6 +543,9 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
       channels[i].SetBlacklevel(0.0);
       continue;
     }
+
+    //tell client we're using this light
+    m_clients[clientnr]->m_lights[light].AddUser(device);
 
     //fill channel with values from the client
     channels[i].SetUsed(true);

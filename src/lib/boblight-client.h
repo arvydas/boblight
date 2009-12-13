@@ -82,7 +82,7 @@ namespace boblight
       void        AddPixel(int* rgb, int x, int y);
 
       int         SendRGB();
-      int         Ping();
+      int         Ping(int* outputused);
 
       int         GetNrOptions();
       const char* GetOptionDescription(int option);
