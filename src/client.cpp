@@ -367,6 +367,8 @@ bool CClientsHandler::SendPing(CClient* client)
     }
   }
 
+  lock.Leave();
+
   CTcpData data;
   data.SetData("ping " + ToString(lightsused) + "\n");
 
