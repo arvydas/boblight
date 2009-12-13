@@ -29,8 +29,8 @@ class CDeviceSound : public CDevice
   public:
     CDeviceSound(CClientsHandler& clients);
 
-    void SetLatency(float latency) { m_latency = latency; }
-    void SetPeriod(int period)     { m_period = period; }
+    void SetLatency(double latency) { m_latency = latency; }
+    void SetPeriod(int period)      { m_period = period; }
  
   private:
     bool SetupDevice();

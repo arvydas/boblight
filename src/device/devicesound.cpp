@@ -54,6 +54,7 @@ CDeviceSound::CDeviceSound(CClientsHandler& clients) : CDevice(clients)
   m_initialized = false;
   m_started = false;
   m_callbacksignal = false;
+  m_latency = -1;
 }
 
 bool CDeviceSound::SetupDevice()
@@ -132,7 +133,11 @@ bool CDeviceSound::SetupDevice()
   outputparameters.channelCount       = m_channels.size();
   outputparameters.device             = devicenr;
   outputparameters.sampleFormat       = paInt16;
-  outputparameters.suggestedLatency   = m_latency / 1000.0;
+  if (m_latency > 0)
+    outputparameters.suggestedLatency = m_latency / 1000000.0;
+  else
+    outputparameters.suggestedLatency = deviceinfo->defaultLowOutputLatency;
+
 
   int formatsupported = Pa_IsFormatSupported(NULL, &outputparameters, m_rate);
   if (formatsupported != paFormatIsSupported)

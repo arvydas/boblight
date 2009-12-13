@@ -942,8 +942,7 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
   if (!SetDevicePeriod(sounddevice, devicenr))
     return false;
 
-  if (!SetDeviceLatency(sounddevice, devicenr))
-    return false;
+  SetDeviceLatency(sounddevice, devicenr);
 
   sounddevice->SetType(SOUND);
 
@@ -1062,22 +1061,18 @@ bool CConfig::SetDevicePeriod(CDeviceSound* device, int devicenr)
   return true;
 }
 
-bool CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
+void CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("latency", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
-  {
-    logerror("%s: device %s has no latency", m_filename.c_str(), device->GetName().c_str());
-    return false;
-  }
+    return;
+
   GetWord(line, strvalue);
 
-  float latency;
+  double latency;
   StrToFloat(strvalue, latency);
   device->SetLatency(latency);
-
-  return true;
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)
