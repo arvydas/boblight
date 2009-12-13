@@ -151,7 +151,7 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
   va_end(args);
 
   if (error)
-    logstr += " ERROR: ";
+    logstr += "ERROR: ";
 
   logstr += logbuff;
 
