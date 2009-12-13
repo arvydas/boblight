@@ -46,7 +46,7 @@ string GetStrTime()
   char buff[100];
   time_t now = time(NULL);
 
-  strftime(buff, 99, "%H:%M:%S", localtime(&now));
+  strftime(buff, 99, "%Y-%m-%d %H:%M:%S", localtime(&now));
   return buff;
 }
 
@@ -137,21 +137,18 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
   va_end(args);
 
   if (error)
-    logstr = GetStrTime() + " ERROR:" + logbuff;
+    logstr = GetStrTime() + " ERROR: " + logbuff;
   else
     logstr = GetStrTime() + " " + logbuff;
 
-  funcstr = PruneFunction(function);
-
-  //we try to place the function name at the right of an 80 char terminal
-  nrspaces = 80 - (logstr.size() + funcstr.size() + 3);
-
+  funcstr = " (" + PruneFunction(function) + ")";
+  //we try to place the function name at the right of an 120 char terminal, but only in the file
+  //printing to stdout is done without function name
+  nrspaces = 120 - (logstr.size() + funcstr.size());
   //add the spaces
-  if (nrspaces > 0) logstr.insert(logstr.size(), nrspaces, ' ');
+  if (nrspaces > 0)
+    funcstr.insert(0, nrspaces, ' ');
   
-  logstr += " (" + funcstr + ")\n";
-
-
   if (g_logfile.is_open() && printlogtofile)
   {
     //print any saved log lines
@@ -164,14 +161,14 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
       logstrings.clear();
     }
     //write the string to the logfile
-    g_logfile << logstr << flush;
+    g_logfile << logstr << funcstr << '\n' << flush;
   }
   else if (printlogtofile)
   {
     //save the log line if the log isn't open yet
-    logstrings.push_back(logstr);
+    logstrings.push_back(logstr + funcstr + "\n");
   }
 
   //print to stdout when requested
-  if (logtostdout) cout << logstr << flush;
+  if (logtostdout) cout << logstr << '\n' << flush;
 }
