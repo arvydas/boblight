@@ -82,8 +82,14 @@ bool InitLog(string filename, ofstream& logfile)
     }
   }
 
+  //we keep around 5 old logfiles
+  for (int i = 4; i > 0; i--)
+    rename(string(fullpath + ".old." + ToString(i)).c_str(), string(fullpath + ".old." + ToString(i + 1)).c_str());
+
+  rename(fullpath.c_str(), string(fullpath + ".old.1").c_str());
+
   //open the logfile in append mode
-  logfile.open(fullpath.c_str(), ios_base::app);
+  logfile.open(fullpath.c_str());
   if (logfile.fail())
   {
     PrintError("unable to open " + fullpath + ":\n" + GetErrno());
