@@ -72,17 +72,15 @@ bool InitLog(string filename, ofstream& logfile)
     }
   }
 
-  //rename the previous logfile
-  rename(fullpath.c_str(), (fullpath + ".old").c_str());
-
-  //open the logfile
-  logfile.open(fullpath.c_str());
+  //open the logfile in append mode
+  logfile.open(fullpath.c_str(), ios_base::app);
   if (logfile.fail())
   {
     PrintError("unable to open " + fullpath + ":\n" + GetErrno());
     return false;
   }
 
+  log(""); //empty line as a visual indication that boblight started
   log("start of log %s", fullpath.c_str());
 
   return true;
