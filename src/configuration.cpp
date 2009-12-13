@@ -871,12 +871,16 @@ bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int
   if (!SetDeviceRate(rs232device, devicenr))
     return false;
 
-  SetDevicePrefix(rs232device, devicenr);
 
   if (type == "momo")
+  {
     device->SetType(MOMO);
+    SetDevicePrefix(rs232device, devicenr);
+  }
   else if (type == "atmo")
+  {
     device->SetType(ATMO);
+  }
   
   return true;
 }
