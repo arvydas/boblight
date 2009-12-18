@@ -66,6 +66,9 @@ void CSignalTimer::Signal()
 
 void CSignalTimer::WaitCondition(int64_t sleeptime)
 {
+  if (sleeptime <= 0)
+    return;
+
   int64_t secs  = sleeptime / 1000000LL;
   int64_t usecs = sleeptime % 1000000LL;
 
