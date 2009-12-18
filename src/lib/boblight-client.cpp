@@ -540,7 +540,7 @@ void CBoblight::AddPixel(int* rgb, int x, int y)
   }
 }
 
-int CBoblight::SendRGB()
+int CBoblight::SendRGB(int sync)
 {
   string data;
 
@@ -554,6 +554,10 @@ int CBoblight::SendRGB()
       data += "set light " + m_lights[i].m_name + " speed " + ToString(m_lights[i].m_autospeedvalue) + "\n";
     }
   }
+
+  //send a message that we want devices to sync to our input
+  if (sync)
+    data += "sync\n";
 
   return WriteDataToSocket(data);
 }

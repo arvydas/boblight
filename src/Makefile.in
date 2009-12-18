@@ -102,7 +102,8 @@ am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
 	client.$(OBJEXT) connectionhandler.$(OBJEXT) light.$(OBJEXT) \
 	configuration.$(OBJEXT) device.$(OBJEXT) devicepopen.$(OBJEXT) \
 	deviceltbl.$(OBJEXT) devicesound.$(OBJEXT) \
-	devicers232.$(OBJEXT) asynctimer.$(OBJEXT)
+	devicers232.$(OBJEXT) asynctimer.$(OBJEXT) \
+	signaltimer.$(OBJEXT)
 boblightd_OBJECTS = $(am_boblightd_OBJECTS)
 boblightd_DEPENDENCIES =
 boblightd_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -354,7 +355,9 @@ boblightd_SOURCES = \
 	device/devicers232.h    \
 	protocolversion.h    \
 	util/asynctimer.cpp    \
-	util/asynctimer.h
+	util/asynctimer.h \
+        util/signaltimer.h \
+        util/signaltimer.cpp
 
 boblightd_LDFLAGS = 
 boblightd_LDADD = 
@@ -541,6 +544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/serialport.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signaltimer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tcpsocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Po@am__quote@
@@ -1016,6 +1020,20 @@ asynctimer.obj: util/asynctimer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/asynctimer.cpp' object='asynctimer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asynctimer.obj `if test -f 'util/asynctimer.cpp'; then $(CYGPATH_W) 'util/asynctimer.cpp'; else $(CYGPATH_W) '$(srcdir)/util/asynctimer.cpp'; fi`
+
+signaltimer.o: util/signaltimer.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT signaltimer.o -MD -MP -MF $(DEPDIR)/signaltimer.Tpo -c -o signaltimer.o `test -f 'util/signaltimer.cpp' || echo '$(srcdir)/'`util/signaltimer.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/signaltimer.Tpo $(DEPDIR)/signaltimer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/signaltimer.cpp' object='signaltimer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o signaltimer.o `test -f 'util/signaltimer.cpp' || echo '$(srcdir)/'`util/signaltimer.cpp
+
+signaltimer.obj: util/signaltimer.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT signaltimer.obj -MD -MP -MF $(DEPDIR)/signaltimer.Tpo -c -o signaltimer.obj `if test -f 'util/signaltimer.cpp'; then $(CYGPATH_W) 'util/signaltimer.cpp'; else $(CYGPATH_W) '$(srcdir)/util/signaltimer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/signaltimer.Tpo $(DEPDIR)/signaltimer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/signaltimer.cpp' object='signaltimer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o signaltimer.obj `if test -f 'util/signaltimer.cpp'; then $(CYGPATH_W) 'util/signaltimer.cpp'; else $(CYGPATH_W) '$(srcdir)/util/signaltimer.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

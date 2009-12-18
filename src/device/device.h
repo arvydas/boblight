@@ -34,7 +34,7 @@
 //#include "client.h"
 #include "util/thread.h"
 #include "util/clock.h"
-#include "util/asynctimer.h"
+#include "util/signaltimer.h"
 
 class CClientsHandler; //forward declaration
 
@@ -91,11 +91,14 @@ class CDevice : public CThread
     void SetRate(int rate)             { m_rate = rate; }
     void SetNrChannels(int nrchannels) { m_channels.resize(nrchannels); }
     void SetChannel(CChannel& channel, int channelnr) { m_channels[channelnr] = channel; }
+    void SetInterval(int64_t usecs)    { m_interval = usecs; }
 
     int GetNrChannels()     { return m_channels.size(); }
       
     std::string GetName()   { return m_name; }
     std::string GetOutput() { return m_output; }
+
+    virtual void Sync() {}; //wakes up the device, used to sync client input to device output
 
   protected:
     void Process();
@@ -108,6 +111,7 @@ class CDevice : public CThread
     std::string m_output;
     int         m_type;
     int         m_rate;
+    int64_t     m_interval;
 
     CClock      m_clock;
 

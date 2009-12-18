@@ -24,7 +24,6 @@
 #include "util/log.h"
 #include "util/tcpsocket.h"
 #include "util/messagequeue.h"
-#include "util/timer.h"
 #include "connectionhandler.h"
 #include "client.h"
 #include "configuration.h"
@@ -73,7 +72,6 @@ int main (int argc, char *argv[])
 
   CConfig             config;  //class for loading and parsing config
   vector<CDevice*>    devices; //where we store devices
-  vector<CAsyncTimer> timers;  //timer pool, devices with the same interval run off the same async timer
   vector<CLight>      lights;  //lights pool
   CClientsHandler     clients(lights);
   CConnectionHandler  connectionhandler(clients);
@@ -83,7 +81,7 @@ int main (int argc, char *argv[])
     return 1;
   if (!config.CheckConfig())
     return 1;
-  if (!config.BuildConfig(connectionhandler, clients, devices, timers, lights))
+  if (!config.BuildConfig(connectionhandler, clients, devices, lights))
     return 1;
 
   //start the connection handler
@@ -92,11 +90,6 @@ int main (int argc, char *argv[])
   //start the clients handler
   clients.StartThread();
   
-  //start the timers
-  log("starting timers");
-  for (int i = 0; i < timers.size(); i++)
-    timers[i].StartTimer();
-
   //start the devices
   log("starting devices");
   for (int i = 0; i < devices.size(); i++)
@@ -143,20 +136,10 @@ int main (int argc, char *argv[])
   log("signaling clients handler to stop");
   clients.AsyncStopThread();
 
-  //signal timers to stop
-  log("signaling timers to stop");
-  for (int i = 0; i < timers.size(); i++)
-    timers[i].AsyncStopThread();
-
   //stop the devices
   log("waiting for devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
-
-  //stop the timers
-  log("waiting for timers to stop");
-  for (int i = 0; i < timers.size(); i++)
-    timers[i].StopThread();
 
   //stop the connection handler
   log("waiting for connection handler to stop");

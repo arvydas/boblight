@@ -71,6 +71,7 @@ class CClientsHandler : public CThread
     bool     ParseGet(CClient* client, CMessage& message);
     bool     ParseSet(CClient* client, CMessage& message);
     bool     ParseSetLight(CClient* client, CMessage& message);
+    bool     ParseSync(CClient* client);
     bool     SendVersion(CClient* client);    //this is used to check that boblightd and libboblight have the same protocol version
     bool     SendLights(CClient* client);     //sends light info, like name and area
     bool     SendPing(CClient* client);

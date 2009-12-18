@@ -26,14 +26,16 @@
 class CDevicePopen : public CDevice
 {
   public:
-    CDevicePopen (CClientsHandler& clients, CAsyncTimer& timer);
+    CDevicePopen (CClientsHandler& clients);
+
+    void Sync();
 
   private:
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
     
-    CAsyncTimer& m_timer;
+    CSignalTimer m_timer;
     FILE*        m_process;
 };
 

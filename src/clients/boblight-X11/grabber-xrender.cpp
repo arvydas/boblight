@@ -163,7 +163,7 @@ bool CGrabberXRender::Run()
     }
 
     //send pixeldata to boblight
-    if (!boblight_sendrgb(m_boblight))
+    if (!boblight_sendrgb(m_boblight, 1))
     {
       m_error = boblight_geterror(m_boblight);
       return true; //recoverable error

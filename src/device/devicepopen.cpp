@@ -24,13 +24,20 @@
 
 using namespace std;
 
-CDevicePopen::CDevicePopen (CClientsHandler& clients, CAsyncTimer& timer) : m_timer(timer), CDevice(clients)
+CDevicePopen::CDevicePopen (CClientsHandler& clients) : m_timer(&m_stop), CDevice(clients)
 {
   m_process = NULL;
 }
 
+void CDevicePopen::Sync()
+{
+  m_timer.Signal();
+}
+
 bool CDevicePopen::SetupDevice()
 {
+  m_timer.SetInterval(m_interval);
+
   //try to open the process
   m_process = popen(m_output.c_str(), "w");
   if (m_process == NULL)
@@ -62,7 +69,7 @@ bool CDevicePopen::WriteOutput()
     return false;
   }
   
-  m_timer.Wait(&m_stop); //wait for the timer to signal us
+  m_timer.Wait(); //wait for the timer to signal us
 
   return true;
 }

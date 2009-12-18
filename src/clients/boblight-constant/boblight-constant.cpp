@@ -124,7 +124,7 @@ int Run()
    
     //set all lights to the color we want and send it
     boblight_addpixel(boblight, -1, rgb);
-    if (!boblight_sendrgb(boblight)) //some error happened, probably connection broken, so bitch and try again
+    if (!boblight_sendrgb(boblight, 1)) //some error happened, probably connection broken, so bitch and try again
     {
       PrintError(boblight_geterror(boblight));
       boblight_destroy(boblight);

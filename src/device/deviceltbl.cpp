@@ -20,7 +20,7 @@
 #include "util/log.h"
 #include "util/misc.h"
 
-CDeviceLtbl::CDeviceLtbl(CClientsHandler& clients, CAsyncTimer& timer) : CDeviceRS232(clients, timer)
+CDeviceLtbl::CDeviceLtbl(CClientsHandler& clients) : CDeviceRS232(clients)
 {
   m_buff = NULL;
   m_isopened = false;
@@ -28,6 +28,8 @@ CDeviceLtbl::CDeviceLtbl(CClientsHandler& clients, CAsyncTimer& timer) : CDevice
 
 bool CDeviceLtbl::SetupDevice()
 {
+  m_timer.SetInterval(m_interval);
+
   if (!m_serialport.Open(m_output, m_rate))
   {
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
@@ -86,7 +88,7 @@ bool CDeviceLtbl::WriteOutput()
       return false;
   }
     
-  m_timer.Wait(&m_stop); //wait for the timer to signal us
+  m_timer.Wait(); //wait for the timer to signal us
 
   return true;
 }

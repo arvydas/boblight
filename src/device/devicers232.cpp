@@ -22,7 +22,7 @@
 #include "util/misc.h"
 #include "devicers232.h"
 
-CDeviceRS232::CDeviceRS232(CClientsHandler& clients, CAsyncTimer& timer) : m_timer(timer), CDevice(clients)
+CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice(clients)
 {
   m_type = -1;
   m_buff = NULL;
@@ -40,8 +40,15 @@ void CDeviceRS232::SetType(int type)
   }
 }
 
+void CDeviceRS232::Sync()
+{
+  m_timer.Signal();
+}
+
 bool CDeviceRS232::SetupDevice()
 {
+  m_timer.SetInterval(m_interval);
+
   //try to open the serial port
   if (!m_serialport.Open(m_output, m_rate))
   {
@@ -84,7 +91,7 @@ bool CDeviceRS232::WriteOutput()
     return false;
   }
 
-  m_timer.Wait(&m_stop);
+  m_timer.Wait();
   
   return true;
 }

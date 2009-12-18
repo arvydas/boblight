@@ -482,7 +482,7 @@ int CConfig::GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, st
 
 //builds the config
 bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
-                 std::vector<CAsyncTimer>& timers, std::vector<CLight>& lights)
+                          std::vector<CLight>& lights)
 {
   log("building config");
   
@@ -492,9 +492,7 @@ bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler
   if (!BuildColorConfig(colors))
     return false;
 
-  BuildTimers(timers);
-  
-  if (!BuildDeviceConfig(devices, timers, clients))
+  if (!BuildDeviceConfig(devices, clients))
     return false;
 
   if (!BuildLightConfig(lights, devices, colors))
@@ -594,48 +592,8 @@ bool CConfig::BuildColorConfig(std::vector<CColor>& colors)
   return true;
 }
 
-//builds a pool of CAsyncTimer, which is a timer that runs in its own thread
-//this way devices with the same interval can run off the same timer so they're synchonized :)
-void CConfig::BuildTimers(std::vector<CAsyncTimer>& timers)
-{
-  //loop though the device config lines
-  for (int i = 0; i < m_devicelines.size(); i++)
-  {
-    string line;
-
-    //see if this device has an interval value, not all types have to have that
-    int linenr = GetLineWithKey("interval", m_devicelines[i].lines, line);
-    if (linenr == -1) continue; //this one doesn't
-
-    string strinterval;
-    GetWord(line, strinterval);
-
-    int interval;
-    StrToInt(strinterval, interval); //we already checked interval is a positive integer
-
-    //check if we already have a timer with this interval
-    bool timerfound = false;
-    for (int j = 0; j < timers.size(); j++)
-    {
-      if (timers[j].GetInterval() == interval)
-      {
-        timerfound = true;
-        break;
-      }
-    }
-
-    //we didn't find one, so we have to add it
-    if (!timerfound)
-    {
-      CAsyncTimer timer;
-      timer.SetInterval(interval);
-      timers.push_back(timer);
-    }
-  }
-}    
-
 //builds a pool of devices
-bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsyncTimer>& timers, CClientsHandler& clients)
+bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler& clients)
 {
   for (int i = 0; i < m_devicelines.size(); i++)
   {
@@ -648,7 +606,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsy
     if (type == "popen")
     {
       CDevice* device = NULL;
-      if (!BuildPopen(device, timers, i, clients))
+      if (!BuildPopen(device, i, clients))
       {
         if (device)
           delete device;
@@ -659,7 +617,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsy
     else if (type == "momo" || type == "atmo")
     {
       CDevice* device = NULL;
-      if (!BuildRS232(device, timers, i, clients))
+      if (!BuildRS232(device, i, clients))
       {
         if (device)
           delete device;
@@ -670,7 +628,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsy
     else if (type == "ltbl")
     {
       CDevice* device = NULL;
-      if (!BuildLtbl(device, timers, i, clients))
+      if (!BuildLtbl(device, i, clients))
       {
         if (device)
           delete device;
@@ -780,42 +738,11 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
   return true;
 }
 
-//gets a timer with a specific interval
-CAsyncTimer* CConfig::GetTimer(int interval, std::vector<CAsyncTimer>& timers)
-{
-  for (int i = 0; i < timers.size(); i++)
-  {
-    if (interval == timers[i].GetInterval())
-    {
-      return &timers[i];
-    }
-  }
-  return NULL;
-}
-
-bool CConfig::BuildPopen(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients)
+bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   string line, strvalue;
-  int interval;
 
-  int linenr = GetLineWithKey("interval", m_devicelines[devicenr].lines, line);
-  if (linenr == -1)
-  {
-    logerror("%s: device %i has type popen but no interval", m_filename.c_str(), devicenr + 1);
-    return false;
-  }
-
-  GetWord(line, strvalue);
-  StrToInt(strvalue, interval);
-
-  CAsyncTimer* timer = GetTimer(interval, timers);
-  if (timer == NULL)
-  {
-    logerror("no timer with interval %i found (THIS IS A BUG! You should report this)", interval);
-    return false;
-  }
-
-  device = new CDevicePopen(clients, *timer);
+  device = new CDevicePopen(clients);
 
   if (!SetDeviceName(device, devicenr))
     return false;
@@ -826,37 +753,19 @@ bool CConfig::BuildPopen(CDevice*& device, std::vector<CAsyncTimer>& timers, int
   if (!SetDeviceChannels(device, devicenr))
     return false;
 
+  if (!SetDeviceInterval(device, devicenr))
+    return false;
+
   device->SetType(POPEN);
   
   return true;
 }
 
-bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients)
+bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   string line, strvalue, type;
-  int interval;
 
-  GetLineWithKey("type", m_devicelines[devicenr].lines, line);
-  GetWord(line, type);
-  
-  int linenr = GetLineWithKey("interval", m_devicelines[devicenr].lines, line);
-  if (linenr == -1)
-  {
-    logerror("%s: device %i has type %s but no interval", m_filename.c_str(), devicenr + 1, type.c_str());
-    return false;
-  }
-
-  GetWord(line, strvalue);
-  StrToInt(strvalue, interval);
-
-  CAsyncTimer* timer = GetTimer(interval, timers);
-  if (timer == NULL)
-  {
-    logerror("no timer with interval %i found (THIS IS A BUG! You should report this)", interval);
-    return false;
-  }
-
-  CDeviceRS232* rs232device = new CDeviceRS232(clients, *timer);
+  CDeviceRS232* rs232device = new CDeviceRS232(clients);
   device = rs232device;
 
   if (!SetDeviceName(rs232device, devicenr))
@@ -871,6 +780,8 @@ bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int
   if (!SetDeviceRate(rs232device, devicenr))
     return false;
 
+  if (!SetDeviceInterval(rs232device, devicenr))
+    return false;
 
   if (type == "momo")
   {
@@ -885,29 +796,11 @@ bool CConfig::BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int
   return true;
 }
 
-bool CConfig::BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients)
+bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   string line, strvalue;
-  int interval;
 
-  int linenr = GetLineWithKey("interval", m_devicelines[devicenr].lines, line);
-  if (linenr == -1)
-  {
-    logerror("%s: device %i has type ltbl but no interval", m_filename.c_str(), devicenr + 1);
-    return false;
-  }
-
-  GetWord(line, strvalue);
-  StrToInt(strvalue, interval);
-
-  CAsyncTimer* timer = GetTimer(interval, timers);
-  if (timer == NULL)
-  {
-    logerror("no timer with interval %i found (THIS IS A BUG! You should report this)", interval);
-    return false;
-  }
-
-  device = new CDeviceLtbl(clients, *timer);
+  device = new CDeviceLtbl(clients);
 
   if (!SetDeviceName(device, devicenr))
     return false;
@@ -919,6 +812,9 @@ bool CConfig::BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int 
     return false;
 
   if (!SetDeviceRate(device, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(device, devicenr))
     return false;
 
   device->SetType(LTBL);
@@ -1024,6 +920,24 @@ bool CConfig::SetDeviceRate(CDevice* device, int devicenr)
   int rate;
   StrToInt(strvalue, rate);
   device->SetRate(rate);
+
+  return true;
+}
+
+bool CConfig::SetDeviceInterval(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("interval", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+  {
+    logerror("%s: device %s has no interval", m_filename.c_str(), device->GetName().c_str());
+    return false;
+  }
+  GetWord(line, strvalue);
+
+  int interval;
+  StrToInt(strvalue, interval);
+  device->SetInterval(interval);
 
   return true;
 }

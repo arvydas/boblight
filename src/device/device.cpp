@@ -22,6 +22,8 @@
 #include "util/log.h"
 #include "util/sleep.h"
 
+CSignalTimer test;
+
 CChannel::CChannel()
 {
   m_color = -1;

@@ -85,9 +85,10 @@ class CLight
     float* GetVscan() { return m_vscan; }
     float* GetHscan() { return m_hscan; }
 
-    int    GetNrUsers() { return m_users.size(); }
-    void   AddUser(CDevice* device);
-    void   ClearUser(CDevice* device);
+    int      GetNrUsers() { return m_users.size(); }
+    void     AddUser(CDevice* device);
+    void     ClearUser(CDevice* device);
+    CDevice* GetUser(unsigned int user) { return m_users[user]; }
     
   private:
     std::string m_name;

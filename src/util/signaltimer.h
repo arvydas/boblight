@@ -16,27 +16,18 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CDEVICELTBL
-#define CDEVICELTBL
+#include "timer.h"
+#include "condition.h"
 
-#include "devicers232.h"
-
-class CDeviceLtbl : public CDeviceRS232
+class CSignalTimer : public CTimer
 {
   public:
-    CDeviceLtbl(CClientsHandler& clients);
+    CSignalTimer(volatile bool* stop = NULL);
+    void Wait();
+    void Signal();
 
   private:
-
-    bool SetupDevice();
-    bool WriteOutput();
-    void CloseDevice();
-    
-    bool OpenController();
-    bool CloseController();
-    bool WaitForPrefix();
-
-    bool m_isopened;
+    void       WaitCondition(int64_t sleeptime);
+    CCondition m_condition;
+    bool       m_signaled;
 };
-
-#endif //CDEVICELTBL

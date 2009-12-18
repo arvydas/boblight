@@ -25,10 +25,12 @@
 class CDeviceRS232 : public CDevice
 {
   public:
-    CDeviceRS232(CClientsHandler& clients, CAsyncTimer& timer);
+    CDeviceRS232(CClientsHandler& clients);
 
     void SetPrefix(std::vector<unsigned char> prefix) { m_prefix = prefix; }
     void SetType(int type);
+
+    void Sync();
 
   protected:
 
@@ -36,7 +38,7 @@ class CDeviceRS232 : public CDevice
     bool WriteOutput();
     void CloseDevice();
     
-    CAsyncTimer& m_timer;
+    CSignalTimer m_timer;
     CSerialPort  m_serialport;
 
     unsigned char*             m_buff;

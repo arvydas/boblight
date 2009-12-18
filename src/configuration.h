@@ -58,7 +58,7 @@ class CConfig
 
     //builds the config
     bool BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
-                     std::vector<CAsyncTimer>& timers, std::vector<CLight>& lights);
+                     std::vector<CLight>& lights);
 
   private:
     std::string m_filename; //filename of the config file
@@ -84,21 +84,19 @@ class CConfig
 
     void BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler);
     bool BuildColorConfig(std::vector<CColor>& colors);
-    void BuildTimers(std::vector<CAsyncTimer>& timers);
-    bool BuildDeviceConfig(std::vector<CDevice*>& devices, std::vector<CAsyncTimer>& timers, CClientsHandler& clients);
+    bool BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler& clients);
     bool BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*>& devices, std::vector<CColor>& colors);
 
-    bool BuildPopen(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients);
-    bool BuildRS232(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients);
-    bool BuildLtbl(CDevice*& device, std::vector<CAsyncTimer>& timers, int devicenr, CClientsHandler& clients);
+    bool BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
-
-    CAsyncTimer* GetTimer(int interval, std::vector<CAsyncTimer>& timers);
 
     bool SetDeviceName(CDevice* device, int devicenr);
     bool SetDeviceOutput(CDevice* device, int devicenr);
     bool SetDeviceChannels(CDevice* device, int devicenr);
     bool SetDeviceRate(CDevice* device, int devicenr);
+    bool SetDeviceInterval(CDevice* device, int devicenr);
     void SetDevicePrefix(CDeviceRS232* device, int devicenr);
     bool SetDevicePeriod(CDeviceSound* device, int devicenr);
     void SetDeviceLatency(CDeviceSound* device, int devicenr);

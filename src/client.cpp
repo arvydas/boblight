@@ -17,6 +17,7 @@
  */
 
 #include <iostream> //debug
+#include <list>
 
 #include <locale.h>
 
@@ -274,6 +275,10 @@ bool CClientsHandler::ParseMessage(CClient* client, CMessage& message)
   {
     return ParseSet(client, message);
   }
+  else if (messagekey == "sync")
+  {
+    return ParseSync(client);
+  }
   else
   {
     logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
@@ -496,6 +501,33 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
     logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
     return false;
   }
+
+  return true;
+}
+
+//wakes up all devices that use this client, so the client input and the device output is synchronized
+bool CClientsHandler::ParseSync(CClient* client)
+{
+  CLock lock(m_mutex);
+
+  list<CDevice*> users;
+
+  //build up a list of devices using this client's input
+  for (unsigned int i = 0; i < client->m_lights.size(); i++)
+  {
+    for (unsigned int j = 0; j < client->m_lights[i].GetNrUsers(); j++)
+      users.push_back(client->m_lights[i].GetUser(j));
+  }
+
+  lock.Leave();
+
+  //remove duplicates
+  users.sort();
+  users.unique();
+
+  //message all devices
+  for (list<CDevice*>::iterator it = users.begin(); it != users.end(); it++)
+    (*it)->Sync();
 
   return true;
 }
