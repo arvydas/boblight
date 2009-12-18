@@ -104,8 +104,6 @@ boblightd_SOURCES = \
 	device/devicers232.cpp    \
 	device/devicers232.h    \
 	protocolversion.h    \
-	util/asynctimer.cpp    \
-	util/asynctimer.h \
         util/signaltimer.h \
         util/signaltimer.cpp
 
