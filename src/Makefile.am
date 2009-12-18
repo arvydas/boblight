@@ -75,8 +75,6 @@ boblightd_SOURCES = \
 	util/thread.h    \
 	util/timer.cpp    \
 	util/timer.h    \
-	util/udpsocket.cpp    \
-	util/udpsocket.h    \
 	util/serialport.cpp    \
 	util/serialport.h    \
 	main.cpp    \

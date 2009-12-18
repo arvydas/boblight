@@ -97,9 +97,9 @@ boblight_v4l_OBJECTS = $(am_boblight_v4l_OBJECTS)
 boblight_v4l_LDADD = $(LDADD)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
 	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
-	timer.$(OBJEXT) udpsocket.$(OBJEXT) serialport.$(OBJEXT) \
-	main.$(OBJEXT) tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) \
-	client.$(OBJEXT) connectionhandler.$(OBJEXT) light.$(OBJEXT) \
+	timer.$(OBJEXT) serialport.$(OBJEXT) main.$(OBJEXT) \
+	tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) client.$(OBJEXT) \
+	connectionhandler.$(OBJEXT) light.$(OBJEXT) \
 	configuration.$(OBJEXT) device.$(OBJEXT) devicepopen.$(OBJEXT) \
 	deviceltbl.$(OBJEXT) devicesound.$(OBJEXT) \
 	devicers232.$(OBJEXT) signaltimer.$(OBJEXT)
@@ -324,8 +324,6 @@ boblightd_SOURCES = \
 	util/thread.h    \
 	util/timer.cpp    \
 	util/timer.h    \
-	util/udpsocket.cpp    \
-	util/udpsocket.h    \
 	util/serialport.cpp    \
 	util/serialport.h    \
 	main.cpp    \
@@ -544,7 +542,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tcpsocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/udpsocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vblanksignal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/videograbber.Po@am__quote@
 
@@ -876,20 +873,6 @@ log.obj: util/log.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/log.cpp' object='log.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o log.obj `if test -f 'util/log.cpp'; then $(CYGPATH_W) 'util/log.cpp'; else $(CYGPATH_W) '$(srcdir)/util/log.cpp'; fi`
-
-udpsocket.o: util/udpsocket.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT udpsocket.o -MD -MP -MF $(DEPDIR)/udpsocket.Tpo -c -o udpsocket.o `test -f 'util/udpsocket.cpp' || echo '$(srcdir)/'`util/udpsocket.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/udpsocket.Tpo $(DEPDIR)/udpsocket.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/udpsocket.cpp' object='udpsocket.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o udpsocket.o `test -f 'util/udpsocket.cpp' || echo '$(srcdir)/'`util/udpsocket.cpp
-
-udpsocket.obj: util/udpsocket.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT udpsocket.obj -MD -MP -MF $(DEPDIR)/udpsocket.Tpo -c -o udpsocket.obj `if test -f 'util/udpsocket.cpp'; then $(CYGPATH_W) 'util/udpsocket.cpp'; else $(CYGPATH_W) '$(srcdir)/util/udpsocket.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/udpsocket.Tpo $(DEPDIR)/udpsocket.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/udpsocket.cpp' object='udpsocket.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o udpsocket.obj `if test -f 'util/udpsocket.cpp'; then $(CYGPATH_W) 'util/udpsocket.cpp'; else $(CYGPATH_W) '$(srcdir)/util/udpsocket.cpp'; fi`
 
 serialport.o: util/serialport.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT serialport.o -MD -MP -MF $(DEPDIR)/serialport.Tpo -c -o serialport.o `test -f 'util/serialport.cpp' || echo '$(srcdir)/'`util/serialport.cpp
