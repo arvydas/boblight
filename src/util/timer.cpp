@@ -55,11 +55,11 @@ void CTimer::Wait()
     m_time += m_interval;
     sleeptime = m_time - m_clock.GetTime();
   }
-  while(sleeptime <= m_interval * -2);
+  while(sleeptime <= m_interval * -2LL);
   
-  if (sleeptime > m_interval * 2) //failsafe, m_time must be bork if we get here
+  if (sleeptime > m_interval * 2LL) //failsafe, m_time must be bork if we get here
   {
-    sleeptime = m_interval * 2;
+    sleeptime = m_interval * 2LL;
     Reset();
   }
 
