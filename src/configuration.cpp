@@ -261,6 +261,12 @@ bool CConfig::CheckDeviceConfig()
 {
   bool valid = true;
 
+  if (m_devicelines.size() == 0)
+  {
+    logerror("%s no devices defined", m_filename.c_str());
+    return false;
+  }
+
   for (int i = 0; i < m_devicelines.size(); i++)
   {
     for (int j = 0; j < m_devicelines[i].lines.size(); j++)
@@ -330,6 +336,12 @@ bool CConfig::CheckColorConfig()
 {
   bool valid = true;
 
+  if (m_colorlines.size() == 0)
+  {
+    logerror("%s no colors defined", m_filename.c_str());
+    return false;
+  }
+
   for (int i = 0; i < m_colorlines.size(); i++)
   {
     for (int j = 0; j < m_colorlines[i].lines.size(); j++)
@@ -384,6 +396,12 @@ bool CConfig::CheckColorConfig()
 bool CConfig::CheckLightConfig()
 {
   bool valid = true;
+
+  if (m_lightlines.size() == 0)
+  {
+    logerror("%s no lights defined", m_filename.c_str());
+    return false;
+  }
 
   for (int i = 0; i < m_lightlines.size(); i++)
   {
