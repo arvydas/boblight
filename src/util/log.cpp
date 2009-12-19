@@ -96,7 +96,6 @@ bool InitLog(string filename, ofstream& logfile)
     return false;
   }
 
-  log(""); //empty line as a visual indication that boblight started
   log("start of log %s", fullpath.c_str());
 
   return true;
