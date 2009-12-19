@@ -155,7 +155,7 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
   logstr += logbuff;
 
   funcstr = "(" + PruneFunction(function) + ")";
-  nrspaces = 31 - funcstr.length();
+  nrspaces = 32 - funcstr.length();
   if (nrspaces > 0)
     funcstr.insert(funcstr.length(), nrspaces, ' ');
   
