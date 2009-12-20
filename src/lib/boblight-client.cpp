@@ -116,10 +116,12 @@ void CLight::GetRGB(float* rgb)
   }
   
   //convert from numerator/denominator to float
+  float rgborig[3];
   for (int i = 0; i < 3; i++)
-    rgb[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
+    rgborig[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
+  memcpy(rgb, rgborig, sizeof(rgborig));
 
   //we need some hsv adjustments
   if (m_value != 1.0 || m_valuerange[0] != 0.0 || m_valuerange[1] != 1.0 ||
@@ -198,11 +200,11 @@ void CLight::GetRGB(float* rgb)
     //it really works like crap, so don't use it
     if (m_autospeed)
     {
-      float change = Abs(rgb[0] - m_prevrgb[0]) + Abs(rgb[1] - m_prevrgb[1]) + Abs(rgb[2] - m_prevrgb[2]);
-      m_autospeedvalue = Clamp(change / 3.0 * 100.0, m_speed, 100.0);
+      float change = Abs(rgborig[0] - m_prevrgb[0]) + Abs(rgborig[1] - m_prevrgb[1]) + Abs(rgborig[2] - m_prevrgb[2]);
+      m_autospeedvalue = Clamp(change / 3.0  * m_speed * 10.0, 1.0, 100.0);
     }
 
-    memcpy(m_prevrgb, rgb, sizeof(m_prevrgb));
+    memcpy(m_prevrgb, rgborig, sizeof(m_prevrgb));
   }
 }
 
