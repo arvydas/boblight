@@ -197,7 +197,7 @@ void CLight::GetRGB(float* rgb)
       rgb[i] = Clamp(rgb[i], 0.0f, 1.0f);
 
     //this tries to set the speed based on how fast the input is changing
-    //it really works like crap, so don't use it
+    //it needs sync mode to work properly
     if (m_autospeed)
     {
       float change = Abs(rgborig[0] - m_prevrgb[0]) + Abs(rgborig[1] - m_prevrgb[1]) + Abs(rgborig[2] - m_prevrgb[2]);
