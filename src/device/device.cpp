@@ -36,6 +36,7 @@ CChannel::CChannel()
   m_currentvalue = 0.0;
   m_fallback = 0.0;
   m_lastupdate = -1;
+  m_singlechange = 0.0;
 
   m_gamma = 1.0;
   m_adjust = 1.0;
@@ -65,6 +66,15 @@ float CChannel::GetValue(int64_t time)
     m_currentvalue += diff * speedadjust;
   }
 
+  if (m_singlechange > 0.0)
+  {
+    float diff = m_wantedvalue - m_currentvalue;
+    m_currentvalue += diff * (m_singlechange / 100.0);
+  }
+
+  m_currentvalue = Clamp(m_currentvalue, 0.0, 1.0);
+
+  m_singlechange = 0.0;
   m_lastupdate = time;
 
   float outputvalue = m_currentvalue;

@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <string.h>
+#include <utility>
 
 #include "util/misc.h"
 
@@ -68,9 +69,12 @@ class CLight
     void  SetUse(bool use)                     { m_use = use; }
     void  SetInterpolation(bool interpolation) { m_interpolation = interpolation; }
     void  SetSpeed(float speed)                { m_speed = Clamp(speed, 0.0, 100.0); }
+    void  SetSingleChange(float singlechange);
     bool  GetUse()                             { return m_use; }
     bool  GetInterpolation()                   { return m_interpolation; }
     float GetSpeed()                           { return m_speed; }
+    float GetSingleChange(CDevice* device);
+    void  ResetSingleChange(CDevice* device);
 
     void  AddColor(CColor& color)              { m_colors.push_back(color); }
     int   GetNrColors()                        { return m_colors.size(); };
@@ -82,13 +86,13 @@ class CLight
 
     void   SetHscan(float* hscan) { m_hscan[0] = hscan[0]; m_hscan[1] = hscan[1]; }
     void   SetVscan(float* vscan) { m_vscan[0] = vscan[0]; m_vscan[1] = vscan[1]; }
-    float* GetVscan() { return m_vscan; }
-    float* GetHscan() { return m_hscan; }
+    float* GetVscan()                          { return m_vscan; }
+    float* GetHscan()                          { return m_hscan; }
 
-    int      GetNrUsers() { return m_users.size(); }
+    int      GetNrUsers()                      { return m_users.size(); }
     void     AddUser(CDevice* device);
     void     ClearUser(CDevice* device);
-    CDevice* GetUser(unsigned int user) { return m_users[user]; }
+    CDevice* GetUser(unsigned int user)        { return m_users[user].first; }
     
   private:
     std::string m_name;
@@ -111,7 +115,7 @@ class CLight
     float   FindMultiplier(float *rgb, float ceiling);
     float   FindMultiplier(float *rgb, float *ceiling);
 
-    std::vector<CDevice*> m_users; //devices using this light
+    std::vector<std::pair<CDevice*, float> > m_users; //devices using this light
 };
 
 #endif //CLIGHT

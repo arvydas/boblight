@@ -41,7 +41,7 @@ namespace boblight
       std::string m_name;
       float       m_speed;
       float       m_autospeed;
-      float       m_autospeedvalue;
+      float       m_singlechange;
 
       bool        m_interpolation;
       bool        m_use;

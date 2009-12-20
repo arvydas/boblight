@@ -42,22 +42,23 @@ class CChannel
 {
   public:
     CChannel();
-    void SetLight(int light)             { m_light = light; }
-    int  GetLight()                      { return m_light;  }
+    void SetLight(int light)                 { m_light = light; }
+    int  GetLight()                          { return m_light;  }
 
-    void SetUsed(bool used)              { m_isused = used; }
-    bool IsUsed()                        { return m_isused; }
+    void SetUsed(bool used)                  { m_isused = used; }
+    bool IsUsed()                            { return m_isused; }
     
-    void SetColor(int color)             { m_color = color; }
-    int  GetColor()                      { return m_color;  }
+    void SetColor(int color)                 { m_color = color; }
+    int  GetColor()                          { return m_color;  }
     
-    void SetValue(float value)           { m_wantedvalue = value; }
-    void SetFallback(float fallback)     { m_fallback = fallback; m_currentvalue = fallback; m_wantedvalue = fallback; }
-    void SetValueToFallback()            { m_wantedvalue = m_fallback; }
-    void SetSpeed(float speed)           { m_speed = speed; }
-    void SetGamma(float gamma)           { m_gamma = gamma; }
-    void SetAdjust(float adjust)         { m_adjust = adjust; }
-    void SetBlacklevel(float blacklevel) { m_blacklevel = blacklevel; }
+    void SetValue(float value)               { m_wantedvalue = value; }
+    void SetFallback(float fallback)         { m_fallback = fallback; m_currentvalue = fallback; m_wantedvalue = fallback; }
+    void SetValueToFallback()                { m_wantedvalue = m_fallback; }
+    void SetSpeed(float speed)               { m_speed = speed; }
+    void SetGamma(float gamma)               { m_gamma = gamma; }
+    void SetAdjust(float adjust)             { m_adjust = adjust; }
+    void SetBlacklevel(float blacklevel)     { m_blacklevel = blacklevel; }
+    void SetSingleChange(float singlechange) { m_singlechange = singlechange; }
 
     float GetValue(int64_t time);
 
@@ -73,6 +74,7 @@ class CChannel
     float m_gamma;
     float m_adjust;
     float m_blacklevel;
+    float m_singlechange;
 
     float   m_currentvalue; //value we're currently at
     int64_t m_lastupdate;   //when m_currentvalue was last updated

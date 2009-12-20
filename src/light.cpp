@@ -157,22 +157,51 @@ void CLight::AddUser(CDevice* device)
   //add CDevice pointer to users if it doesn't exist yet
   for (unsigned int i = 0; i < m_users.size(); i++)
   {
-    if (m_users[i] == device)
+    if (m_users[i].first == device)
       return;
   }
 
-  m_users.push_back(device);
+  m_users.push_back(make_pair(device, 0.0));
 }
 
 void CLight::ClearUser(CDevice* device)
 {
   //clear CDevice* from users
-  for (vector<CDevice*>::iterator it = m_users.begin(); it != m_users.end(); it++)
+  for (vector<pair<CDevice*, float> >::iterator it = m_users.begin(); it != m_users.end(); it++)
   {
-    if (*it == device)
+    if ((*it).first == device)
     {
       m_users.erase(it);
       return;
     }
   }
 }
+
+void CLight::SetSingleChange(float singlechange)
+{
+  for (unsigned int i = 0; i < m_users.size(); i++)
+    m_users[i].second = singlechange;
+}
+
+float CLight::GetSingleChange(CDevice* device)
+{
+  for (unsigned int i = 0; i < m_users.size(); i++)
+  {
+    if (m_users[i].first == device)
+      return m_users[i].second;
+  }
+  return 0.0;
+}
+
+void CLight::ResetSingleChange(CDevice* device)
+{
+  for (unsigned int i = 0; i < m_users.size(); i++)
+  {
+    if (m_users[i].first == device)
+    {
+      m_users[i].second = 0.0;
+      return;
+    }
+  }
+}
+

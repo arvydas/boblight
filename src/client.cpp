@@ -496,6 +496,22 @@ bool CClientsHandler::ParseSetLight(CClient* client, CMessage& message)
     CLock lock(m_mutex);
     client->m_lights[lightnr].SetUse(use);
   }
+  else if (lightkey == "singlechange")
+  {
+    float singlechange;
+    string value;
+
+    ConvertFloatLocale(message.message); //workaround for locale mismatch (, and .)
+
+    if (!GetWord(message.message, value) || !StrToFloat(value, singlechange))
+    {
+      logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      return false;
+    }
+
+    CLock lock(m_mutex);
+    client->m_lights[lightnr].SetSingleChange(singlechange);
+  }
   else
   {
     logerror("%s:%i sent gibberish", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
@@ -535,6 +551,8 @@ bool CClientsHandler::ParseSync(CClient* client)
 //called by devices
 void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time, CDevice* device)
 {
+  list<CLight*>  usedlights;
+
   CLock lock(m_mutex);
 
   //get the oldest client with the highest priority
@@ -549,10 +567,6 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
     if (light == -1 || color == -1) //unused channel
       continue;
 
-    //clear this device on all clients
-    for (int j = 0; j < m_clients.size(); j++)
-      m_clients[j]->m_lights[light].ClearUser(device);
-
     for (int j = 0; j < m_clients.size(); j++)
     {
       if (m_clients[j]->m_priority == 255 || m_clients[j]->m_connecttime == -1 || !m_clients[j]->m_lights[light].GetUse())
@@ -566,7 +580,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
         priority = m_clients[j]->m_priority;
       }
     }
-    
+
     if (clientnr == -1) //no client for the light on this channel
     {
       channels[i].SetUsed(false);
@@ -579,7 +593,7 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
     }
 
     //tell client we're using this light
-    m_clients[clientnr]->m_lights[light].AddUser(device);
+    //m_clients[clientnr]->m_lights[light].AddUser(device);
 
     //fill channel with values from the client
     channels[i].SetUsed(true);
@@ -588,6 +602,41 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
     channels[i].SetGamma(m_clients[clientnr]->m_lights[light].GetGamma(color));
     channels[i].SetAdjust(m_clients[clientnr]->m_lights[light].GetAdjust(color));
     channels[i].SetBlacklevel(m_clients[clientnr]->m_lights[light].GetBlacklevel(color));
+    channels[i].SetSingleChange(m_clients[clientnr]->m_lights[light].GetSingleChange(device));
+
+    //save pointer to this light because we have to reset the singlechange later
+    //more than one channel can use a light so can't do this from the loop
+    usedlights.push_back(&m_clients[clientnr]->m_lights[light]);
+  }
+
+  //remove duplicate lights
+  usedlights.sort();
+  usedlights.unique();
+
+  //reset singlechange
+  for (list<CLight*>::iterator it = usedlights.begin(); it != usedlights.end(); it++)
+    (*it)->ResetSingleChange(device);
+
+  //update which lights we're using
+  for (int i = 0; i < m_clients.size(); i++)
+  {
+    for (int j = 0; j < m_clients[i]->m_lights.size(); j++)
+    {
+      bool lightused = false;
+      for (list<CLight*>::iterator it = usedlights.begin(); it != usedlights.end(); it++)
+      {
+        if (*it == &m_clients[i]->m_lights[j])
+        {
+          lightused = true;
+          break;
+        }
+      }
+
+      if (lightused)
+        m_clients[i]->m_lights[j].AddUser(device);
+      else
+        m_clients[i]->m_lights[j].ClearUser(device);
+    }
   }
 }
 

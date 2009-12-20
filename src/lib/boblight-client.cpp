@@ -34,7 +34,7 @@ CLight::CLight()
   #include "options.h"
   #undef  BOBLIGHT_OPTION
 
-  m_autospeedvalue = -1.0;
+  m_singlechange = 0.0;
 
   m_width = -1;
   m_height = -1;
@@ -201,7 +201,7 @@ void CLight::GetRGB(float* rgb)
     if (m_autospeed >= 0.0)
     {
       float change = Abs(rgborig[0] - m_prevrgb[0]) + Abs(rgborig[1] - m_prevrgb[1]) + Abs(rgborig[2] - m_prevrgb[2]);
-      m_autospeedvalue = Clamp(change / 3.0 * m_autospeed * 10.0 + m_speed, 0.0, 100.0);
+      m_singlechange = Clamp(change / 3.0 * m_autospeed * 10.0, 0.0, 100.0);
     }
 
     memcpy(m_prevrgb, rgborig, sizeof(m_prevrgb));
@@ -552,9 +552,7 @@ int CBoblight::SendRGB(int sync)
     m_lights[i].GetRGB(rgb);
     data += "set light " + m_lights[i].m_name + " rgb " + ToString(rgb[0]) + " " + ToString(rgb[1]) + " " + ToString(rgb[2]) + "\n";
     if (m_lights[i].m_autospeed >= 0.0)
-    {
-      data += "set light " + m_lights[i].m_name + " speed " + ToString(m_lights[i].m_autospeedvalue) + "\n";
-    }
+      data += "set light " + m_lights[i].m_name + " singlechange " + ToString(m_lights[i].m_singlechange) + "\n";
   }
 
   //send a message that we want devices to sync to our input
