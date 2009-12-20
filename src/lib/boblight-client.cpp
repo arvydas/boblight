@@ -580,10 +580,14 @@ int CBoblight::Ping(int* outputused)
     return 0;
   }
 
-  if (!GetWord(message.message, word) || !StrToInt(word, *outputused))
+  //client can set outputused to NULL
+  if (outputused)
   {
-    m_error = m_address + ":" + ToString(m_port) + " sent gibberish";
-    return 0;
+    if (!GetWord(message.message, word) || !StrToInt(word, *outputused))
+    {
+      m_error = m_address + ":" + ToString(m_port) + " sent gibberish";
+      return 0;
+    }
   }
 
   return 1;
