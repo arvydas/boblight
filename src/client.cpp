@@ -592,9 +592,6 @@ void CClientsHandler::FillChannels(std::vector<CChannel>& channels, int64_t time
       continue;
     }
 
-    //tell client we're using this light
-    //m_clients[clientnr]->m_lights[light].AddUser(device);
-
     //fill channel with values from the client
     channels[i].SetUsed(true);
     channels[i].SetValue(m_clients[clientnr]->m_lights[light].GetColorValue(color, time));
