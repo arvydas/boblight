@@ -134,8 +134,7 @@ int Run()
     //keep checking the connection to boblightd every 10 seconds, if it breaks we try to connect again
     while(!stop)
     {
-      int users;
-      if (!boblight_ping(boblight, &users))
+      if (!boblight_ping(boblight, NULL))
       {
         PrintError(boblight_geterror(boblight));
         break;
