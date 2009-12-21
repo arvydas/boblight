@@ -566,7 +566,10 @@ int CBoblight::SendRGB(int sync, int* outputused)
   if (!WriteDataToSocket(data))
     return 0;
 
-  return Ping(outputused, false);
+  if (outputused)
+    return Ping(outputused, false);
+  else
+    return 1;
 }
 
 int CBoblight::Ping(int* outputused, bool send)
