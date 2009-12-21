@@ -92,7 +92,7 @@ bool CGrabberXGetImage::Run()
     }
 
     //send rgb values to boblightd
-    if (!boblight_sendrgb(m_boblight, 1))
+    if (!boblight_sendrgb(m_boblight, 1, NULL))
     {
       m_error = boblight_geterror(m_boblight);
       return true; //recoverable error

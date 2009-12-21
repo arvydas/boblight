@@ -107,14 +107,14 @@ void boblight_addpixelxy(void* vpboblight, int x, int y, int* rgb)
   boblight->AddPixel(rgb, x, y);
 }
 
-int boblight_sendrgb(void* vpboblight, int sync)
+int boblight_sendrgb(void* vpboblight, int sync, int* outputused)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->SendRGB(sync);
+  return boblight->SendRGB(sync, outputused);
 }
 
 int boblight_ping(void* vpboblight, int* outputused)
 {
   CBoblight* boblight = reinterpret_cast<CBoblight*>(vpboblight);
-  return boblight->Ping(outputused);
+  return boblight->Ping(outputused, true);
 }

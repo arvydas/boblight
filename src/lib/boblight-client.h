@@ -81,8 +81,8 @@ namespace boblight
       int         AddPixel(int lightnr, int* rgb);
       void        AddPixel(int* rgb, int x, int y);
 
-      int         SendRGB(int sync);
-      int         Ping(int* outputused);
+      int         SendRGB(int sync, int* outputused);
+      int         Ping(int* outputused, bool send);
 
       int         GetNrOptions();
       const char* GetOptionDescription(int option);

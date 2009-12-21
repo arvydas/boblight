@@ -542,7 +542,7 @@ void CBoblight::AddPixel(int* rgb, int x, int y)
   }
 }
 
-int CBoblight::SendRGB(int sync)
+int CBoblight::SendRGB(int sync, int* outputused)
 {
   string data;
 
@@ -559,15 +559,25 @@ int CBoblight::SendRGB(int sync)
   if (sync)
     data += "sync\n";
 
-  return WriteDataToSocket(data);
+  //if we want to check if our output is used, send a ping message
+  if (outputused)
+    data += "ping\n";
+
+  if (!WriteDataToSocket(data))
+    return 0;
+
+  return Ping(outputused, false);
 }
 
-int CBoblight::Ping(int* outputused)
+int CBoblight::Ping(int* outputused, bool send)
 {
   string word;
   
-  if (!WriteDataToSocket("ping\n"))
-    return 0;
+  if (send)
+  {
+    if (!WriteDataToSocket("ping\n"))
+      return 0;
+  }
 
   if (!ReadDataToQueue())
     return 0;

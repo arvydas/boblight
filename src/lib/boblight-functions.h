@@ -37,5 +37,5 @@ BOBLIGHT_FUNCTION(void,        boblight_setscanrange,     (void* vpboblight, int
 BOBLIGHT_FUNCTION(int,         boblight_addpixel,         (void* vpboblight, int lightnr, int* rgb));
 BOBLIGHT_FUNCTION(void,        boblight_addpixelxy,       (void* vpboblight, int x, int y, int* rgb));
 
-BOBLIGHT_FUNCTION(int,         boblight_sendrgb,          (void* vpboblight, int sync));
+BOBLIGHT_FUNCTION(int,         boblight_sendrgb,          (void* vpboblight, int sync, int* outputused));
 BOBLIGHT_FUNCTION(int,         boblight_ping,             (void* vpboblight, int* outputused));
