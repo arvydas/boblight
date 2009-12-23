@@ -77,7 +77,7 @@
         p_boblight = NULL;
       }
 
-      p_boblight = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
+      p_boblight = dlopen(filename, RTLD_NOW);
       if (p_boblight == NULL)
         return dlerror();
 
