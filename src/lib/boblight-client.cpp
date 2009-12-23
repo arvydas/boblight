@@ -198,7 +198,7 @@ void CLight::GetRGB(float* rgb)
 
     //this tries to set the speed based on how fast the input is changing
     //it needs sync mode to work properly
-    if (m_autospeed >= 0.0)
+    if (m_autospeed > 0.0)
     {
       float change = Abs(rgborig[0] - m_prevrgb[0]) + Abs(rgborig[1] - m_prevrgb[1]) + Abs(rgborig[2] - m_prevrgb[2]);
       m_singlechange = Clamp(change / 3.0 * m_autospeed * 10.0, 0.0, 100.0);
@@ -551,7 +551,7 @@ int CBoblight::SendRGB(int sync, int* outputused)
     float rgb[3];
     m_lights[i].GetRGB(rgb);
     data += "set light " + m_lights[i].m_name + " rgb " + ToString(rgb[0]) + " " + ToString(rgb[1]) + " " + ToString(rgb[2]) + "\n";
-    if (m_lights[i].m_autospeed >= 0.0)
+    if (m_lights[i].m_autospeed > 0.0)
       data += "set light " + m_lights[i].m_name + " singlechange " + ToString(m_lights[i].m_singlechange) + "\n";
   }
 
