@@ -26,7 +26,7 @@ BOBLIGHT_OPTION(saturationmin, float,  0.0, 1.0,   0.0,    m_satrange[0],   m_sa
 BOBLIGHT_OPTION(saturationmax, float,  0.0, 1.0,   1.0,    m_satrange[1],   m_satrange[1] = Clamp(m_satrange[1], m_satrange[0], 1.0);)
 BOBLIGHT_OPTION(value,         float,  0.0, 20.0,  1.0,    m_value,         m_value = Max(m_value, 0.0);)
 BOBLIGHT_OPTION(valuemin,      float,  0.0, 1.0,   0.0,    m_valuerange[0], m_valuerange[0] = Clamp(m_valuerange[0], 0.0, m_valuerange[1]);)
-BOBLIGHT_OPTION(valuemax,      float,  0.0, 1.0,   1.0,    m_valuerange[1], m_valuerange[1] = Clamp(m_valuerange[0], m_valuerange[0], 1.0);)
+BOBLIGHT_OPTION(valuemax,      float,  0.0, 1.0,   1.0,    m_valuerange[1], m_valuerange[1] = Clamp(m_valuerange[1], m_valuerange[0], 1.0);)
 BOBLIGHT_OPTION(threshold,     int,    0,   255,   0,      m_threshold,     m_threshold = Clamp(m_threshold, 0, 255);)
 BOBLIGHT_OPTION(hscanstart,    float,  0.0, 100.0, -1.0,   m_hscan[0],      m_hscan[0] = Clamp(m_hscan[0], 0.0, m_hscan[1]);    SetScanRange(m_width, m_height);)
 BOBLIGHT_OPTION(hscanend,      float,  0.0, 100.0, -1.0,   m_hscan[1],      m_hscan[1] = Clamp(m_hscan[1], m_hscan[0], 100.0);  SetScanRange(m_width, m_height);)
