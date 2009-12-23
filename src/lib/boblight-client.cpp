@@ -116,12 +116,20 @@ void CLight::GetRGB(float* rgb)
   }
   
   //convert from numerator/denominator to float
-  float rgborig[3];
   for (int i = 0; i < 3; i++)
-    rgborig[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
+    rgb[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
 
   memset(m_rgbd, 0, sizeof(m_rgbd));
-  memcpy(rgb, rgborig, sizeof(rgborig));
+
+  //this tries to set the speed based on how fast the input is changing
+  //it needs sync mode to work properly
+  if (m_autospeed > 0.0)
+  {
+    float change = Abs(rgb[0] - m_prevrgb[0]) + Abs(rgb[1] - m_prevrgb[1]) + Abs(rgb[2] - m_prevrgb[2]);
+    m_singlechange = Clamp(change / 3.0 * m_autospeed * 10.0, 0.0, 100.0);
+  }
+
+  memcpy(m_prevrgb, rgb, sizeof(m_prevrgb));
 
   //we need some hsv adjustments
   if (m_value != 1.0 || m_valuerange[0] != 0.0 || m_valuerange[1] != 1.0 ||
@@ -195,16 +203,6 @@ void CLight::GetRGB(float* rgb)
 
     for (int i = 0; i < 3; i++)
       rgb[i] = Clamp(rgb[i], 0.0f, 1.0f);
-
-    //this tries to set the speed based on how fast the input is changing
-    //it needs sync mode to work properly
-    if (m_autospeed > 0.0)
-    {
-      float change = Abs(rgborig[0] - m_prevrgb[0]) + Abs(rgborig[1] - m_prevrgb[1]) + Abs(rgborig[2] - m_prevrgb[2]);
-      m_singlechange = Clamp(change / 3.0 * m_autospeed * 10.0, 0.0, 100.0);
-    }
-
-    memcpy(m_prevrgb, rgborig, sizeof(m_prevrgb));
   }
 }
 
