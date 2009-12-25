@@ -549,7 +549,7 @@ int CBoblight::SendRGB(int sync, int* outputused)
     float rgb[3];
     m_lights[i].GetRGB(rgb);
     data += "set light " + m_lights[i].m_name + " rgb " + ToString(rgb[0]) + " " + ToString(rgb[1]) + " " + ToString(rgb[2]) + "\n";
-    if (m_lights[i].m_autospeed > 0.0)
+    if (m_lights[i].m_autospeed > 0.0 && m_lights[i].m_singlechange > 0.0)
       data += "set light " + m_lights[i].m_name + " singlechange " + ToString(m_lights[i].m_singlechange) + "\n";
   }
 
