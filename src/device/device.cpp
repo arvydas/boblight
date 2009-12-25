@@ -60,9 +60,9 @@ float CChannel::GetValue(int64_t time)
   {
     float diff = m_wantedvalue - m_currentvalue; //difference between where we want to be, and where we are
     float timediff = time - m_lastupdate; //difference in time in microseconds between now and the last update
-    float speed = m_speed * pow(2.0, (m_speed - 100.0) / 20.0); //exponential speed, makes the value a lot saner
-                                                                //the value is halved for every 20 counts that speed lowers by
-    float speedadjust = 1.0 - pow(1.0 - (speed / 100.0), timediff / 20000.0); //speed adjustment value, corrected for time
+    float speed = pow(2.0, (m_speed - 100.0) / 20.0); //exponential speed, makes the value a lot saner
+                                                      //the value is halved for every 20 counts that speed lowers by
+    float speedadjust = 1.0 - pow(1.0 - speed, timediff / 20000.0); //speed adjustment value, corrected for time
 
     //move the current value closer to the wanted value
     m_currentvalue += diff * speedadjust;
