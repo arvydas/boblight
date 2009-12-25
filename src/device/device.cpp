@@ -71,7 +71,7 @@ float CChannel::GetValue(int64_t time)
   if (m_singlechange > 0.0)
   {
     float diff = m_wantedvalue - m_currentvalue;
-    m_currentvalue += diff * (m_singlechange / 100.0);
+    m_currentvalue += diff * m_singlechange;
   }
 
   m_currentvalue = Clamp(m_currentvalue, 0.0, 1.0);

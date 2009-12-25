@@ -180,7 +180,7 @@ void CLight::ClearUser(CDevice* device)
 void CLight::SetSingleChange(float singlechange)
 {
   for (unsigned int i = 0; i < m_users.size(); i++)
-    m_users[i].second = singlechange;
+    m_users[i].second = Clamp(singlechange, 0.0, 1.0);
 }
 
 float CLight::GetSingleChange(CDevice* device)
