@@ -758,8 +758,6 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
 
 bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
-  string line, strvalue;
-
   device = new CDevicePopen(clients);
 
   if (!SetDeviceName(device, devicenr))
@@ -781,8 +779,6 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
 
 bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type)
 {
-  string line, strvalue;
-
   CDeviceRS232* rs232device = new CDeviceRS232(clients);
   device = rs232device;
 
@@ -816,8 +812,6 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
 
 bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
-  string line, strvalue;
-
   device = new CDeviceLtbl(clients);
 
   if (!SetDeviceName(device, devicenr))
