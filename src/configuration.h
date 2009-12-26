@@ -88,7 +88,7 @@ class CConfig
     bool BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*>& devices, std::vector<CColor>& colors);
 
     bool BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients);
-    bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
 

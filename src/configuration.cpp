@@ -635,7 +635,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
     else if (type == "momo" || type == "atmo")
     {
       CDevice* device = NULL;
-      if (!BuildRS232(device, i, clients))
+      if (!BuildRS232(device, i, clients, type))
       {
         if (device)
           delete device;
@@ -779,9 +779,9 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
   return true;
 }
 
-bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients)
+bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type)
 {
-  string line, strvalue, type;
+  string line, strvalue;
 
   CDeviceRS232* rs232device = new CDeviceRS232(clients);
   device = rs232device;
