@@ -34,6 +34,7 @@ void CDeviceRS232::SetType(int type)
   if (type == ATMO) //atmo devices have two bytes for startchannel and one byte for number of channels
   {
     //it doesn't say anywhere if the startchannel is big endian or little endian, so I'm just starting at 0
+    m_prefix.push_back(0xFF);
     m_prefix.push_back(0);
     m_prefix.push_back(0);
     m_prefix.push_back(m_channels.size());
