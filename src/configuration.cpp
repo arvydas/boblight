@@ -665,6 +665,17 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       }
       devices.push_back(device);
     }
+    else if (type == "dioder")
+    {
+      CDevice* device = NULL;
+      if (!BuildDioder(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+    }
     else
     {
       logerror("%s line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());
@@ -868,6 +879,33 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
   }
 
   return true;
+}
+
+bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  CDeviceDioder* dioderdevice = new CDeviceDioder(clients);
+
+  device = dioderdevice;
+
+  if (!SetDeviceName(dioderdevice, devicenr))
+    return false;
+
+  if (!SetDeviceOutput(dioderdevice, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(dioderdevice, devicenr))
+    return false;
+
+  if (!SetDeviceRate(dioderdevice, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(dioderdevice, devicenr))
+    return false;
+
+  device->SetType(DIODER);
+  
+  return true;
+
 }
 
 bool CConfig::SetDeviceName(CDevice* device, int devicenr)

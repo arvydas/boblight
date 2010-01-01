@@ -101,6 +101,8 @@ boblightd_SOURCES = \
 	device/devicesound.h    \
 	device/devicers232.cpp    \
 	device/devicers232.h    \
+	device/devicedioder.cpp    \
+	device/devicedioder.h    \
 	protocolversion.h    \
         util/signaltimer.h \
         util/signaltimer.cpp

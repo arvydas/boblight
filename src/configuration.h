@@ -28,6 +28,7 @@
 #include "device/device.h"
 #include "device/devicesound.h"
 #include "device/devicers232.h"
+#include "device/devicedioder.h"
 
 //place to store relevant lines from the config file
 class CConfigLine
@@ -91,6 +92,7 @@ class CConfig
     bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients);
 
     bool SetDeviceName(CDevice* device, int devicenr);
     bool SetDeviceOutput(CDevice* device, int devicenr);
