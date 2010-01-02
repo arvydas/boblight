@@ -31,11 +31,6 @@ class CDeviceDioder : public CDeviceRS232
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
-    
-    bool OpenController();
-    bool CloseController();
-
-    bool m_isopened;
 };
 
 #endif //DEVICEDIODER

@@ -46,14 +46,11 @@ Examples:
 0xFF 'g' 128
 0xFF 'b' 64
 
-Pic is disabled by default, we enable it when no clients use this device so it can be controlled with the original controller.
-
 */
 
 CDeviceDioder::CDeviceDioder(CClientsHandler& clients) : CDeviceRS232(clients)
 {
   m_buff = NULL;
-  m_isopened = false;
 }
 
 bool CDeviceDioder::SetupDevice()
@@ -66,14 +63,17 @@ bool CDeviceDioder::SetupDevice()
     return false;
   }
 
-  //try to open the controller
-  if (OpenController())
+  //make sure we're controlling it
+  unsigned char open = '0';
+  if (m_serialport.Write(&open, 1) == -1)
   {
-    m_buff = new unsigned char[m_channels.size() * 3];
-    return true;
+    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    return false;
   }
 
-  return false;
+  m_buff = new unsigned char[m_channels.size() * 3];
+
+  return true;
 }
 
 bool CDeviceDioder::WriteOutput()
@@ -86,12 +86,8 @@ bool CDeviceDioder::WriteOutput()
   int  color = 0;
 
   //put channel values in the output buffer
-  bool isused = false;
   for (int i = 0; i < m_channels.size(); i++)
   {
-    if (m_channels[i].IsUsed())
-      isused = true;
-
     //output value is 16 bit big endian
     int value = Clamp(Round<int>(m_channels[i].GetValue(now) * 255.0f), 0, 255);
 
@@ -102,25 +98,11 @@ bool CDeviceDioder::WriteOutput()
     color = (color + 1) % 3;
   }
 
-  if (isused)
+  //write output to the serial port
+  if (m_serialport.Write(m_buff, m_channels.size() * 3) == -1)
   {
-    if (!m_isopened) //if one of the channels is used, and the controller is not opened, open it
-    {
-      if (!OpenController())
-        return false;
-    }
-
-    //write output to the serial port
-    if (m_serialport.Write(m_buff, m_channels.size() * 3) == -1)
-    {
-      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-      return false;
-    }
-  }
-  else if (m_isopened) //if no channels are used and the controller is opened, close it
-  {
-    if (!CloseController())
-      return false;
+    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    return false;
   }
     
   m_timer.Wait(); //wait for the timer to signal us
@@ -130,52 +112,16 @@ bool CDeviceDioder::WriteOutput()
 
 void CDeviceDioder::CloseDevice()
 {
-  CloseController();
-
   if (m_buff)
   {
     delete m_buff;
     m_buff = NULL;
   }
 
+  //turn off all lights
+  unsigned char off = 'o';
+  m_serialport.Write(&off, 1);
+
   m_serialport.Close();
-}
-
-bool CDeviceDioder::OpenController()
-{
-  if (m_isopened)
-    return true; //nothing to do here
-
-  m_isopened = true;
-
-  unsigned char open = '1';
-  if (m_serialport.Write(&open, 1) == -1)
-  {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-    return false;
-  }
-
-  log("%s: controller opened", m_name.c_str());
-  
-  return true;
-}
-
-bool CDeviceDioder::CloseController()
-{
-  if (!m_isopened)
-    return true; //nothing to do here
-
-  m_isopened = false;
-
-  unsigned char close = '0';
-  if (m_serialport.Write(&close, 1) == -1)
-  {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-    return false;
-  }
-
-  log("%s: controller closed", m_name.c_str());
-  
-  return true;
 }
 
