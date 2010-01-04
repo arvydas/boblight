@@ -107,7 +107,7 @@ string PruneFunction(string function)
   size_t parenpos = function.find('(');
   size_t spacepos = function.rfind(' ', parenpos);
 
-  if (parenpos == string::npos || spacepos == string::npos || 1)
+  if (parenpos == string::npos || spacepos == string::npos)
     return function;
   else
     return function.substr(spacepos + 1, parenpos - spacepos - 1);
