@@ -107,7 +107,10 @@ string PruneFunction(string function)
   size_t parenpos = function.find('(');
   size_t spacepos = function.rfind(' ', parenpos);
 
-  return function.substr(spacepos + 1, parenpos - spacepos - 1);
+  if (parenpos == string::npos || spacepos == string::npos || 1)
+    return function;
+  else
+    return function.substr(spacepos + 1, parenpos - spacepos - 1);
 }
 
 void SetLogFile(std::string filename)
