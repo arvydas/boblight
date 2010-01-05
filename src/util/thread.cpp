@@ -39,13 +39,8 @@ void CThread::StartThread()
 void* CThread::ThreadFunction(void* args)
 {
   CThread* thread = reinterpret_cast<CThread*>(args);
-  thread->Thread();
-}
-
-void CThread::Thread()
-{
-  Process();
-  m_running = false;
+  thread->Process();
+  thread->m_running = false;
 }
 
 void CThread::Process()

@@ -40,7 +40,6 @@ class CThread
     volatile bool m_running;
 
     static void* ThreadFunction(void* args);
-    void         Thread();
     virtual void Process();
 };
 
