@@ -17,9 +17,6 @@
  */
 
 #include "thread.h"
-#include "lock.h"
-#include "misc.h"
-#include "sleep.h"
 
 CThread::CThread()
 {
