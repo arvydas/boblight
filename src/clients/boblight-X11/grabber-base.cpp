@@ -18,6 +18,8 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <X11/Xatom.h>
 
@@ -58,6 +60,11 @@ bool CGrabber::Setup()
   if (m_dpy == NULL)
   {
     m_error = "unable to open display";
+    if (getenv("DISPLAY"))
+      m_error += " " + string(getenv("DISPLAY"));
+    else
+      m_error += ", DISPLAY environment variable not set";
+
     return false; //unrecoverable error
   }
 
