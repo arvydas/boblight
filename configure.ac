@@ -30,6 +30,7 @@ AC_CHECK_LIB(portaudio,[main],,AC_MSG_ERROR([Missing a required library]))
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([portaudio.h],,AC_MSG_ERROR([Missing a required header]))
+AC_CHECK_TYPE([PaStreamCallbackTimeInfo], , AC_MSG_ERROR([boblight requires portaudio v19 headers!]), [[#include <portaudio.h>]])
 
 AC_OUTPUT([
 Makefile
