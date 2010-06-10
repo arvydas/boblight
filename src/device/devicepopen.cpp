@@ -57,7 +57,7 @@ bool CDevicePopen::WriteOutput()
   //print the values to the process, as float from 0.0 to 1.0
   for (int i = 0; i < m_channels.size(); i++)
   {
-    if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) != 1)
+    if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) < 0)
     {
       logerror("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
       return false;
