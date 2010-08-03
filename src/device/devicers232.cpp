@@ -43,7 +43,8 @@ void CDeviceRS232::SetType(int type)
 
 void CDeviceRS232::Sync()
 {
-  m_timer.Signal();
+  if (m_allowsync)
+    m_timer.Signal();
 }
 
 bool CDeviceRS232::SetupDevice()

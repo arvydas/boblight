@@ -321,6 +321,15 @@ bool CConfig::CheckDeviceConfig()
           valid = false;
         }
       }
+      else if (key == "allowsync")//bool
+      {
+        bool allowsync;
+        if (!StrToBool(value, allowsync))
+        {
+          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          valid = false;
+        }
+      }
       else //don't know this one
       {
         logerror("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
@@ -783,6 +792,8 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
   if (!SetDeviceInterval(device, devicenr))
     return false;
 
+  SetDeviceAllowSync(device, devicenr);
+
   device->SetType(POPEN);
   
   return true;
@@ -807,6 +818,8 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
 
   if (!SetDeviceInterval(rs232device, devicenr))
     return false;
+
+  SetDeviceAllowSync(device, devicenr);
 
   if (type == "momo")
   {
@@ -839,6 +852,8 @@ bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients
 
   if (!SetDeviceInterval(device, devicenr))
     return false;
+
+  SetDeviceAllowSync(device, devicenr);
 
   device->SetType(LTBL);
   
@@ -901,6 +916,8 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
 
   if (!SetDeviceInterval(dioderdevice, devicenr))
     return false;
+
+  SetDeviceAllowSync(device, devicenr);
 
   device->SetType(DIODER);
   
@@ -1041,6 +1058,20 @@ void CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
   double latency;
   StrToFloat(strvalue, latency);
   device->SetLatency(latency);
+}
+
+void CConfig::SetDeviceAllowSync(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("allowsync", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  bool allowsync;
+  StrToBool(strvalue, allowsync);
+  device->SetAllowSync(allowsync);
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)

@@ -96,6 +96,7 @@ float CChannel::GetValue(int64_t time)
 CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
 {
   m_type = NOTHING;
+  m_allowsync = true;
 }
 
 void CDevice::Process()

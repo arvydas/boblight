@@ -31,7 +31,8 @@ CDevicePopen::CDevicePopen (CClientsHandler& clients) : m_timer(&m_stop), CDevic
 
 void CDevicePopen::Sync()
 {
-  m_timer.Signal();
+  if (m_allowsync)
+    m_timer.Signal();
 }
 
 bool CDevicePopen::SetupDevice()

@@ -102,6 +102,7 @@ class CConfig
     void SetDevicePrefix(CDeviceRS232* device, int devicenr);
     bool SetDevicePeriod(CDeviceSound* device, int devicenr);
     void SetDeviceLatency(CDeviceSound* device, int devicenr);
+    void SetDeviceAllowSync(CDevice* device, int devicenr);
 
     bool SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr);
     void SetLightScanRange(CLight& light, std::vector<CConfigLine>& lines);

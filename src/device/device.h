@@ -95,6 +95,7 @@ class CDevice : public CThread
     void SetNrChannels(int nrchannels) { m_channels.resize(nrchannels); }
     void SetChannel(CChannel& channel, int channelnr) { m_channels[channelnr] = channel; }
     void SetInterval(int64_t usecs)    { m_interval = usecs; }
+    void SetAllowSync(bool allowsync)  { m_allowsync = allowsync; }
 
     int GetNrChannels()     { return m_channels.size(); }
       
@@ -115,6 +116,7 @@ class CDevice : public CThread
     int         m_type;
     int         m_rate;
     int64_t     m_interval;
+    bool        m_allowsync;
 
     CClock      m_clock;
 
