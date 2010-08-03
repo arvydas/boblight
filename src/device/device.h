@@ -26,7 +26,7 @@
 #define POPEN   3
 #define LTBL    4
 #define SOUND   5
-#define DIODER  5
+#define DIODER  6
 
 #include <string>
 #include <vector>
