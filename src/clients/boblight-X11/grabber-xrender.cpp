@@ -27,7 +27,7 @@
 
 using namespace std;
 
-CGrabberXRender::CGrabberXRender(void* boblight, volatile bool& stop) : CGrabber(boblight, stop)
+CGrabberXRender::CGrabberXRender(void* boblight, volatile bool& stop, bool sync) : CGrabber(boblight, stop, sync)
 {
   m_srcformat = NULL;
   m_dstformat = NULL;
@@ -163,7 +163,7 @@ bool CGrabberXRender::Run()
     }
 
     //send pixeldata to boblight
-    if (!boblight_sendrgb(m_boblight, 1, NULL))
+    if (!boblight_sendrgb(m_boblight, m_sync, NULL))
     {
       m_error = boblight_geterror(m_boblight);
       return true; //recoverable error

@@ -266,7 +266,7 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
         }
 
         //send rgb values to boblightd
-        if (!boblight_sendrgb(boblight, 1, NULL))
+        if (!boblight_sendrgb(boblight, g_flagmanager.m_sync, NULL))
         {
           m_error = boblight_geterror(boblight);
           av_free_packet(&pkt);

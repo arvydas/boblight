@@ -32,7 +32,7 @@ extern volatile bool xerror;
 class CGrabber
 {
   public:
-    CGrabber(void* boblight, volatile bool& stop);
+    CGrabber(void* boblight, volatile bool& stop, bool sync);
     ~CGrabber();
 
     std::string& GetError()           { return m_error; }        //retrieves the latest error
@@ -78,6 +78,7 @@ class CGrabber
     double            m_interval;                                //interval in seconds, or negative for vblanks
     CTimer            m_timer;                                   //our timer
     CVblankSignal     m_vblanksignal;                            //class that gets vblank signals with glxwaitvideosyncsgi
+    bool              m_sync;                                    //sync mode for libboblight
     
 };
 

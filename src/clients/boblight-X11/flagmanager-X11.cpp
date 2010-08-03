@@ -35,6 +35,7 @@ CFlagManagerX11::CFlagManagerX11()
   m_method = XRENDER;  //default method is fast xrender
   m_debug = false;     //no debugging by default
   m_debugdpy = NULL;   //default debug dpy is system default
+  m_sync = true;       //sync mode enabled by default
 }
 
 void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*& optarg)
@@ -105,5 +106,6 @@ void CFlagManagerX11::PrintHelpMessage()
   cout << "  -x  use XGetImage instead of XRender\n";
   cout << "  -d  debug mode\n";
   cout << "  -f  fork\n";
+  cout << "  -y  set the sync mode, default is on, valid options are \"on\" and \"off\"\n";
   cout << "\n";
 }

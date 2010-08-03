@@ -30,11 +30,12 @@ using namespace std;
 
 volatile bool xerror = false;
 
-CGrabber::CGrabber(void* boblight, volatile bool& stop) : m_stop(stop), m_timer(&stop)
+CGrabber::CGrabber(void* boblight, volatile bool& stop, bool sync) : m_stop(stop), m_timer(&stop)
 {
   m_boblight = boblight;
   m_dpy = NULL;
   m_debug = false;
+  m_sync = sync;
 }
 
 CGrabber::~CGrabber()

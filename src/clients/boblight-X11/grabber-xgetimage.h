@@ -25,7 +25,7 @@
 class CGrabberXGetImage : public CGrabber
 {
   public:
-    CGrabberXGetImage(void* boblight, volatile bool& stop);
+    CGrabberXGetImage(void* boblight, volatile bool& stop, bool sync);
     ~CGrabberXGetImage();
     
     bool Run();

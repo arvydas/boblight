@@ -26,7 +26,7 @@ using namespace std;
 #define BOBLIGHT_DLOPEN_EXTERN
 #include "lib/boblight.h"
 
-CGrabberXGetImage::CGrabberXGetImage(void* boblight, volatile bool& stop) : CGrabber(boblight, stop)
+CGrabberXGetImage::CGrabberXGetImage(void* boblight, volatile bool& stop, bool sync) : CGrabber(boblight, stop, sync)
 {
 }
 
@@ -92,7 +92,7 @@ bool CGrabberXGetImage::Run()
     }
 
     //send rgb values to boblightd
-    if (!boblight_sendrgb(m_boblight, 1, NULL))
+    if (!boblight_sendrgb(m_boblight, m_sync, NULL))
     {
       m_error = boblight_geterror(m_boblight);
       return true; //recoverable error

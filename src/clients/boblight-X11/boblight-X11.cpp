@@ -140,9 +140,9 @@ int Run()
     CGrabber* grabber;
     
     if (g_flagmanager.m_method == XGETIMAGE)
-      grabber = new CGrabberXGetImage(boblight, stop);
+      grabber = new CGrabberXGetImage(boblight, stop, g_flagmanager.m_sync);
     else if (g_flagmanager.m_method == XRENDER)
-      grabber = new CGrabberXRender(boblight, stop);
+      grabber = new CGrabberXRender(boblight, stop, g_flagmanager.m_sync);
 
     grabber->SetInterval(g_flagmanager.m_interval);
     grabber->SetSize(g_flagmanager.m_pixels);

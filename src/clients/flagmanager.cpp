@@ -68,10 +68,11 @@ CFlagManager::CFlagManager()
   m_printhelp = false;            //don't print helpmessage unless asked to
   m_printboblightoptions = false; //same for libboblight options
   m_fork = false;                 //don't fork by default
+  m_sync = false;                 //sync mode disabled by default
 
   // default getopt flags, can be extended in derived classes
   // p = priority, s = address[:port], o = boblight option, l = list boblight options, h = print help message, f = fork
-  m_flags = "p:s:o:lhf";
+  m_flags = "p:s:o:lhfy:";
 }
 
 void CFlagManager::ParseFlags(int tempargc, char** tempargv)
@@ -130,6 +131,13 @@ void CFlagManager::ParseFlags(int tempargc, char** tempargv)
     else if (c == 'f')
     {
       m_fork = true;
+    }
+    else if (c == 'y')
+    {
+      if (!StrToBool(optarg, m_sync))
+      {
+        throw string("Wrong value " + string(optarg) + " for sync mode");
+      }
     }
     else if (c == '?') //unknown option
     {

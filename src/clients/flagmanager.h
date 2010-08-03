@@ -45,6 +45,7 @@ class CFlagManager
     int          m_port;                                    //port to connect to, set to -1 if none given for default
     int          m_priority;                                //priority, set to 128 if none given for default
     bool         m_fork;                                    //if we should fork
+    bool         m_sync;                                    //if sync mode is enabled
 
     void         ParseFlags(int tempargc, char** tempargv); //parsing commandline flags
     virtual void PrintHelpMessage() {};

@@ -36,6 +36,9 @@ CFlagManagerV4l::CFlagManagerV4l()
   m_width = 64;
   m_height = 64;
 
+  //sync mode enabled by default
+  m_sync = true;
+
   //channel of -1 means ffmpeg doesn't change it
   m_channel = -1;
 
@@ -113,5 +116,6 @@ void CFlagManagerV4l::PrintHelpMessage()
   cout << "  -n  only turn on boblight client when there's a video signal\n";
   cout << "  -e  use custom codec, default is video4linux2 or video4linux\n";
   cout << "  -d  debug mode\n";
+  cout << "  -y  set the sync mode, default is on, valid options are \"on\" and \"off\"\n";
   cout << "\n";
 }
