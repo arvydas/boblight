@@ -63,7 +63,6 @@ int main (int argc, char *argv[])
   //init our logfile
   logtostdout = true;
   SetLogFile("boblightd.log");
-  log("boblight revision: %s", REVISION);
   PrintFlags(argc, argv);
 
   //set up signal handlers
@@ -187,9 +186,6 @@ void SignalHandler(int signum)
 
 void PrintHelpMessage()
 {
-  cout << "\n";
-  cout << "boblightd revision:" << REVISION << "\n";
-  cout << "\n";
   cout << "Usage: boblightd [OPTION]\n";
   cout << "\n";
   cout << "  options:\n";

@@ -97,9 +97,6 @@ void CFlagManagerV4l::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
 
 void CFlagManagerV4l::PrintHelpMessage()
 {
-  cout << "\n";
-  cout << "boblight-v4l revision:" << REVISION << "\n";
-  cout << "\n";
   cout << "Usage: boblight-v4l [OPTION]\n";
   cout << "\n";
   cout << "  options:\n";
