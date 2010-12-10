@@ -27,6 +27,7 @@
 #define LTBL    4
 #define SOUND   5
 #define DIODER  6
+#define KARATE  7
 
 #include <string>
 #include <vector>

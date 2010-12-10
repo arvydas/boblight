@@ -39,6 +39,13 @@ void CDeviceRS232::SetType(int type)
     m_prefix.push_back(0);
     m_prefix.push_back(m_channels.size());
   }
+  else if (type == KARATE)
+  {
+    m_prefix.push_back(0xAA);
+    m_prefix.push_back(0x12);
+    m_prefix.push_back(0);
+    m_prefix.push_back(m_channels.size());
+  }
 }
 
 void CDeviceRS232::Sync()
