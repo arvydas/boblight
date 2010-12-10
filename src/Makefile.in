@@ -85,6 +85,9 @@ am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
 	flagmanager-X11.$(OBJEXT) flagmanager.$(OBJEXT)
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
+boblight_X11_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(boblight_X11_LDFLAGS) $(LDFLAGS) -o $@
 am_boblight_constant_OBJECTS = boblight-constant.$(OBJEXT) \
 	flagmanager.$(OBJEXT) flagmanager-constant.$(OBJEXT) \
 	misc.$(OBJEXT)
@@ -95,6 +98,9 @@ am_boblight_v4l_OBJECTS = boblight-v4l.$(OBJEXT) \
 	videograbber.$(OBJEXT)
 boblight_v4l_OBJECTS = $(am_boblight_v4l_OBJECTS)
 boblight_v4l_LDADD = $(LDADD)
+boblight_v4l_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(boblight_v4l_LDFLAGS) $(LDFLAGS) -o $@
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
 	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
 	timer.$(OBJEXT) serialport.$(OBJEXT) main.$(OBJEXT) \
@@ -273,6 +279,7 @@ boblight_v4l_SOURCES = \
 	clients/boblight-v4l/videograbber.cpp \
 	clients/boblight-v4l/videograbber.h 
 
+boblight_v4l_LDFLAGS = -lavcodec -lavformat -lswscale -lavdevice
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\
 	clients/flagmanager.cpp \
@@ -304,6 +311,7 @@ boblight_X11_SOURCES = \
 	clients/flagmanager.cpp \
 	clients/flagmanager.h
 
+boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
 boblightd_SOURCES = \
 	util/clock.cpp    \
 	util/clock.h    \
@@ -352,7 +360,7 @@ boblightd_SOURCES = \
         util/signaltimer.h \
         util/signaltimer.cpp
 
-boblightd_LDFLAGS = 
+boblightd_LDFLAGS = -lportaudio
 boblightd_LDADD = 
 lib_LTLIBRARIES = \
 	libboblight.la
@@ -486,13 +494,13 @@ clean-binPROGRAMS:
 	rm -f $$list
 boblight-X11$(EXEEXT): $(boblight_X11_OBJECTS) $(boblight_X11_DEPENDENCIES) 
 	@rm -f boblight-X11$(EXEEXT)
-	$(CXXLINK) $(boblight_X11_OBJECTS) $(boblight_X11_LDADD) $(LIBS)
+	$(boblight_X11_LINK) $(boblight_X11_OBJECTS) $(boblight_X11_LDADD) $(LIBS)
 boblight-constant$(EXEEXT): $(boblight_constant_OBJECTS) $(boblight_constant_DEPENDENCIES) 
 	@rm -f boblight-constant$(EXEEXT)
 	$(CXXLINK) $(boblight_constant_OBJECTS) $(boblight_constant_LDADD) $(LIBS)
 boblight-v4l$(EXEEXT): $(boblight_v4l_OBJECTS) $(boblight_v4l_DEPENDENCIES) 
 	@rm -f boblight-v4l$(EXEEXT)
-	$(CXXLINK) $(boblight_v4l_OBJECTS) $(boblight_v4l_LDADD) $(LIBS)
+	$(boblight_v4l_LINK) $(boblight_v4l_OBJECTS) $(boblight_v4l_LDADD) $(LIBS)
 boblightd$(EXEEXT): $(boblightd_OBJECTS) $(boblightd_DEPENDENCIES) 
 	@rm -f boblightd$(EXEEXT)
 	$(boblightd_LINK) $(boblightd_OBJECTS) $(boblightd_LDADD) $(LIBS)

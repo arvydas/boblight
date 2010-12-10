@@ -15259,292 +15259,6 @@ _ACEOF
 
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lX11" >&5
-$as_echo_n "checking for main in -lX11... " >&6; }
-if test "${ac_cv_lib_X11_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lX11  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_X11_main=yes
-else
-  ac_cv_lib_X11_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_X11_main" >&5
-$as_echo "$ac_cv_lib_X11_main" >&6; }
-if test "x$ac_cv_lib_X11_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBX11 1
-_ACEOF
-
-  LIBS="-lX11 $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lGL" >&5
-$as_echo_n "checking for main in -lGL... " >&6; }
-if test "${ac_cv_lib_GL_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lGL  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_GL_main=yes
-else
-  ac_cv_lib_GL_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GL_main" >&5
-$as_echo "$ac_cv_lib_GL_main" >&6; }
-if test "x$ac_cv_lib_GL_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGL 1
-_ACEOF
-
-  LIBS="-lGL $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lXrender" >&5
-$as_echo_n "checking for main in -lXrender... " >&6; }
-if test "${ac_cv_lib_Xrender_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lXrender  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_Xrender_main=yes
-else
-  ac_cv_lib_Xrender_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xrender_main" >&5
-$as_echo "$ac_cv_lib_Xrender_main" >&6; }
-if test "x$ac_cv_lib_Xrender_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBXRENDER 1
-_ACEOF
-
-  LIBS="-lXrender $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavcodec" >&5
-$as_echo_n "checking for main in -lavcodec... " >&6; }
-if test "${ac_cv_lib_avcodec_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavcodec  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_avcodec_main=yes
-else
-  ac_cv_lib_avcodec_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_main" >&5
-$as_echo "$ac_cv_lib_avcodec_main" >&6; }
-if test "x$ac_cv_lib_avcodec_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVCODEC 1
-_ACEOF
-
-  LIBS="-lavcodec $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavformat" >&5
-$as_echo_n "checking for main in -lavformat... " >&6; }
-if test "${ac_cv_lib_avformat_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavformat  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_avformat_main=yes
-else
-  ac_cv_lib_avformat_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avformat_main" >&5
-$as_echo "$ac_cv_lib_avformat_main" >&6; }
-if test "x$ac_cv_lib_avformat_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVFORMAT 1
-_ACEOF
-
-  LIBS="-lavformat $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lswscale" >&5
-$as_echo_n "checking for main in -lswscale... " >&6; }
-if test "${ac_cv_lib_swscale_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lswscale  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_swscale_main=yes
-else
-  ac_cv_lib_swscale_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_swscale_main" >&5
-$as_echo "$ac_cv_lib_swscale_main" >&6; }
-if test "x$ac_cv_lib_swscale_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSWSCALE 1
-_ACEOF
-
-  LIBS="-lswscale $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavdevice" >&5
-$as_echo_n "checking for main in -lavdevice... " >&6; }
-if test "${ac_cv_lib_avdevice_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavdevice  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_avdevice_main=yes
-else
-  ac_cv_lib_avdevice_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avdevice_main" >&5
-$as_echo "$ac_cv_lib_avdevice_main" >&6; }
-if test "x$ac_cv_lib_avdevice_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVDEVICE 1
-_ACEOF
-
-  LIBS="-lavdevice $LIBS"
-
-else
-  as_fn_error "Missing a required library" "$LINENO" 5
-fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lportaudio" >&5
 $as_echo_n "checking for main in -lportaudio... " >&6; }
@@ -15577,11 +15291,277 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_portaudio_main" >&5
 $as_echo "$ac_cv_lib_portaudio_main" >&6; }
 if test "x$ac_cv_lib_portaudio_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPORTAUDIO 1
-_ACEOF
 
-  LIBS="-lportaudio $LIBS"
+$as_echo "#define HAVE_LIBPORTAUDIO 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lX11      " >&5
+$as_echo_n "checking for main in -lX11      ... " >&6; }
+if test "${ac_cv_lib_X11_______main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lX11        $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_X11_______main=yes
+else
+  ac_cv_lib_X11_______main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_X11_______main" >&5
+$as_echo "$ac_cv_lib_X11_______main" >&6; }
+if test "x$ac_cv_lib_X11_______main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBX11 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lXrender  " >&5
+$as_echo_n "checking for main in -lXrender  ... " >&6; }
+if test "${ac_cv_lib_Xrender___main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lXrender    $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_Xrender___main=yes
+else
+  ac_cv_lib_Xrender___main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xrender___main" >&5
+$as_echo "$ac_cv_lib_Xrender___main" >&6; }
+if test "x$ac_cv_lib_Xrender___main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBXRENDER 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lGL       " >&5
+$as_echo_n "checking for main in -lGL       ... " >&6; }
+if test "${ac_cv_lib_GL________main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lGL         $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_GL________main=yes
+else
+  ac_cv_lib_GL________main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GL________main" >&5
+$as_echo "$ac_cv_lib_GL________main" >&6; }
+if test "x$ac_cv_lib_GL________main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBGL 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavcodec  " >&5
+$as_echo_n "checking for main in -lavcodec  ... " >&6; }
+if test "${ac_cv_lib_avcodec___main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavcodec    $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_avcodec___main=yes
+else
+  ac_cv_lib_avcodec___main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec___main" >&5
+$as_echo "$ac_cv_lib_avcodec___main" >&6; }
+if test "x$ac_cv_lib_avcodec___main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBAVCODEC 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavformat " >&5
+$as_echo_n "checking for main in -lavformat ... " >&6; }
+if test "${ac_cv_lib_avformat__main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavformat   $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_avformat__main=yes
+else
+  ac_cv_lib_avformat__main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avformat__main" >&5
+$as_echo "$ac_cv_lib_avformat__main" >&6; }
+if test "x$ac_cv_lib_avformat__main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBAVFORMAT 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lswscale  " >&5
+$as_echo_n "checking for main in -lswscale  ... " >&6; }
+if test "${ac_cv_lib_swscale___main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lswscale    $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_swscale___main=yes
+else
+  ac_cv_lib_swscale___main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_swscale___main" >&5
+$as_echo "$ac_cv_lib_swscale___main" >&6; }
+if test "x$ac_cv_lib_swscale___main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBSWSCALE 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavdevice " >&5
+$as_echo_n "checking for main in -lavdevice ... " >&6; }
+if test "${ac_cv_lib_avdevice__main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavdevice   $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_avdevice__main=yes
+else
+  ac_cv_lib_avdevice__main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avdevice__main" >&5
+$as_echo "$ac_cv_lib_avdevice__main" >&6; }
+if test "x$ac_cv_lib_avdevice__main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBAVDEVICE 1" >>confdefs.h
 
 else
   as_fn_error "Missing a required library" "$LINENO" 5

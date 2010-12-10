@@ -9,16 +9,16 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `avcodec' library (-lavcodec). */
+/* */
 #undef HAVE_LIBAVCODEC
 
 /* Define to 1 if you have the <libavcodec/avcodec.h> header file. */
 #undef HAVE_LIBAVCODEC_AVCODEC_H
 
-/* Define to 1 if you have the `avdevice' library (-lavdevice). */
+/* */
 #undef HAVE_LIBAVDEVICE
 
-/* Define to 1 if you have the `avformat' library (-lavformat). */
+/* */
 #undef HAVE_LIBAVFORMAT
 
 /* Define to 1 if you have the <libavformat/avformat.h> header file. */
@@ -27,13 +27,13 @@
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 
-/* Define to 1 if you have the `GL' library (-lGL). */
+/* */
 #undef HAVE_LIBGL
 
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
-/* Define to 1 if you have the `portaudio' library (-lportaudio). */
+/* */
 #undef HAVE_LIBPORTAUDIO
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
@@ -42,16 +42,16 @@
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 
-/* Define to 1 if you have the `swscale' library (-lswscale). */
+/* */
 #undef HAVE_LIBSWSCALE
 
 /* Define to 1 if you have the <libswscale/swscale.h> header file. */
 #undef HAVE_LIBSWSCALE_SWSCALE_H
 
-/* Define to 1 if you have the `X11' library (-lX11). */
+/* */
 #undef HAVE_LIBX11
 
-/* Define to 1 if you have the `Xrender' library (-lXrender). */
+/* */
 #undef HAVE_LIBXRENDER
 
 /* Define to 1 if you have the <memory.h> header file. */

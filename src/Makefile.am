@@ -22,6 +22,8 @@ boblight_v4l_SOURCES = \
 	clients/boblight-v4l/videograbber.cpp \
 	clients/boblight-v4l/videograbber.h 
 
+boblight_v4l_LDFLAGS = -lavcodec -lavformat -lswscale -lavdevice
+
 boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp\
 	clients/flagmanager.cpp \
@@ -52,6 +54,8 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/flagmanager-X11.h \
 	clients/flagmanager.cpp \
 	clients/flagmanager.h
+
+boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
 
 boblightd_SOURCES = \
 	util/clock.cpp    \
@@ -101,7 +105,7 @@ boblightd_SOURCES = \
         util/signaltimer.h \
         util/signaltimer.cpp
 
-boblightd_LDFLAGS = 
+boblightd_LDFLAGS = -lportaudio
 
 boblightd_LDADD = 
 
