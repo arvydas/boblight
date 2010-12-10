@@ -64,7 +64,11 @@ bool CDeviceRS232::SetupDevice()
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
-  m_buff = new unsigned char[m_channels.size()];
+  m_buff = new unsigned char[m_prefix.size() + m_channels.size()];
+
+  //copy in the prefix
+  if (m_prefix.size() > 0)
+    memcpy(m_buff, &m_prefix[0], m_prefix.size());
 
   return true;
 }
@@ -80,21 +84,11 @@ bool CDeviceRS232::WriteOutput()
   {
     int output = Round<int>(m_channels[i].GetValue(now) * 255.0);
     output = Clamp(output, 0, 255);
-    m_buff[i] = output;
-  }
-
-  //write the prefix out the serial port
-  if (m_prefix.size() > 0)
-  {
-    if (m_serialport.Write(&m_prefix[0], m_prefix.size()) == -1)
-    {
-      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-      return false;
-    }
+    m_buff[m_prefix.size() + i] = output;
   }
 
   //write the channel values out the serial port
-  if (m_serialport.Write(m_buff, m_channels.size()) == -1)
+  if (m_serialport.Write(m_buff, m_prefix.size() + m_channels.size()) == -1)
   {
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
@@ -110,11 +104,8 @@ void CDeviceRS232::CloseDevice()
   //if opened, set all channels to 0 before closing
   if (m_buff)
   {
-    if (m_prefix.size() > 0)
-      m_serialport.Write(&m_prefix[0], m_prefix.size());
-
-    memset(m_buff, 0, m_channels.size());
-    m_serialport.Write(m_buff, m_channels.size());
+    memset(m_buff + m_prefix.size(), 0, m_channels.size());
+    m_serialport.Write(m_buff, m_prefix.size() + m_channels.size());
 
     delete m_buff;
     m_buff = NULL;
