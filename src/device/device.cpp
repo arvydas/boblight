@@ -43,6 +43,17 @@ CChannel::CChannel()
   m_blacklevel = 0.0;
 }
 
+void CChannel::SetSingleChange(float singlechange)
+{
+  //if sync mode is off, then there's no synchronisation between a client writing a singlechange
+  //and a device reading a singlechange, so it's possible that a client writes a singlechange
+  //and that the client overwrites it again before the device reads it, if we only write singlechange
+  //if it's lower than the one set for the channel, it still produces the desired effect
+  //m_singlechange is set to 0.0 when the device reads the channel value
+  if (singlechange > m_singlechange)
+    m_singlechange = singlechange;
+}
+
 float CChannel::GetValue(int64_t time)
 {
   //we need two calls for the speed

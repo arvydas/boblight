@@ -60,7 +60,7 @@ class CChannel
     void SetGamma(float gamma)               { m_gamma = gamma; }
     void SetAdjust(float adjust)             { m_adjust = adjust; }
     void SetBlacklevel(float blacklevel)     { m_blacklevel = blacklevel; }
-    void SetSingleChange(float singlechange) { m_singlechange = singlechange; }
+    void SetSingleChange(float singlechange);
 
     float GetValue(int64_t time);
 
