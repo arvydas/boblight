@@ -41,6 +41,7 @@ class CSerialPort
     int  Read(unsigned char* data, int len, int64_t usecs = -1);
     int  IntToRate(int baudrate);
     bool IsOpen() { return m_fd != -1; }
+    void PrintToStdOut(bool tostdout) { m_tostdout = tostdout; }
 
     std::string GetError();
 
@@ -49,6 +50,7 @@ class CSerialPort
     std::string m_error;
     std::string m_name;
     CClock      m_clock;
+    bool        m_tostdout;
 
     struct termios m_options;
 

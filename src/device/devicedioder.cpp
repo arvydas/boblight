@@ -62,6 +62,7 @@ bool CDeviceDioder::SetupDevice()
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
+  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
 
   //make sure we're controlling it
   unsigned char open = '0';

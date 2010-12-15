@@ -321,10 +321,10 @@ bool CConfig::CheckDeviceConfig()
           valid = false;
         }
       }
-      else if (key == "allowsync")//bool
+      else if (key == "allowsync" || key == "debug")//bool
       {
-        bool allowsync;
-        if (!StrToBool(value, allowsync))
+        bool bValue;
+        if (!StrToBool(value, bValue))
         {
           logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
@@ -793,6 +793,7 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
     return false;
 
   SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
 
   device->SetType(POPEN);
   
@@ -820,6 +821,7 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
     return false;
 
   SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
 
   if (type == "momo")
   {
@@ -858,6 +860,7 @@ bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients
     return false;
 
   SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
 
   device->SetType(LTBL);
   
@@ -922,6 +925,7 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
     return false;
 
   SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
 
   device->SetType(DIODER);
   
@@ -1076,6 +1080,20 @@ void CConfig::SetDeviceAllowSync(CDevice* device, int devicenr)
   bool allowsync;
   StrToBool(strvalue, allowsync);
   device->SetAllowSync(allowsync);
+}
+
+void CConfig::SetDeviceDebug(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("debug", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  bool debug;
+  StrToBool(strvalue, debug);
+  device->SetDebug(debug);
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)

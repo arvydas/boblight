@@ -30,7 +30,8 @@ using namespace std;
 
 CSerialPort::CSerialPort()
 {
-  m_fd = -1;
+  m_fd       = -1;
+  m_tostdout = false;
 }
 
 CSerialPort::~CSerialPort()
@@ -68,6 +69,16 @@ int CSerialPort::Write(unsigned char* data, int len)
       return -1;
     }
     byteswritten += returnv;
+  }
+
+  //print what's written to stdout for debugging
+  if (m_tostdout)
+  {
+    printf("%s write:", m_name.c_str());
+    for (int i = 0; i < byteswritten; i++)
+      printf(" %x", (unsigned int)data[i]);
+
+    printf("\n");
   }
 
   return byteswritten;
@@ -132,6 +143,16 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
     bytesread += returnv;
 
     now = m_clock.GetTime();
+  }
+
+  //print what's read to stdout for debugging
+  if (m_tostdout)
+  {
+    printf("%s read:", m_name.c_str());
+    for (int i = 0; i < bytesread; i++)
+      printf(" %x", (unsigned int)data[i]);
+
+    printf("\n");
   }
 
   return bytesread;

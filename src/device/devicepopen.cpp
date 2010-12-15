@@ -55,15 +55,26 @@ bool CDevicePopen::WriteOutput()
   int64_t now = m_clock.GetTime();
   m_clients.FillChannels(m_channels, now, this);
 
+  if (m_debug) //print debug info to stdout when debug is on
+    printf("%s:", m_name.c_str());
+
   //print the values to the process, as float from 0.0 to 1.0
   for (int i = 0; i < m_channels.size(); i++)
   {
-    if (fprintf(m_process, "%f ", m_channels[i].GetValue(now)) < 0)
+    float value = m_channels[i].GetValue(now);
+    if (fprintf(m_process, "%f ", value) < 0)
     {
       logerror("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
       return false;
     }
+
+    if (m_debug)
+      printf(" %f", value);
   }
+
+  if (m_debug)
+    printf("\n");
+
   if (fprintf(m_process, "\n") == -1 || fflush(m_process) != 0)
   {
     logerror("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());

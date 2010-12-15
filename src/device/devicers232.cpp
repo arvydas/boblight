@@ -64,6 +64,9 @@ bool CDeviceRS232::SetupDevice()
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
+  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
+
+
   m_buff = new unsigned char[m_prefix.size() + m_channels.size()];
 
   //copy in the prefix

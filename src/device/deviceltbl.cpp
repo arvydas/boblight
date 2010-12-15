@@ -35,6 +35,7 @@ bool CDeviceLtbl::SetupDevice()
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
+  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
 
   //try to open the controller
   if (OpenController())

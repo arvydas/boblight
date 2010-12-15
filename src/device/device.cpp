@@ -108,6 +108,7 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
 {
   m_type = NOTHING;
   m_allowsync = true;
+  m_debug = false;
 }
 
 void CDevice::Process()
