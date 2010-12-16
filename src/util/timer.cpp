@@ -50,10 +50,11 @@ void CTimer::Wait()
   int64_t sleeptime;
 
   //keep looping until we have a timestamp that's not too old
+  int64_t now = m_clock.GetTime();
   do
   {
     m_time += m_interval;
-    sleeptime = m_time - m_clock.GetTime();
+    sleeptime = m_time - now;
   }
   while(sleeptime <= m_interval * -2LL);
   
