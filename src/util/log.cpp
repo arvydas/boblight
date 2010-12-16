@@ -34,7 +34,7 @@
 
 using namespace std;
 
-bool logtostdout = true;
+bool logtostderr = true;
 bool printlogtofile = true;
 
 static CMutex   g_logmutex;
@@ -183,5 +183,6 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
   }
 
   //print to stdout when requested
-  if (logtostdout) cout << funcstr << logstr << '\n' << flush;
+  if (logtostderr)
+    cerr << funcstr << logstr << '\n' << flush;
 }

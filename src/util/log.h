@@ -28,7 +28,7 @@
 void PrintLog (const char* fmt, const char* function, bool error, ...) __attribute__ ((format (printf, 1, 4)));
 void SetLogFile(std::string logfile);
 
-extern bool logtostdout;
+extern bool logtostderr;
 extern bool printlogtofile;
 
 #endif //LOG

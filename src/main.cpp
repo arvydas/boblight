@@ -61,7 +61,7 @@ int main (int argc, char *argv[])
   }
   
   //init our logfile
-  logtostdout = true;
+  logtostderr = true;
   SetLogFile("boblightd.log");
   PrintFlags(argc, argv);
 
