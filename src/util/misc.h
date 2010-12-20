@@ -19,6 +19,10 @@
 #ifndef MISCUTIL
 #define MISCUTIL
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 #include <string>
 #include <sstream>
 #include <exception>
@@ -27,7 +31,6 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
 
 void PrintError(const std::string& error);
 bool GetWord(std::string& data, std::string& word);

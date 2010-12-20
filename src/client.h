@@ -19,8 +19,11 @@
 #ifndef CCLIENT
 #define CCLIENT
 
-#include <vector>
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
+
+#include <vector>
 
 #include "util/misc.h"
 #include "util/mutex.h"

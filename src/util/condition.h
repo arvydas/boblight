@@ -19,7 +19,10 @@
 #ifndef CCONDITION
 #define CCONDITION
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
+
 #include "mutex.h"
 
 //pthread condition variable class

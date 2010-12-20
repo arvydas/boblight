@@ -19,8 +19,9 @@
 #ifndef VIDEOGRABBER
 #define VIDEOGRABBER
 
-//avutil.h needs this
 #define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
 
 //debug stuff
 #include <X11/Xlib.h>
@@ -36,7 +37,6 @@ extern "C"
 }
 
 #include <string>
-#include <stdint.h>
 
 class CVideoGrabber
 {

@@ -19,8 +19,11 @@
 #ifndef USLEEP
 #define USLEEP
 
-#include <unistd.h>
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
+
+#include <unistd.h>
 
 inline void USleep(int64_t usecs, volatile bool* stop = NULL)
 {

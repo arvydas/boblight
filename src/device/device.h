@@ -19,6 +19,10 @@
 #ifndef CDEVICE
 #define CDEVICE
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 //device types
 #define NOTHING 0
 #define MOMO    1
@@ -31,7 +35,6 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 //#include "client.h"
 #include "util/thread.h"

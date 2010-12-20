@@ -19,6 +19,8 @@
 #ifndef CCLOCK
 #define CCLOCK
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
 
 //simple clock class

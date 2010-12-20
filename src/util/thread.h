@@ -19,8 +19,11 @@
 #ifndef CTHREAD
 #define CTHREAD
 
-#include <pthread.h>
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
+
+#include <pthread.h>
 #include <unistd.h>
 
 class CThread

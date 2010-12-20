@@ -16,10 +16,14 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 #define BOBLIGHT_DLOPEN
 #include "lib/boblight.h"
 
-#include <stdint.h>
 #include <iostream>
 #include <signal.h>
 #include <unistd.h>

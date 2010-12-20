@@ -19,9 +19,12 @@
 #ifndef CSERIALPORT
 #define CSERIALPORT
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 #include <string>
 #include <termios.h>
-#include <stdint.h>
 
 #include "clock.h"
 

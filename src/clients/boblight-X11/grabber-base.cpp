@@ -16,8 +16,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <assert.h>
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
+
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
