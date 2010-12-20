@@ -19,6 +19,9 @@
 #ifndef VIDEOGRABBER
 #define VIDEOGRABBER
 
+//avutil.h needs this
+#define __STDC_CONSTANT_MACROS
+
 //debug stuff
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
