@@ -24,6 +24,9 @@
 /* Define to 1 if you have the <libavformat/avformat.h> header file. */
 #undef HAVE_LIBAVFORMAT_AVFORMAT_H
 
+/* */
+#undef HAVE_LIBAVUTIL
+
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 

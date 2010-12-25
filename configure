@@ -15415,6 +15415,44 @@ else
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavutil   " >&5
+$as_echo_n "checking for main in -lavutil   ... " >&6; }
+if test "${ac_cv_lib_avutil____main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavutil     $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_avutil____main=yes
+else
+  ac_cv_lib_avutil____main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avutil____main" >&5
+$as_echo "$ac_cv_lib_avutil____main" >&6; }
+if test "x$ac_cv_lib_avutil____main" = x""yes; then :
+
+$as_echo "#define HAVE_LIBAVUTIL 1" >>confdefs.h
+
+else
+  as_fn_error "Missing a required library" "$LINENO" 5
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lavcodec  " >&5
 $as_echo_n "checking for main in -lavcodec  ... " >&6; }
 if test "${ac_cv_lib_avcodec___main+set}" = set; then :
@@ -15459,7 +15497,7 @@ if test "${ac_cv_lib_avformat__main+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavformat   $LIBS"
+LIBS="-lavformat  -lavcodec -lavutil $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -15497,7 +15535,7 @@ if test "${ac_cv_lib_swscale___main+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lswscale    $LIBS"
+LIBS="-lswscale   -lavutil $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -15535,7 +15573,7 @@ if test "${ac_cv_lib_avdevice__main+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavdevice   $LIBS"
+LIBS="-lavdevice  -lavcodec -lavutil -lavformat $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 

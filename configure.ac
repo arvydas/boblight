@@ -31,10 +31,11 @@ dnl boblight-X11 and boblight-opengl
 AC_CHECK_LIB(GL       ,[main],AC_DEFINE([HAVE_LIBGL],       [1], [ ]),AC_MSG_ERROR([Missing a required library]))
 
 dnl boblight-v4l
+AC_CHECK_LIB(avutil   ,[main],AC_DEFINE([HAVE_LIBAVUTIL],   [1], [ ]),AC_MSG_ERROR([Missing a required library]))
 AC_CHECK_LIB(avcodec  ,[main],AC_DEFINE([HAVE_LIBAVCODEC],  [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(avformat ,[main],AC_DEFINE([HAVE_LIBAVFORMAT], [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(swscale  ,[main],AC_DEFINE([HAVE_LIBSWSCALE],  [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE], [1], [ ]),AC_MSG_ERROR([Missing a required library]))
+AC_CHECK_LIB(avformat ,[main],AC_DEFINE([HAVE_LIBAVFORMAT], [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavcodec -lavutil])
+AC_CHECK_LIB(swscale  ,[main],AC_DEFINE([HAVE_LIBSWSCALE],  [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavutil])
+AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE], [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavcodec -lavutil -lavformat])
 
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,AC_MSG_ERROR([Missing a required header]), [#include <X11/Xlib.h>])
