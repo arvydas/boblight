@@ -76,7 +76,7 @@ int CSerialPort::Write(unsigned char* data, int len)
   {
     printf("%s write:", m_name.c_str());
     for (int i = 0; i < byteswritten; i++)
-      printf(" %x", (unsigned int)data[i]);
+      printf(" %02x", (unsigned int)data[i]);
 
     printf("\n");
   }
@@ -150,7 +150,7 @@ int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
   {
     printf("%s read:", m_name.c_str());
     for (int i = 0; i < bytesread; i++)
-      printf(" %x", (unsigned int)data[i]);
+      printf(" %02x", (unsigned int)data[i]);
 
     printf("\n");
   }
