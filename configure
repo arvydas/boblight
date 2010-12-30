@@ -15337,6 +15337,7 @@ else
   as_fn_error "Missing a required library" "$LINENO" 5
 fi
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lXrender  " >&5
 $as_echo_n "checking for main in -lXrender  ... " >&6; }
 if test "${ac_cv_lib_Xrender___main+set}" = set; then :
