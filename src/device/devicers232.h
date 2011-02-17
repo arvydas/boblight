@@ -29,6 +29,7 @@ class CDeviceRS232 : public CDevice
 
     void SetPrefix(std::vector<unsigned char> prefix) { m_prefix = prefix; }
     void SetType(int type);
+    void SetBits(int bits) { m_bits = bits; }
 
     void Sync();
 
@@ -43,6 +44,8 @@ class CDeviceRS232 : public CDevice
 
     unsigned char*             m_buff;
     std::vector<unsigned char> m_prefix;
+    int64_t                    m_bits;
+    int                        m_bytes;
 };
 
 #endif //CDEVICERS232

@@ -26,6 +26,7 @@ CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice
 {
   m_type = -1;
   m_buff = NULL;
+  m_bits = 8;
 }
 
 void CDeviceRS232::SetType(int type)
@@ -66,8 +67,11 @@ bool CDeviceRS232::SetupDevice()
   }
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
 
+  //bytes per channel
+  m_bytes = m_bits / 8 + ((m_bits % 8) ? 1 : 0);
 
-  m_buff = new unsigned char[m_prefix.size() + m_channels.size()];
+  //allocate a buffer, that can hold the prefix, and the number of bytes per channel
+  m_buff = new unsigned char[m_prefix.size() + m_channels.size() * m_bytes];
 
   //copy in the prefix
   if (m_prefix.size() > 0)
@@ -82,16 +86,20 @@ bool CDeviceRS232::WriteOutput()
   int64_t now = m_clock.GetTime();
   m_clients.FillChannels(m_channels, now, this);
 
+  int64_t maxvalue = (1 << m_bits) - 1;
+
   //put the values in 1 byte unsigned in the buffer
   for (int i = 0; i < m_channels.size(); i++)
   {
-    int output = Round<int>(m_channels[i].GetValue(now) * 255.0);
-    output = Clamp(output, 0, 255);
-    m_buff[m_prefix.size() + i] = output;
+    int64_t output = Round<int64_t>((double)m_channels[i].GetValue(now) * maxvalue);
+    output = Clamp(output, 0, maxvalue);
+
+    for (int j = 0; j < m_bytes; j++)
+      m_buff[m_prefix.size() + i * m_bytes + j] = (output >> ((m_bytes - j - 1) * 8)) & 0xFF;
   }
 
   //write the channel values out the serial port
-  if (m_serialport.Write(m_buff, m_prefix.size() + m_channels.size()) == -1)
+  if (m_serialport.Write(m_buff, m_prefix.size() + m_channels.size() * m_bytes) == -1)
   {
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
@@ -108,7 +116,7 @@ void CDeviceRS232::CloseDevice()
   if (m_buff)
   {
     memset(m_buff + m_prefix.size(), 0, m_channels.size());
-    m_serialport.Write(m_buff, m_prefix.size() + m_channels.size());
+    m_serialport.Write(m_buff, m_prefix.size() + m_channels.size() * m_bytes);
 
     delete m_buff;
     m_buff = NULL;

@@ -289,10 +289,10 @@ bool CConfig::CheckDeviceConfig()
       {
         continue; //can't check these here
       }
-      else if (key == "rate" || key == "channels" || key == "interval" || key == "period")
+      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "bits")
       { //these are of type integer not lower than 1
         int ivalue;
-        if (!StrToInt(value, ivalue) || ivalue < 1)
+        if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32))
         {
           logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
@@ -822,6 +822,7 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceBits(rs232device, devicenr);
 
   if (type == "momo")
   {
@@ -1094,6 +1095,20 @@ void CConfig::SetDeviceDebug(CDevice* device, int devicenr)
   bool debug;
   StrToBool(strvalue, debug);
   device->SetDebug(debug);
+}
+
+void CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("bits", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  int bits;
+  StrToInt(strvalue, bits);
+  device->SetBits(bits);
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)
