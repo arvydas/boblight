@@ -115,7 +115,7 @@ void CDeviceRS232::CloseDevice()
   //if opened, set all channels to 0 before closing
   if (m_buff)
   {
-    memset(m_buff + m_prefix.size(), 0, m_channels.size());
+    memset(m_buff + m_prefix.size(), 0, m_channels.size() * m_bytes);
     m_serialport.Write(m_buff, m_prefix.size() + m_channels.size() * m_bytes);
 
     delete m_buff;
