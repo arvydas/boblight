@@ -77,6 +77,17 @@ bool CDeviceRS232::SetupDevice()
   if (m_prefix.size() > 0)
     memcpy(m_buff, &m_prefix[0], m_prefix.size());
 
+  //set channel bytes to 0, write it twice to make sure the controller is in sync
+  memset(m_buff + m_prefix.size(), 0, m_channels.size() * m_bytes);
+  for (int i = 0; i < 2; i++)
+  {
+    if (m_serialport.Write(m_buff, m_prefix.size() + m_channels.size() * m_bytes) == -1)
+    {
+      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+      return false;
+    }
+  }
+
   return true;
 }
 
