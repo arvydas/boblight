@@ -19,6 +19,7 @@
 #include "devicedioder.h"
 #include "util/log.h"
 #include "util/misc.h"
+#include "util/sleep.h"
 
 // support from device from: http://cauldrondevelopment.com/blog/2009/12/29/a-real-ikea-dioder-hack/
 
@@ -63,6 +64,9 @@ bool CDeviceDioder::SetupDevice()
     return false;
   }
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
+
+  if (m_delayafteropen > 0)
+    USleep(m_delayafteropen, &m_stop);
 
   //make sure we're controlling it
   unsigned char open = '0';

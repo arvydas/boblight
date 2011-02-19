@@ -289,7 +289,7 @@ bool CConfig::CheckDeviceConfig()
       {
         continue; //can't check these here
       }
-      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "bits")
+      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "bits" || key == "delayafteropen")
       { //these are of type integer not lower than 1
         int ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32))
@@ -794,6 +794,7 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceDelayAfterOpen(device, devicenr);
 
   device->SetType(POPEN);
   
@@ -823,6 +824,7 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceBits(rs232device, devicenr);
+  SetDeviceDelayAfterOpen(device, devicenr);
 
   if (type == "momo")
   {
@@ -862,6 +864,7 @@ bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceDelayAfterOpen(device, devicenr);
 
   device->SetType(LTBL);
   
@@ -927,6 +930,7 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceDelayAfterOpen(device, devicenr);
 
   device->SetType(DIODER);
   
@@ -1109,6 +1113,20 @@ void CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)
   int bits;
   StrToInt(strvalue, bits);
   device->SetBits(bits);
+}
+
+void CConfig::SetDeviceDelayAfterOpen(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("delayafteropen", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  int delayafteropen;
+  StrToInt(strvalue, delayafteropen);
+  device->SetDelayAfterOpen(delayafteropen);
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)

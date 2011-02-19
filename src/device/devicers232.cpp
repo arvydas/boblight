@@ -21,6 +21,7 @@
 #include "util/log.h"
 #include "util/misc.h"
 #include "devicers232.h"
+#include "util/sleep.h"
 
 CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice(clients)
 {
@@ -66,6 +67,9 @@ bool CDeviceRS232::SetupDevice()
     return false;
   }
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
+
+  if (m_delayafteropen > 0)
+    USleep(m_delayafteropen, &m_stop);
 
   //bytes per channel
   m_bytes = m_bits / 8 + ((m_bits % 8) ? 1 : 0);

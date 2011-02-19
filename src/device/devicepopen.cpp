@@ -19,6 +19,7 @@
 #include "devicepopen.h"
 #include "util/log.h"
 #include "util/misc.h"
+#include "util/sleep.h"
 
 #include <iostream>
 
@@ -46,6 +47,10 @@ bool CDevicePopen::SetupDevice()
     logerror("%s: %s", m_output.c_str(), GetErrno().c_str());
     return false;
   }
+
+  if (m_delayafteropen > 0)
+    USleep(m_delayafteropen, &m_stop);
+
   return true;
 }
 

@@ -92,15 +92,16 @@ class CDevice : public CThread
   public:
     CDevice(CClientsHandler& clients);
     
-    void SetName(std::string name)     { m_name = name; }
-    void SetOutput(std::string output) { m_output = output; }
-    virtual void SetType(int type)     { m_type = type; }
-    void SetRate(int rate)             { m_rate = rate; }
-    void SetNrChannels(int nrchannels) { m_channels.resize(nrchannels); }
+    void SetName(std::string name)                    { m_name = name; }
+    void SetOutput(std::string output)                { m_output = output; }
+    virtual void SetType(int type)                    { m_type = type; }
+    void SetRate(int rate)                            { m_rate = rate; }
+    void SetNrChannels(int nrchannels)                { m_channels.resize(nrchannels); }
     void SetChannel(CChannel& channel, int channelnr) { m_channels[channelnr] = channel; }
-    void SetInterval(int64_t usecs)    { m_interval = usecs; }
-    void SetAllowSync(bool allowsync)  { m_allowsync = allowsync; }
-    void SetDebug(bool debug)          { m_debug = debug; }
+    void SetInterval(int64_t usecs)                   { m_interval = usecs; }
+    void SetAllowSync(bool allowsync)                 { m_allowsync = allowsync; }
+    void SetDebug(bool debug)                         { m_debug = debug; }
+    void SetDelayAfterOpen(int64_t delay)             { m_delayafteropen = delay; }
 
     int GetNrChannels()     { return m_channels.size(); }
       
@@ -123,6 +124,7 @@ class CDevice : public CThread
     int64_t     m_interval;
     bool        m_allowsync;
     bool        m_debug;
+    int64_t     m_delayafteropen;
 
     CClock      m_clock;
 
