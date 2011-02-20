@@ -18,6 +18,7 @@
 
 #include "signaltimer.h"
 #include "lock.h"
+#include "misc.h"
 
 CSignalTimer::CSignalTimer(volatile bool* stop /*= NULL*/): CTimer(stop)
 {
@@ -26,16 +27,11 @@ CSignalTimer::CSignalTimer(volatile bool* stop /*= NULL*/): CTimer(stop)
 
 void CSignalTimer::Wait()
 {
-  int64_t sleeptime;
-
-  if (m_timerstop)
-    if (*m_timerstop)
-      return;
-
   CLock lock(m_condition);
 
   //keep looping until we have a timestamp that's not too old
   int64_t now = m_clock.GetTime();
+  int64_t sleeptime;
   do
   {
     m_time += m_interval;
@@ -49,12 +45,20 @@ void CSignalTimer::Wait()
     Reset();
   }
 
-  if (m_signaled)
-    Reset();
-  else
-    WaitCondition(sleeptime);
+  //wait for the timeout, or for the condition variable to be signaled
+  while (!m_signaled && sleeptime > 0LL && !(m_timerstop && *m_timerstop))
+  {
+    m_condition.Wait(Min(sleeptime, 1000000LL));
+    now = m_clock.GetTime();
+    sleeptime = m_time - now;
+  }
 
-  m_signaled = false;
+  //if we get signaled, reset the timestamp, this allows us to be signaled faster than the interval
+  if (m_signaled)
+  {
+    Reset();
+    m_signaled = false;
+  }
 }
 
 void CSignalTimer::Signal()
@@ -64,28 +68,3 @@ void CSignalTimer::Signal()
   m_condition.Broadcast();
 }
 
-
-void CSignalTimer::WaitCondition(int64_t sleeptime)
-{
-  if (sleeptime <= 0)
-    return;
-
-  int64_t secs  = sleeptime / 1000000LL;
-  int64_t usecs = sleeptime % 1000000LL;
-
-  for (int i = 0; i < secs; i++)
-  {
-    if (m_condition.Wait(1000000LL) || m_signaled)
-    {
-      Reset();
-      return;
-    }
-    
-    if (m_timerstop)
-      if (*m_timerstop)
-        return;
-  }
-
-  if (m_condition.Wait(usecs) || m_signaled)
-    Reset();
-}
