@@ -93,7 +93,6 @@ bool CDeviceDioder::WriteOutput()
   //put channel values in the output buffer
   for (int i = 0; i < m_channels.size(); i++)
   {
-    //output value is 16 bit big endian
     int value = Clamp(Round<int>(m_channels[i].GetValue(now) * 255.0f), 0, 255);
 
     m_buff[i * 3 + 0] = 0xFF;
