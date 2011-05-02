@@ -298,7 +298,7 @@ bool CConfig::CheckDeviceConfig()
           valid = false;
         }          
       }
-      else if (key == "prefix")
+      else if (key == "prefix" || key == "postfix")
       { //this is in hex from 00 to FF, separated by spaces, like: prefix FF 7F A0 22
         int ivalue;
         while(1)
@@ -830,6 +830,7 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
   {
     device->SetType(MOMO);
     SetDevicePrefix(rs232device, devicenr);
+    SetDevicePostfix(rs232device, devicenr);
   }
   else if (type == "atmo")
   {
@@ -1039,6 +1040,25 @@ void CConfig::SetDevicePrefix(CDeviceRS232* device, int devicenr)
     prefix.push_back(iprefix);
   }
   device->SetPrefix(prefix);
+}
+
+void CConfig::SetDevicePostfix(CDeviceRS232* device, int devicenr)
+{
+  string line, strvalue;
+  std::vector<unsigned char> postfix;
+  int linenr = GetLineWithKey("postfix", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+  {
+    return; //postfix is optional, so this is not an error 
+  }
+
+  while(GetWord(line, strvalue))
+  {
+    int ipostfix;
+    HexStrToInt(strvalue, ipostfix);
+    postfix.push_back(ipostfix);
+  }
+  device->SetPostfix(postfix);
 }
 
 bool CConfig::SetDevicePeriod(CDeviceSound* device, int devicenr)

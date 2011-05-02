@@ -100,6 +100,7 @@ class CConfig
     bool SetDeviceRate(CDevice* device, int devicenr);
     bool SetDeviceInterval(CDevice* device, int devicenr);
     void SetDevicePrefix(CDeviceRS232* device, int devicenr);
+    void SetDevicePostfix(CDeviceRS232* device, int devicenr);
     bool SetDevicePeriod(CDeviceSound* device, int devicenr);
     void SetDeviceLatency(CDeviceSound* device, int devicenr);
     void SetDeviceAllowSync(CDevice* device, int devicenr);
