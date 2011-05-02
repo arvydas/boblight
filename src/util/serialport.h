@@ -40,8 +40,8 @@ class CSerialPort
 
     bool Open(std::string name, int baudrate, int databits = 8, int stopbits = 1, int parity = PAR_NONE);
     void Close();
-    int  Write(unsigned char* data, int len);
-    int  Read(unsigned char* data, int len, int64_t usecs = -1);
+    int  Write(uint8_t* data, int len);
+    int  Read(uint8_t* data, int len, int64_t usecs = -1);
     int  IntToRate(int baudrate);
     bool IsOpen() { return m_fd != -1; }
     void PrintToStdOut(bool tostdout) { m_tostdout = tostdout; }

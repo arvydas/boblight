@@ -19,6 +19,7 @@
 #ifndef CDEVICERS232
 #define CDEVICERS232
 
+#include <stdint.h>
 #include "device.h"
 #include "util/serialport.h"
 
@@ -27,8 +28,8 @@ class CDeviceRS232 : public CDevice
   public:
     CDeviceRS232(CClientsHandler& clients);
 
-    void SetPrefix(std::vector<unsigned char> prefix) { m_prefix = prefix; }
-    void SetPostfix(std::vector<unsigned char> postfix) { m_postfix = postfix; }
+    void SetPrefix(std::vector<uint8_t> prefix)   { m_prefix = prefix; }
+    void SetPostfix(std::vector<uint8_t> postfix) { m_postfix = postfix; }
     void SetType(int type);
     void SetBits(int bits) { m_bits = bits; }
 
@@ -43,12 +44,12 @@ class CDeviceRS232 : public CDevice
     CSignalTimer m_timer;
     CSerialPort  m_serialport;
 
-    unsigned char*             m_buff;
-    int                        m_buffsize;
-    std::vector<unsigned char> m_prefix;
-    std::vector<unsigned char> m_postfix;
-    int64_t                    m_bits;
-    int                        m_bytes;
+    uint8_t*             m_buff;
+    int                  m_buffsize;
+    std::vector<uint8_t> m_prefix;
+    std::vector<uint8_t> m_postfix;
+    int64_t              m_bits;
+    int                  m_bytes;
 };
 
 #endif //CDEVICERS232

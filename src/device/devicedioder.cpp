@@ -69,14 +69,14 @@ bool CDeviceDioder::SetupDevice()
     USleep(m_delayafteropen, &m_stop);
 
   //make sure we're controlling it
-  unsigned char open = '0';
+  uint8_t open = '0';
   if (m_serialport.Write(&open, 1) == -1)
   {
     logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
-  m_buff = new unsigned char[m_channels.size() * 3];
+  m_buff = new uint8_t[m_channels.size() * 3];
 
   return true;
 }
@@ -123,7 +123,7 @@ void CDeviceDioder::CloseDevice()
   }
 
   //turn off all lights
-  unsigned char off = 'o';
+  uint8_t off = 'o';
   m_serialport.Write(&off, 1);
 
   m_serialport.Close();

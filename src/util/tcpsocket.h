@@ -30,9 +30,9 @@
 class CTcpData
 {
   public:
-    void SetData(unsigned char* data, int size, bool append = false);
+    void SetData(uint8_t* data, int size, bool append = false);
     /*void SetData(char* data, int size, bool append = false);
-    void SetData(const unsigned char* data, int size, bool append = false);
+    void SetData(const uint8_t* data, int size, bool append = false);
     void SetData(const char* data, int size, bool append = false);*/
     void SetData(std::string data, bool append = false);
 

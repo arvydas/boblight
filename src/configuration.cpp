@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <stdint.h>
 
 #include "util/log.h"
 #include "util/misc.h"
@@ -1026,7 +1027,7 @@ bool CConfig::SetDeviceInterval(CDevice* device, int devicenr)
 void CConfig::SetDevicePrefix(CDeviceRS232* device, int devicenr)
 {
   string line, strvalue;
-  std::vector<unsigned char> prefix;
+  std::vector<uint8_t> prefix;
   int linenr = GetLineWithKey("prefix", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
@@ -1045,7 +1046,7 @@ void CConfig::SetDevicePrefix(CDeviceRS232* device, int devicenr)
 void CConfig::SetDevicePostfix(CDeviceRS232* device, int devicenr)
 {
   string line, strvalue;
-  std::vector<unsigned char> postfix;
+  std::vector<uint8_t> postfix;
   int linenr = GetLineWithKey("postfix", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {

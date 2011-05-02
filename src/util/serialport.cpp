@@ -39,7 +39,7 @@ CSerialPort::~CSerialPort()
   Close();
 }
 
-int CSerialPort::Write(unsigned char* data, int len)
+int CSerialPort::Write(uint8_t* data, int len)
 {
   fd_set port;
   
@@ -84,7 +84,7 @@ int CSerialPort::Write(unsigned char* data, int len)
   return byteswritten;
 }
 
-int CSerialPort::Read(unsigned char* data, int len, int64_t usecs /*= -1*/)
+int CSerialPort::Read(uint8_t* data, int len, int64_t usecs /*= -1*/)
 {
   fd_set port;
   struct timeval timeout, *tv;

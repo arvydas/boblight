@@ -44,7 +44,7 @@ bool CDeviceLtbl::SetupDevice()
   //try to open the controller
   if (OpenController())
   {
-    m_buff = new unsigned char[m_channels.size() * 2];
+    m_buff = new uint8_t[m_channels.size() * 2];
     return true;
   }
 
@@ -53,7 +53,7 @@ bool CDeviceLtbl::SetupDevice()
 
 bool CDeviceLtbl::WriteOutput()
 {
-  unsigned char prefix[4] = {0x55, 0xAA, 0x00, m_channels.size()};
+  uint8_t prefix[4] = {0x55, 0xAA, 0x00, m_channels.size()};
 
   //get the channel values from the clienshandler
   int64_t now = m_clock.GetTime();
@@ -68,8 +68,8 @@ bool CDeviceLtbl::WriteOutput()
 
     //output value is 16 bit big endian
     int value = Clamp(Round<int>(m_channels[i].GetValue(now) * 65535.0f), 0, 65535);
-    m_buff[i * 2 + 0] = (unsigned char)((value >> 8) & 0xFF);
-    m_buff[i * 2 + 1] = (unsigned char)((value >> 0) & 0xFF);
+    m_buff[i * 2 + 0] = (uint8_t)((value >> 8) & 0xFF);
+    m_buff[i * 2 + 1] = (uint8_t)((value >> 0) & 0xFF);
   }
 
   if (isused)
@@ -113,10 +113,10 @@ void CDeviceLtbl::CloseDevice()
 
 bool CDeviceLtbl::OpenController()
 {
-  unsigned char buff[512];
-  unsigned char prefix[2]    = {0x55, 0xAA};
-  unsigned char open[2]      = {0x83, 0x00};
-  unsigned char getvalues[4] = {0x81, 0x02, 0x00, m_channels.size()};
+  uint8_t buff[512];
+  uint8_t prefix[2]    = {0x55, 0xAA};
+  uint8_t open[2]      = {0x83, 0x00};
+  uint8_t getvalues[4] = {0x81, 0x02, 0x00, m_channels.size()};
 
   if (m_isopened)
     return true; //nothing to do here
@@ -185,8 +185,8 @@ bool CDeviceLtbl::OpenController()
 
 bool CDeviceLtbl::CloseController()
 {
-  unsigned char prefix[2] = {0x55, 0xAA};
-  unsigned char close[2]  = {0x84, 0x00};
+  uint8_t prefix[2] = {0x55, 0xAA};
+  uint8_t close[2]  = {0x84, 0x00};
 
   if (!m_isopened)
     return true; //nothing to do here
@@ -208,7 +208,7 @@ bool CDeviceLtbl::CloseController()
 //wait until the controller has sent 0x55 0xAA
 bool CDeviceLtbl::WaitForPrefix()
 {
-  unsigned char prefix[2] = {0, 0};
+  uint8_t prefix[2] = {0, 0};
 
   while(1)
   {

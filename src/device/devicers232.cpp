@@ -77,7 +77,7 @@ bool CDeviceRS232::SetupDevice()
 
   //allocate a buffer, that can hold the prefix,the number of bytes per channel and the postfix
   m_buffsize = m_prefix.size() + m_channels.size() * m_bytes + m_postfix.size();
-  m_buff = new unsigned char[m_buffsize];
+  m_buff = new uint8_t[m_buffsize];
 
   //copy in the prefix
   if (m_prefix.size() > 0)

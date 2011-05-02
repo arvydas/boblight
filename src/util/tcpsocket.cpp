@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void CTcpData::SetData(unsigned char* data, int size, bool append)
+void CTcpData::SetData(uint8_t* data, int size, bool append)
 {
   CopyData(reinterpret_cast<char*>(data), size, append);
 }
@@ -40,9 +40,9 @@ void CTcpData::SetData(unsigned char* data, int size, bool append)
   CopyData(data, size, append);
 }
 
-void CTcpData::SetData(const unsigned char* data, int size, bool append)
+void CTcpData::SetData(const uint8_t* data, int size, bool append)
 {
-  CopyData(reinterpret_cast<char*>(const_cast<unsigned char*>(data)), size, append);
+  CopyData(reinterpret_cast<char*>(const_cast<uint8_t*>(data)), size, append);
 }
 
 void CTcpData::SetData(const char* data, int size, bool append)
@@ -289,7 +289,7 @@ int CTcpClientSocket::Open(std::string address, int port, int usectimeout /*= -1
 
 int CTcpClientSocket::Read(CTcpData& data)
 {
-  unsigned char buff[1000];
+  uint8_t buff[1000];
   
   if (m_sock == -1)
   {
