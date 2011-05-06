@@ -263,7 +263,7 @@ int CTcpClientSocket::Open(std::string address, int port, int usectimeout /*= -1
   struct hostent *host = gethostbyname(address.c_str());
   if (!host) //can't find host
   {
-    m_error += "gethostbyname() " + address + ":" + ToString(m_port) + " " + GetErrno();
+    m_error = "gethostbyname() " + address + ":" + ToString(m_port) + " " + GetErrno();
     return FAIL;
   }
   server.sin_addr.s_addr = *reinterpret_cast<in_addr_t*>(host->h_addr);
@@ -399,7 +399,7 @@ int CTcpServerSocket::Open(std::string address, int port, int usectimeout)
 
   if (m_sock == -1)
   {
-    m_error += "socket() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
+    m_error = "socket() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
     return FAIL;
   }
 
@@ -419,7 +419,7 @@ int CTcpServerSocket::Open(std::string address, int port, int usectimeout)
     struct hostent *host = gethostbyname(address.c_str());
     if (host == NULL)
     {
-      m_error += "gethostbyname() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
+      m_error = "gethostbyname() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
       return FAIL;
     }
     bindaddr.sin_addr.s_addr = *reinterpret_cast<in_addr_t*>(host->h_addr);
@@ -427,13 +427,13 @@ int CTcpServerSocket::Open(std::string address, int port, int usectimeout)
 
   if (bind(m_sock, reinterpret_cast<struct sockaddr*>(&bindaddr), sizeof(bindaddr)) < 0)
   {
-    m_error += "bind() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
+    m_error = "bind() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
     return FAIL;
   }
 
   if (listen(m_sock, SOMAXCONN) < 0)
   {
-    m_error += "listen() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
+    m_error = "listen() " + m_address + ":" + ToString(m_port) + " " + GetErrno();
     return FAIL;
   }
 
