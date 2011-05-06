@@ -16,8 +16,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include "condition.h"
-#include <iostream> //debug
+
 CCondition::CCondition()
 {
   pthread_cond_init(&m_cond, NULL);
@@ -41,19 +42,22 @@ void CCondition::Broadcast()
 //should have locked before getting here
 bool CCondition::Wait(int64_t usecs /*= -1*/)
 {
-  int result = 0;
-  
-  //save the refcount and owner
-  int refcount = m_refcount;
-  pthread_t owner = m_owner;
-  //set the mutex class to an unlocked state
-  m_refcount = 0;
-  m_owner = NULL;
+  assert(m_refcount > 0); //if refcount is 0, then the mutex is not locked
 
-  //wait for the condition signal
+  //our mutex is created with PTHREAD_MUTEX_RECURSIVE, which doesn't work with condition variables
+  //if the mutex is locked multiple times
+  //we keep a refcount, then we unlock enough times so that the mutex is locked only once
+  int refcount = m_refcount;
+  while (m_refcount > 1)
+    Unlock();
+
+  int result = 0;
   if (usecs < 0)
   {
+    //pthread_cond_wait will unlock and lock the mutex
+    m_refcount--;
     pthread_cond_wait(&m_cond, &m_mutex);
+    m_refcount++;
   }
   else
   {
@@ -72,12 +76,14 @@ bool CCondition::Wait(int64_t usecs /*= -1*/)
       currtime.tv_nsec %= 1000000000;
     }
 
+    //pthread_cond_timedwait will unlock and lock the mutex
+    m_refcount--;
     result = pthread_cond_timedwait(&m_cond, &m_mutex, &currtime);
-  }    
+    m_refcount++;
+  }
 
-  //restore refcount and owner
-  m_refcount = refcount;
-  m_owner = owner;
+  while (m_refcount < refcount)
+    Lock();
 
   return result == 0;
 }

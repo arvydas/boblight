@@ -17,12 +17,20 @@
  */
 
 #include <time.h>
+#include <assert.h>
 #include "mutex.h"
 
 CMutex::CMutex()
 {
-  pthread_mutex_init(&m_mutex, NULL);
-  m_owner = NULL;
+  //make a recursive mutex
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+  pthread_mutex_init(&m_mutex, &attr);
+
+  pthread_mutexattr_destroy(&attr);
+
   m_refcount = 0;
 }
 
@@ -33,56 +41,32 @@ CMutex::~CMutex()
 
 void CMutex::Unlock()
 {
-  if (pthread_equal(m_owner, pthread_self()))
-  {
-    if (m_refcount > 0)
-    {
-      m_refcount--;
-    }
-    else
-    {
-      m_owner = NULL;
-      pthread_mutex_unlock(&m_mutex);
-    }
-  }
+  m_refcount--;
+  assert(m_refcount >= 0);
+  pthread_mutex_unlock(&m_mutex);
 }
 
 bool CMutex::TryLock()
 {
-  pthread_t thread = pthread_self();
-  
-  if (pthread_equal(m_owner, thread))
+  if (pthread_mutex_trylock(&m_mutex) == 0)
   {
     m_refcount++;
+    assert(m_refcount > 0);
     return true;
   }
   else
   {
-    if (pthread_mutex_trylock(&m_mutex) == 0)
-    {
-      m_owner = thread;
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }      
+    return false;
+  }
 }
 
 bool CMutex::Lock(int64_t usecs /*= -1*/)
 {
-  pthread_t thread = pthread_self();
-  
-  if (pthread_equal(m_owner, thread))
-  {
-    m_refcount++;
-    return true;
-  }
-  else if (usecs < 0)
+  if (usecs < 0) //wait indefinitely
   {
     pthread_mutex_lock(&m_mutex);
-    m_owner = thread;
+    m_refcount++;
+    assert(m_refcount > 0);
     return true;
   }
   else
@@ -104,7 +88,8 @@ bool CMutex::Lock(int64_t usecs /*= -1*/)
     //try to lock the mutex
     if (pthread_mutex_timedlock(&m_mutex, &currtime) == 0)
     {
-      m_owner = thread;
+      m_refcount++;
+      assert(m_refcount > 0);
       return true;
     }
     else
@@ -114,7 +99,3 @@ bool CMutex::Lock(int64_t usecs /*= -1*/)
   }
 }
 
-bool CMutex::OwnLock()
-{
-  return pthread_equal(m_owner, pthread_self());
-}

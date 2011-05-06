@@ -33,12 +33,10 @@ class CMutex
     bool Lock(int64_t usecs = -1);
     void Unlock();
     bool TryLock();
-    bool OwnLock();
 
   protected:
-    pthread_mutex_t	m_mutex;
-    int				      m_refcount;
-    pthread_t		    m_owner;
+    pthread_mutex_t m_mutex;
+    int	            m_refcount;
 };
 
 #endif //CMUTEX
