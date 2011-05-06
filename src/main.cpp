@@ -33,7 +33,7 @@
 
 using namespace std;
 
-volatile bool stop = false;
+volatile bool g_stop = false;
 
 void PrintFlags(int argc, char *argv[]);
 void SignalHandler(int signum);
@@ -89,7 +89,7 @@ int main (int argc, char *argv[])
     devices[i]->StartThread();
 
   //run the clients handler
-  while(!stop)
+  while(!g_stop)
     clients.Process();
 
   //signal that the devices should stop
@@ -128,12 +128,12 @@ void SignalHandler(int signum)
   if (signum == SIGTERM)
   {
     log("caught SIGTERM");
-    stop = true;
+    g_stop = true;
   }
   else if (signum == SIGINT)
   {
     log("caught SIGINT");
-    stop = true;
+    g_stop = true;
   }
   else
   {

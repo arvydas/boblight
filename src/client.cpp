@@ -31,6 +31,8 @@
 
 using namespace std;
 
+extern volatile bool g_stop;
+
 CClient::CClient()
 {
   m_priority = 255;
@@ -159,7 +161,7 @@ int CClientsHandler::GetReadableClient()
   if (m_clients.size() == 0 && !m_socket.IsOpen()) 
   {
     lock.Leave();
-    USleep(WAITTIME);
+    USleep(WAITTIME, &g_stop);
     return -1;
   }
 
