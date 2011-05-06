@@ -26,6 +26,7 @@
 #include <time.h>
 #include <sstream>
 #include <vector>
+#include <sys/time.h>
 
 #include "log.h"
 #include "mutex.h"
@@ -40,23 +41,21 @@ bool printlogtofile = true;
 static CMutex   g_logmutex;
 static ofstream g_logfile;
 
-//returns hour:minutes:seconds
+//returns hour:minutes:seconds:microseconds
 string GetStrTime()
 {
+  struct timeval tv;
+  struct tm      time;
+  time_t         now;
+
+  //get current time
+  gettimeofday(&tv, NULL);
+  now = tv.tv_sec; //seconds since EPOCH
+  localtime_r(&now, &time); //convert to hours, minutes, seconds
+
   char buff[100];
-  time_t now = time(NULL);
+  sprintf(buff, "%02i:%02i:%02i.%06i", time.tm_hour, time.tm_min, time.tm_sec, (int)tv.tv_usec);
 
-  strftime(buff, 99, "%H:%M:%S", localtime(&now));
-  return buff;
-}
-
-//returns year-month-day
-string GetStrDate()
-{
-  char buff[100];
-  time_t now = time(NULL);
-
-  strftime(buff, 99, "%Y-%m-%d", localtime(&now));
   return buff;
 }
 
@@ -174,12 +173,12 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
       logstrings.clear();
     }
     //write the string to the logfile
-    g_logfile << GetStrDate() << " " << GetStrTime() << " " << funcstr << " " << logstr << '\n' << flush;
+    g_logfile << GetStrTime() << " " << funcstr << " " << logstr << '\n' << flush;
   }
   else if (printlogtofile)
   {
     //save the log line if the log isn't open yet
-    logstrings.push_back(GetStrDate() + " " + GetStrTime() + " " + funcstr + " " + logstr + '\n');
+    logstrings.push_back(GetStrTime() + " " + funcstr + " " + logstr + '\n');
   }
 
   //print to stdout when requested
