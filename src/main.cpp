@@ -83,56 +83,27 @@ int main (int argc, char *argv[])
       return 1;
   }
 
-  //start the clients handler
-  clients.StartThread();
-  
   //start the devices
   log("starting devices");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StartThread();
 
-  //keep spinning while running
+  //run the clients handler
   while(!stop)
-  {
-    sleep(1);
-
-    bool error = false;
-
-    //check that our threads are still running
-
-    if (!clients.IsRunning())
-      error = true;
-
-    for (int i = 0; i < devices.size(); i++)
-    {
-      if (!devices[i]->IsRunning())
-        error = true;
-    }
-
-    if (error)
-    {
-      PrintError("an error occurred, please check the log");
-      break;
-    }
-  }
+    clients.Process();
 
   //signal that the devices should stop
   log("signaling devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->AsyncStopThread();
 
-  //signal clientshandler to stop
-  log("signaling clients handler to stop");
-  clients.AsyncStopThread();
+  //clean up the clients handler
+  clients.Cleanup();
 
   //stop the devices
   log("waiting for devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
-
-  //stop the clients handler
-  log("waiting for clients handler to stop");
-  clients.StopThread();
 
   log("exiting");
   

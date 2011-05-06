@@ -49,16 +49,16 @@ class CClient
     int              LightNameToInt(std::string& lightname);
 };
 
-class CClientsHandler : public CThread
+class CClientsHandler
 {
   public:
     CClientsHandler(std::vector<CLight>& lights);
     void SetInterface(std::string address, int port) { m_address = address; m_port = port; }
     void FillChannels(std::vector<CChannel>& channels, int64_t time, CDevice* device); //called by devices
+    void Process();
+    void Cleanup();
     
   private:
-    void Process();
-
     //where clients will connect to
     CTcpServerSocket m_socket;
     std::string      m_address;

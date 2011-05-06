@@ -51,71 +51,70 @@ CClientsHandler::CClientsHandler(std::vector<CLight>& lights) : m_lights(lights)
 {
 }
 
+//this is called from a loop from main()
 void CClientsHandler::Process()
 {
-  log("starting clients handler");
-
-  while (!m_stop)
+  //open listening socket if it's not already
+  if (!m_socket.IsOpen())
   {
-    //open listening socket if it's not already
-    if (!m_socket.IsOpen())
+    log("opening listening socket on %s:%i", m_address.empty() ? "*" : m_address.c_str(), m_port);
+    if (!m_socket.Open(m_address, m_port, 1000000))
     {
-      log("opening listening socket on %s:%i", m_address.empty() ? "*" : m_address.c_str(), m_port);
-      if (!m_socket.Open(m_address, m_port, 1000000))
-      {
-        logerror("%s", m_socket.GetError().c_str());
-        m_socket.Close();
-      }
-    }
-
-    //see if there's a client we can read from
-    int sock = GetReadableClient();
-    if (sock == -1) //nope
-      continue;
-
-    if (sock == m_socket.GetSock()) //we can read from the listening socket
-    {
-      CClient* client = new CClient;
-      int returnv = m_socket.Accept(client->m_socket);
-      if (returnv == SUCCESS)
-      {
-        log("%s:%i connected", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
-        AddClient(client);
-      }
-      else
-      {
-        delete client;
-        log("%s", m_socket.GetError().c_str());
-      }
-    }
-    else
-    {
-      //get the client the sock fd belongs to
-      CClient* client = GetClientFromSock(sock);
-      if (client == NULL) //guess it belongs to nobody
-        continue;
-
-      //try to read data from the client
-      CTcpData data;
-      int returnv = client->m_socket.Read(data);
-      if (returnv == FAIL)
-      { //socket broke probably
-        log("%s", client->m_socket.GetError().c_str());
-        RemoveClient(client);
-        continue;
-      }
-
-      //add data to the messagequeue
-      client->m_messagequeue.AddData(data.GetData(), data.GetSize());
-
-      //check messages from the messaqueue and parse them, if it fails remove the client
-      if (!HandleMessages(client))
-        RemoveClient(client);
+      logerror("%s", m_socket.GetError().c_str());
+      m_socket.Close();
     }
   }
 
-  log("disconnecting clients");
+  //see if there's a client we can read from
+  int sock = GetReadableClient();
+  if (sock == -1) //nope
+    return;
+
+  if (sock == m_socket.GetSock()) //we can read from the listening socket
+  {
+    CClient* client = new CClient;
+    int returnv = m_socket.Accept(client->m_socket);
+    if (returnv == SUCCESS)
+    {
+      log("%s:%i connected", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+      AddClient(client);
+    }
+    else
+    {
+      delete client;
+      log("%s", m_socket.GetError().c_str());
+    }
+  }
+  else
+  {
+    //get the client the sock fd belongs to
+    CClient* client = GetClientFromSock(sock);
+    if (client == NULL) //guess it belongs to nobody
+      return;
+
+    //try to read data from the client
+    CTcpData data;
+    int returnv = client->m_socket.Read(data);
+    if (returnv == FAIL)
+    { //socket broke probably
+      log("%s", client->m_socket.GetError().c_str());
+      RemoveClient(client);
+      return;
+    }
+
+    //add data to the messagequeue
+    client->m_messagequeue.AddData(data.GetData(), data.GetSize());
+
+    //check messages from the messaqueue and parse them, if it fails remove the client
+    if (!HandleMessages(client))
+      RemoveClient(client);
+  }
+}
+
+void CClientsHandler::Cleanup()
+{
   //kick off all clients
+  log("disconnecting clients");
   CLock lock(m_mutex);
   while(m_clients.size())
   {
@@ -160,7 +159,7 @@ int CClientsHandler::GetReadableClient()
   if (m_clients.size() == 0 && !m_socket.IsOpen()) 
   {
     lock.Leave();
-    USleep(WAITTIME, &m_stop);
+    USleep(WAITTIME);
     return -1;
   }
 
