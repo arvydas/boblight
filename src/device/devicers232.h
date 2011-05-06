@@ -19,6 +19,9 @@
 #ifndef CDEVICERS232
 #define CDEVICERS232
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+
 #include <stdint.h>
 #include "device.h"
 #include "util/serialport.h"
