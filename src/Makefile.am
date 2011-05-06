@@ -82,8 +82,6 @@ boblightd_SOURCES = \
 	util/messagequeue.h    \
 	client.cpp    \
 	client.h    \
-	connectionhandler.cpp    \
-	connectionhandler.h    \
 	light.cpp    \
 	light.h    \
 	util/baudrate.h    \

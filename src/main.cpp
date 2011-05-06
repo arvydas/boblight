@@ -24,7 +24,6 @@
 #include "util/log.h"
 #include "util/tcpsocket.h"
 #include "util/messagequeue.h"
-#include "connectionhandler.h"
 #include "client.h"
 #include "configuration.h"
 #include "device/device.h"
@@ -73,18 +72,14 @@ int main (int argc, char *argv[])
   vector<CDevice*>    devices; //where we store devices
   vector<CLight>      lights;  //lights pool
   CClientsHandler     clients(lights);
-  CConnectionHandler  connectionhandler(clients);
 
   //load and parse config
   if (!config.LoadConfigFromFile(configfile))
     return 1;
   if (!config.CheckConfig())
     return 1;
-  if (!config.BuildConfig(connectionhandler, clients, devices, lights))
+  if (!config.BuildConfig(clients, devices, lights))
     return 1;
-
-  //start the connection handler
-  connectionhandler.StartThread();
 
   //start the clients handler
   clients.StartThread();
@@ -102,9 +97,6 @@ int main (int argc, char *argv[])
     bool error = false;
 
     //check that our threads are still running
-
-    if (!connectionhandler.IsRunning())
-      error = true;
 
     if (!clients.IsRunning())
       error = true;
@@ -127,10 +119,6 @@ int main (int argc, char *argv[])
   for (int i = 0; i < devices.size(); i++)
     devices[i]->AsyncStopThread();
 
-  //signal connection handler to stop
-  log("signaling connection handler to stop");
-  connectionhandler.AsyncStopThread();
-
   //signal clientshandler to stop
   log("signaling clients handler to stop");
   clients.AsyncStopThread();
@@ -139,10 +127,6 @@ int main (int argc, char *argv[])
   log("waiting for devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
-
-  //stop the connection handler
-  log("waiting for connection handler to stop");
-  connectionhandler.StopThread();
 
   //stop the clients handler
   log("waiting for clients handler to stop");

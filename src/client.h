@@ -53,11 +53,16 @@ class CClientsHandler : public CThread
 {
   public:
     CClientsHandler(std::vector<CLight>& lights);
-    void AddClient(CClient* client); //called by the connection handler
+    void SetInterface(std::string address, int port) { m_address = address; m_port = port; }
     void FillChannels(std::vector<CChannel>& channels, int64_t time, CDevice* device); //called by devices
     
   private:
     void Process();
+
+    //where clients will connect to
+    CTcpServerSocket m_socket;
+    std::string      m_address;
+    int              m_port;
 
     //clients we have, note that it's a vector of pointers so we can use a client outside a lock
     //and the pointer stays valid even if the vector changes
@@ -65,6 +70,7 @@ class CClientsHandler : public CThread
     std::vector<CLight>&  m_lights;
 
     CMutex   m_mutex; //lock for the clients
+    void     AddClient(CClient* client);
     int      GetReadableClient();             //does select on all the client sockets, with a timeout of 100 ms
     CClient* GetClientFromSock(int sock);     //gets a client from a socket fd
     void     RemoveClient(int sock);          //removes a client based on socket

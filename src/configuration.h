@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-#include "connectionhandler.h"
 #include "light.h"
 #include "client.h"
 #include "device/device.h"
@@ -58,8 +57,7 @@ class CConfig
     bool CheckConfig(); //checks lines in the config file to make sure the syntax is correct
 
     //builds the config
-    bool BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
-                     std::vector<CLight>& lights);
+    bool BuildConfig(CClientsHandler& clients, std::vector<CDevice*>& devices, std::vector<CLight>& lights);
 
   private:
     std::string m_filename; //filename of the config file
@@ -83,7 +81,7 @@ class CConfig
     //gets a config line that starts with key
     int  GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, std::string& line);
 
-    void BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler);
+    void BuildClientsHandlerConfig(CClientsHandler& clients);
     bool BuildColorConfig(std::vector<CColor>& colors);
     bool BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler& clients);
     bool BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*>& devices, std::vector<CColor>& colors);

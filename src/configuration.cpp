@@ -509,12 +509,11 @@ int CConfig::GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, st
 }
 
 //builds the config
-bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler& clients, std::vector<CDevice*>& devices,
-                          std::vector<CLight>& lights)
+bool CConfig::BuildConfig(CClientsHandler& clients, std::vector<CDevice*>& devices, std::vector<CLight>& lights)
 {
   log("building config");
   
-  BuildConnectionHandlerConfig(connectionhandler);
+  BuildClientsHandlerConfig(clients);
 
   vector<CColor> colors;
   if (!BuildColorConfig(colors))
@@ -531,7 +530,7 @@ bool CConfig::BuildConfig(CConnectionHandler& connectionhandler, CClientsHandler
   return true;
 }
 
-void CConfig::BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler)
+void CConfig::BuildClientsHandlerConfig(CClientsHandler& clients)
 {
   //set up where to bind the listening socket
   //config for this should already be valid here, of course we can't check yet if the interface actually exists
@@ -553,7 +552,7 @@ void CConfig::BuildConnectionHandlerConfig(CConnectionHandler& connectionhandler
       StrToInt(word, port);
     }
   }
-  connectionhandler.SetInterface(interface, port);
+  clients.SetInterface(interface, port);
 }
 
 bool CConfig::BuildColorConfig(std::vector<CColor>& colors)

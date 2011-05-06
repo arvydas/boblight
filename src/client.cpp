@@ -29,8 +29,6 @@
 #include "util/sleep.h"
 #include "protocolversion.h"
 
-#define WAITTIME 100000
-
 using namespace std;
 
 CClient::CClient()
@@ -59,32 +57,61 @@ void CClientsHandler::Process()
 
   while (!m_stop)
   {
+    //open listening socket if it's not already
+    if (!m_socket.IsOpen())
+    {
+      log("opening listening socket on %s:%i", m_address.empty() ? "*" : m_address.c_str(), m_port);
+      if (!m_socket.Open(m_address, m_port, 1000000))
+      {
+        logerror("%s", m_socket.GetError().c_str());
+        m_socket.Close();
+      }
+    }
+
     //see if there's a client we can read from
     int sock = GetReadableClient();
     if (sock == -1) //nope
       continue;
 
-    //get the client the sock fd belongs to
-    CClient* client = GetClientFromSock(sock);
-    if (client == NULL) //guess it belongs to nobody
-      continue;
-
-    //try to read data from the client
-    CTcpData data;
-    int returnv = client->m_socket.Read(data);
-    if (returnv == FAIL)
-    { //socket broke probably
-      log("%s", client->m_socket.GetError().c_str());
-      RemoveClient(client);
-      continue;
+    if (sock == m_socket.GetSock()) //we can read from the listening socket
+    {
+      CClient* client = new CClient;
+      int returnv = m_socket.Accept(client->m_socket);
+      if (returnv == SUCCESS)
+      {
+        log("%s:%i connected", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+        AddClient(client);
+      }
+      else
+      {
+        delete client;
+        log("%s", m_socket.GetError().c_str());
+      }
     }
+    else
+    {
+      //get the client the sock fd belongs to
+      CClient* client = GetClientFromSock(sock);
+      if (client == NULL) //guess it belongs to nobody
+        continue;
 
-    //add data to the messagequeue
-    client->m_messagequeue.AddData(data.GetData(), data.GetSize());
+      //try to read data from the client
+      CTcpData data;
+      int returnv = client->m_socket.Read(data);
+      if (returnv == FAIL)
+      { //socket broke probably
+        log("%s", client->m_socket.GetError().c_str());
+        RemoveClient(client);
+        continue;
+      }
 
-    //check messages from the messaqueue and parse them, if it fails remove the client
-    if (!HandleMessages(client))
-      RemoveClient(client);
+      //add data to the messagequeue
+      client->m_messagequeue.AddData(data.GetData(), data.GetSize());
+
+      //check messages from the messaqueue and parse them, if it fails remove the client
+      if (!HandleMessages(client))
+        RemoveClient(client);
+    }
   }
 
   log("disconnecting clients");
@@ -94,6 +121,11 @@ void CClientsHandler::Process()
   {
     RemoveClient(m_clients.front());
   }    
+  lock.Leave();
+
+  log("closing listening socket");
+  m_socket.Close();
+
   log("clients handler stopped");
 }
 
@@ -117,13 +149,15 @@ void CClientsHandler::AddClient(CClient* client)
   m_clients.push_back(client);
 }
 
+#define WAITTIME 1000000
 //does select on all the client sockets, with a timeout of 100 ms
 int CClientsHandler::GetReadableClient()
 {
   vector<int> sockets;
   CLock lock(m_mutex);
 
-  if (m_clients.size() == 0) //no clients so we just sleep
+  //no clients so we just sleep
+  if (m_clients.size() == 0 && !m_socket.IsOpen()) 
   {
     lock.Leave();
     USleep(WAITTIME, &m_stop);
@@ -131,10 +165,10 @@ int CClientsHandler::GetReadableClient()
   }
 
   //store all the client sockets
+  sockets.push_back(m_socket.GetSock());
   for (int i = 0; i < m_clients.size(); i++)
-  {
     sockets.push_back(m_clients[i]->m_socket.GetSock());
-  }
+
   lock.Leave();
   
   int returnv, highestsock = -1;
