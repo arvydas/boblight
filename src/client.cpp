@@ -148,8 +148,8 @@ void CClientsHandler::AddClient(CClient* client)
   m_clients.push_back(client);
 }
 
-#define WAITTIME 1000000
-//does select on all the client sockets, with a timeout of 100 ms
+#define WAITTIME 10000000
+//does select on all the client sockets, with a timeout of 10 seconds
 int CClientsHandler::GetReadableClient()
 {
   vector<int> sockets;
