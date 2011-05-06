@@ -95,7 +95,7 @@ bool InitLog(string filename, ofstream& logfile)
     return false;
   }
 
-  log("start of log %s", fullpath.c_str());
+  Log("start of log %s", fullpath.c_str());
 
   return true;
 }

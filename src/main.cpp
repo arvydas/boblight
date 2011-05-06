@@ -84,7 +84,7 @@ int main (int argc, char *argv[])
   }
 
   //start the devices
-  log("starting devices");
+  Log("starting devices");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StartThread();
 
@@ -93,7 +93,7 @@ int main (int argc, char *argv[])
     clients.Process();
 
   //signal that the devices should stop
-  log("signaling devices to stop");
+  Log("signaling devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->AsyncStopThread();
 
@@ -101,11 +101,11 @@ int main (int argc, char *argv[])
   clients.Cleanup();
 
   //stop the devices
-  log("waiting for devices to stop");
+  Log("waiting for devices to stop");
   for (int i = 0; i < devices.size(); i++)
     devices[i]->StopThread();
 
-  log("exiting");
+  Log("exiting");
   
   return 0;
 }
@@ -120,24 +120,24 @@ void PrintFlags(int argc, char *argv[])
     flags += argv[i];
   }
 
-  log("%s", flags.c_str());
+  Log("%s", flags.c_str());
 }
 
 void SignalHandler(int signum)
 {
   if (signum == SIGTERM)
   {
-    log("caught SIGTERM");
+    Log("caught SIGTERM");
     g_stop = true;
   }
   else if (signum == SIGINT)
   {
-    log("caught SIGINT");
+    Log("caught SIGINT");
     g_stop = true;
   }
   else
   {
-    log("caught %i", signum);
+    Log("caught %i", signum);
   }
 }
 

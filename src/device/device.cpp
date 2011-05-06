@@ -114,23 +114,23 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
 
 void CDevice::Process()
 {
-  log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
+  Log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
       
   while(!m_stop)
   {
     //keep trying to set up the device every 10 seconds
     while(!m_stop)
     {
-      log("%s: setting up", m_name.c_str());
+      Log("%s: setting up", m_name.c_str());
       if (!SetupDevice())
       {
         CloseDevice();
-	logerror("%s: setting up failed, retrying in 10 seconds", m_name.c_str());
+	LogError("%s: setting up failed, retrying in 10 seconds", m_name.c_str());
         USleep(10000000LL, &m_stop);
       }
       else
       {
-	log("%s: setup succeeded", m_name.c_str());
+	Log("%s: setup succeeded", m_name.c_str());
         break;
       }
     }
@@ -144,9 +144,9 @@ void CDevice::Process()
 
     CloseDevice();
 
-    log("%s: closed", m_name.c_str());
+    Log("%s: closed", m_name.c_str());
   }
 
-  log("%s: stopped", m_name.c_str());
+  Log("%s: stopped", m_name.c_str());
 }
   

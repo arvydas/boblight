@@ -44,7 +44,7 @@ bool CDevicePopen::SetupDevice()
   m_process = popen(m_output.c_str(), "w");
   if (m_process == NULL)
   {
-    logerror("%s: %s", m_output.c_str(), GetErrno().c_str());
+    LogError("%s: %s", m_output.c_str(), GetErrno().c_str());
     return false;
   }
 
@@ -69,7 +69,7 @@ bool CDevicePopen::WriteOutput()
     float value = m_channels[i].GetValue(now);
     if (fprintf(m_process, "%f ", value) < 0)
     {
-      logerror("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
+      LogError("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
       return false;
     }
 
@@ -82,7 +82,7 @@ bool CDevicePopen::WriteOutput()
 
   if (fprintf(m_process, "\n") == -1 || fflush(m_process) != 0)
   {
-    logerror("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
+    LogError("%s: %s %s", m_name.c_str(), m_output.c_str(), GetErrno().c_str());
     return false;
   }
   

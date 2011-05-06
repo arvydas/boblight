@@ -64,7 +64,7 @@ bool CDeviceRS232::SetupDevice()
   //try to open the serial port
   if (!m_serialport.Open(m_output, m_rate))
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
@@ -93,7 +93,7 @@ bool CDeviceRS232::SetupDevice()
   {
     if (m_serialport.Write(m_buff, m_buffsize) == -1)
     {
-      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+      LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
       return false;
     }
   }
@@ -122,7 +122,7 @@ bool CDeviceRS232::WriteOutput()
   //write the channel values out the serial port
   if (m_serialport.Write(m_buff, m_buffsize) == -1)
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 

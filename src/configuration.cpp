@@ -43,13 +43,13 @@ bool CConfig::LoadConfigFromFile(string file)
 
   m_filename = file;
   
-  log("opening %s", file.c_str());
+  Log("opening %s", file.c_str());
 
   //try to open the config file
   ifstream configfile(file.c_str());
   if (configfile.fail())
   {
-    logerror("%s: %s", file.c_str(), GetErrno().c_str());
+    LogError("%s: %s", file.c_str(), GetErrno().c_str());
     return false;
   }
 
@@ -131,7 +131,7 @@ bool CConfig::LoadConfigFromFile(string file)
 
 void CConfig::PrintConfig()
 {
-  log("[global]");
+  Log("[global]");
 
   for (int i = 0; i < m_globalconfiglines.size(); i++)
   {
@@ -140,42 +140,42 @@ void CConfig::PrintConfig()
     TabsToSpaces(line);
 
     //print the line to the log
-    log("%i %s", m_globalconfiglines[i].linenr, line.c_str());
+    Log("%i %s", m_globalconfiglines[i].linenr, line.c_str());
   }
 
-  log("%i devices", m_devicelines.size());
+  Log("%i devices", m_devicelines.size());
   for (int i = 0; i < m_devicelines.size(); i++)
   {
-    log("[device] %i", i);
+    Log("[device] %i", i);
     for (int j = 0; j < m_devicelines[i].lines.size(); j++)
     {
       string line = m_devicelines[i].lines[j].line;
       TabsToSpaces(line);
-      log("%i %s", m_devicelines[i].lines[j].linenr, line.c_str());
+      Log("%i %s", m_devicelines[i].lines[j].linenr, line.c_str());
     }
   }
 
-  log("%i colors", m_colorlines.size());
+  Log("%i colors", m_colorlines.size());
   for (int i = 0; i < m_colorlines.size(); i++)
   {
-    log("[color] %i", i);
+    Log("[color] %i", i);
     for (int j = 0; j < m_colorlines[i].lines.size(); j++)
     {
       string line = m_colorlines[i].lines[j].line;
       TabsToSpaces(line);
-      log("%i %s", m_colorlines[i].lines[j].linenr, line.c_str());
+      Log("%i %s", m_colorlines[i].lines[j].linenr, line.c_str());
     }
   }
 
-  log("%i lights", m_lightlines.size());
+  Log("%i lights", m_lightlines.size());
   for (int i = 0; i < m_lightlines.size(); i++)
   {
-    log("[light] %i", i);
+    Log("[light] %i", i);
     for (int j = 0; j < m_lightlines[i].lines.size(); j++)
     {
       string line = m_lightlines[i].lines[j].line;
       TabsToSpaces(line);
-      log("%i %s", m_lightlines[i].lines[j].linenr, line.c_str());
+      Log("%i %s", m_lightlines[i].lines[j].linenr, line.c_str());
     }
   }
 }
@@ -196,7 +196,7 @@ void CConfig::TabsToSpaces(std::string& line)
 bool CConfig::CheckConfig()
 {
   bool valid = true;
-  log("checking config lines");
+  Log("checking config lines");
 
   if (!CheckGlobalConfig())
     valid = false;
@@ -211,7 +211,7 @@ bool CConfig::CheckConfig()
     valid = false;
   
   if (valid)
-    log("config lines valid");
+    Log("config lines valid");
   
   return valid;
 }
@@ -230,7 +230,7 @@ bool CConfig::CheckGlobalConfig()
 
     if (!GetWord(line, value)) //every line here needs to have another word
     {
-      logerror("%s line %i: no value for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
+      LogError("%s line %i: no value for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
       continue;
     }
@@ -244,13 +244,13 @@ bool CConfig::CheckGlobalConfig()
       int port;
       if (!StrToInt(value, port) || port < 0 || port > 65535)
       {
-        logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, value.c_str(), key.c_str());
+        LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, value.c_str(), key.c_str());
         valid = false;
       }
     }
     else //we don't know this one
     {
-      logerror("%s line %i: unknown key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
+      LogError("%s line %i: unknown key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
     }
   }
@@ -264,7 +264,7 @@ bool CConfig::CheckDeviceConfig()
 
   if (m_devicelines.size() == 0)
   {
-    logerror("%s no devices defined", m_filename.c_str());
+    LogError("%s no devices defined", m_filename.c_str());
     return false;
   }
 
@@ -281,7 +281,7 @@ bool CConfig::CheckDeviceConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        logerror("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -295,7 +295,7 @@ bool CConfig::CheckDeviceConfig()
         int ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32))
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }          
       }
@@ -306,7 +306,7 @@ bool CConfig::CheckDeviceConfig()
         {
           if (!HexStrToInt(value, ivalue) || (ivalue > 0xFF))
           {
-            logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+            LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
             valid = false;
           }
           if (!GetWord(line, value))
@@ -318,7 +318,7 @@ bool CConfig::CheckDeviceConfig()
         double latency;
         if (!StrToFloat(value, latency) || latency <= 0.0)
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
@@ -327,13 +327,13 @@ bool CConfig::CheckDeviceConfig()
         bool bValue;
         if (!StrToBool(value, bValue))
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
       else //don't know this one
       {
-        logerror("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
@@ -348,7 +348,7 @@ bool CConfig::CheckColorConfig()
 
   if (m_colorlines.size() == 0)
   {
-    logerror("%s no colors defined", m_filename.c_str());
+    LogError("%s no colors defined", m_filename.c_str());
     return false;
   }
 
@@ -365,7 +365,7 @@ bool CConfig::CheckColorConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        logerror("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -379,7 +379,7 @@ bool CConfig::CheckColorConfig()
         float fvalue;
         if (!StrToFloat(value, fvalue) || fvalue < 0.0 || (key != "gamma" && fvalue > 1.0))
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
@@ -388,13 +388,13 @@ bool CConfig::CheckColorConfig()
         int rgb;
         if (!HexStrToInt(value, rgb) || (rgb & 0xFF000000))
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
       else //don't know this one
       {
-        logerror("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
@@ -409,7 +409,7 @@ bool CConfig::CheckLightConfig()
 
   if (m_lightlines.size() == 0)
   {
-    logerror("%s no lights defined", m_filename.c_str());
+    LogError("%s no lights defined", m_filename.c_str());
     return false;
   }
 
@@ -426,7 +426,7 @@ bool CConfig::CheckLightConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        logerror("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -441,7 +441,7 @@ bool CConfig::CheckLightConfig()
         float scan[2];
         if (!GetWord(line, scanrange))
         {
-          logerror("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
+          LogError("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
           valid = false;
           continue;
         }
@@ -451,7 +451,7 @@ bool CConfig::CheckLightConfig()
         if (sscanf(scanrange.c_str(), "%f %f", scan, scan + 1) != 2
             || scan[0] < 0.0 || scan[0] > 100.0 || scan[1] < 0.0 || scan[1] > 100.0 || scan[0] > scan[1])
         {
-          logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, scanrange.c_str(), key.c_str());
+          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, scanrange.c_str(), key.c_str());
           valid = false;
           continue;
         }
@@ -464,7 +464,7 @@ bool CConfig::CheckLightConfig()
         {
           if (!GetWord(line, value))
           {
-            logerror("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
+            LogError("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
             valid = false;
             break;
           }
@@ -474,14 +474,14 @@ bool CConfig::CheckLightConfig()
           int channel;
           if (!StrToInt(value, channel) || channel <= 0)
           {
-            logerror("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+            LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
             valid = false;
           }
         }
       }
       else //don't know this one
       {
-        logerror("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
@@ -511,7 +511,7 @@ int CConfig::GetLineWithKey(std::string key, std::vector<CConfigLine>& lines, st
 //builds the config
 bool CConfig::BuildConfig(CClientsHandler& clients, std::vector<CDevice*>& devices, std::vector<CLight>& lights)
 {
-  log("building config");
+  Log("building config");
   
   BuildClientsHandlerConfig(clients);
 
@@ -525,7 +525,7 @@ bool CConfig::BuildConfig(CClientsHandler& clients, std::vector<CDevice*>& devic
   if (!BuildLightConfig(lights, devices, colors))
     return false;
   
-  log("built config successfully");
+  Log("built config successfully");
 
   return true;
 }
@@ -609,7 +609,7 @@ bool CConfig::BuildColorConfig(std::vector<CColor>& colors)
     //we need at least a name for a color
     if (color.GetName().empty())
     {
-      logerror("%s: color %i has no name", m_filename.c_str(), i + 1);
+      LogError("%s: color %i has no name", m_filename.c_str(), i + 1);
       return false;
     }
 
@@ -687,7 +687,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
     }
     else
     {
-      logerror("%s line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());
+      LogError("%s line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());
       return false;
     }
   }
@@ -737,7 +737,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
       }
       if (!colorfound) //this color doesn't exist
       {
-        logerror("%s line %i: no color with name %s", m_filename.c_str(), m_lightlines[i].lines[j].linenr, colorname.c_str());
+        LogError("%s line %i: no color with name %s", m_filename.c_str(), m_lightlines[i].lines[j].linenr, colorname.c_str());
         return false;
       }
 
@@ -752,7 +752,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
         {
           if (ichannel > devices[k]->GetNrChannels())
           {
-            logerror("%s line %i: channel %i wanted but device %s has %i channels", m_filename.c_str(),
+            LogError("%s line %i: channel %i wanted but device %s has %i channels", m_filename.c_str(),
                 m_lightlines[i].lines[j].linenr, ichannel, devices[k]->GetName().c_str(), devices[k]->GetNrChannels());
             return false;
           }
@@ -766,7 +766,7 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
       }
       if (!devicefound)
       {
-        logerror("%s line %i: no device with name %s", m_filename.c_str(), m_lightlines[i].lines[j].linenr, devicename.c_str());
+        LogError("%s line %i: no device with name %s", m_filename.c_str(), m_lightlines[i].lines[j].linenr, devicename.c_str());
         return false;
       }
     }
@@ -900,7 +900,7 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
   int pos = sounddevice->GetOutput().find(':');
   if (pos == string::npos || sounddevice->GetOutput().size() == pos)
   {
-    logerror("%s: device %s output \"%s\" is not in api:device format",
+    LogError("%s: device %s output \"%s\" is not in api:device format",
         m_filename.c_str(), sounddevice->GetName().c_str(), sounddevice->GetOutput().c_str());
     return false;
   }
@@ -945,7 +945,7 @@ bool CConfig::SetDeviceName(CDevice* device, int devicenr)
   int linenr = GetLineWithKey("name", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %i has no name", m_filename.c_str(), devicenr + 1);
+    LogError("%s: device %i has no name", m_filename.c_str(), devicenr + 1);
     return false;
   }
   GetWord(line, strvalue);
@@ -960,7 +960,7 @@ bool CConfig::SetDeviceOutput(CDevice* device, int devicenr)
   int linenr = GetLineWithKey("output", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %s has no output", m_filename.c_str(), device->GetName().c_str());
+    LogError("%s: device %s has no output", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
@@ -975,7 +975,7 @@ bool CConfig::SetDeviceChannels(CDevice* device, int devicenr)
   int linenr = GetLineWithKey("channels", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %s has no channels", m_filename.c_str(), device->GetName().c_str());
+    LogError("%s: device %s has no channels", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
@@ -993,7 +993,7 @@ bool CConfig::SetDeviceRate(CDevice* device, int devicenr)
   int linenr = GetLineWithKey("rate", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %s has no rate", m_filename.c_str(), device->GetName().c_str());
+    LogError("%s: device %s has no rate", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
@@ -1011,7 +1011,7 @@ bool CConfig::SetDeviceInterval(CDevice* device, int devicenr)
   int linenr = GetLineWithKey("interval", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %s has no interval", m_filename.c_str(), device->GetName().c_str());
+    LogError("%s: device %s has no interval", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
@@ -1067,7 +1067,7 @@ bool CConfig::SetDevicePeriod(CDeviceSound* device, int devicenr)
   int linenr = GetLineWithKey("period", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
   {
-    logerror("%s: device %s has no period", m_filename.c_str(), device->GetName().c_str());
+    LogError("%s: device %s has no period", m_filename.c_str(), device->GetName().c_str());
     return false;
   }
   GetWord(line, strvalue);
@@ -1155,7 +1155,7 @@ bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int l
   int linenr = GetLineWithKey("name", lines, line);
   if (linenr == -1)
   {
-    logerror("%s: light %i has no name", m_filename.c_str(), lightnr + 1);
+    LogError("%s: light %i has no name", m_filename.c_str(), lightnr + 1);
     return false;
   }
 

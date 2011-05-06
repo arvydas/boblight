@@ -33,7 +33,7 @@ bool CDeviceLtbl::SetupDevice()
 
   if (!m_serialport.Open(m_output, m_rate))
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
@@ -83,7 +83,7 @@ bool CDeviceLtbl::WriteOutput()
     //write output to the serial port
     if (m_serialport.Write(prefix, 4) == -1 || m_serialport.Write(m_buff, m_channels.size() * 2) == -1)
     {
-      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+      LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
       return false;
     }
   }
@@ -130,14 +130,14 @@ bool CDeviceLtbl::OpenController()
   //write to the serial port
   if (m_serialport.Write(buff, 258) == -1 || m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(open, 2) == -1)
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
   //try to get the current values from the controller
   if (m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(getvalues, 4) == -1)
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -148,7 +148,7 @@ bool CDeviceLtbl::OpenController()
   //read the startchannel and number of channels from the controller with a timeout of 1 second
   if (m_serialport.Read(buff, 2, 1000000) == -1)
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -157,14 +157,14 @@ bool CDeviceLtbl::OpenController()
 
   if (startchannel < 0 || nrchannels <= 0 || startchannel + nrchannels > (int)m_channels.size())
   {
-    logerror("%s: %s sent gibberish, startchannel: %i, nrchannels: %i", m_name.c_str(), m_output.c_str(), startchannel, nrchannels);
+    LogError("%s: %s sent gibberish, startchannel: %i, nrchannels: %i", m_name.c_str(), m_output.c_str(), startchannel, nrchannels);
     return false;
   }
 
   //read the channel values from the controller with a timeout of 1 second
   if (m_serialport.Read(buff, nrchannels * 2, 1000000) == -1)
   {
-    logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
@@ -178,7 +178,7 @@ bool CDeviceLtbl::OpenController()
   }
 
   m_isopened = true;
-  log("%s: controller opened", m_name.c_str());
+  Log("%s: controller opened", m_name.c_str());
   
   return true;
 }
@@ -196,11 +196,11 @@ bool CDeviceLtbl::CloseController()
   //write the prefix and close command
   if (m_serialport.Write(prefix, 2) == -1 || m_serialport.Write(close, 2) == -1)
   {
-    logerror("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
+    LogError("%s %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
-  log("%s: controller closed", m_name.c_str());
+  Log("%s: controller closed", m_name.c_str());
   
   return true;
 }
@@ -215,7 +215,7 @@ bool CDeviceLtbl::WaitForPrefix()
     prefix[0] = prefix[1];
     if (m_serialport.Read(prefix + 1, 1, 1000000) == -1)
     {
-      logerror("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+      LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
       return false;
     }
 
