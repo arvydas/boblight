@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 void PrintError(const std::string& error);
 bool GetWord(std::string& data, std::string& word);
@@ -63,23 +64,6 @@ inline A Clamp(A value, B min, C max)
 }
 
 template <class A, class B>
-inline A Round(B value)
-{
-  if (value == 0.0)
-  {
-    return 0;
-  }
-  else if (value > 0.0)
-  {
-    return (A)(value + 0.5);
-  }
-  else
-  {
-    return (A)(value - 0.5);
-  }
-}
-
-template <class A, class B>
 inline A Max(A value1, B value2)
 {
   return value1 > value2 ? value1 : value2;
@@ -107,6 +91,43 @@ template <class T>
 inline T Abs(T value)
 {
   return value > 0 ? value : -value;
+}
+
+template <class A, class B>
+inline A Round(B value)
+{
+  if (value == 0.0)
+  {
+    return 0;
+  }
+  else if (value > 0.0)
+  {
+    return (A)(value + 0.5);
+  }
+  else
+  {
+    return (A)(value - 0.5);
+  }
+}
+
+inline int32_t Round32(float value)
+{
+  return lrintf(value);
+}
+
+inline int32_t Round32(double value)
+{
+  return lrint(value);
+}
+
+inline int64_t Round64(float value)
+{
+  return llrintf(value);
+}
+
+inline int64_t Round64(double value)
+{
+  return llrint(value);
 }
 
 inline bool StrToInt(const std::string& data, int& value)

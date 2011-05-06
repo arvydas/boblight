@@ -221,10 +221,10 @@ void CLight::SetScanRange(int width, int height)
     m_width = width;
     m_height = height;
 
-    m_hscanscaled[0] = Round<int>(m_hscan[0] / 100.0 * ((float)height - 1));
-    m_hscanscaled[1] = Round<int>(m_hscan[1] / 100.0 * ((float)height - 1));
-    m_vscanscaled[0] = Round<int>(m_vscan[0] / 100.0 * ((float)width  - 1));
-    m_vscanscaled[1] = Round<int>(m_vscan[1] / 100.0 * ((float)width  - 1));
+    m_hscanscaled[0] = Round32(m_hscan[0] / 100.0 * ((float)height - 1));
+    m_hscanscaled[1] = Round32(m_hscan[1] / 100.0 * ((float)height - 1));
+    m_vscanscaled[0] = Round32(m_vscan[0] / 100.0 * ((float)width  - 1));
+    m_vscanscaled[1] = Round32(m_vscan[1] / 100.0 * ((float)width  - 1));
 }
 
 int CBoblight::Connect(const char* address, int port, int usectimeout)

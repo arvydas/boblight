@@ -77,7 +77,7 @@ bool CGrabber::Setup()
 
   if (m_interval > 0.0) //set up timer
   {
-    m_timer.SetInterval(Round<int64_t>(m_interval * 1000000.0));
+    m_timer.SetInterval(Round64(m_interval * 1000000.0));
   }
   else //interval is negative so sync to vblank instead
   {
@@ -116,7 +116,7 @@ bool CGrabber::Wait()
   }
   else //interval is negative, wait for vblanks
   {
-    if (!m_vblanksignal.Wait(Round<unsigned int>(m_interval * -1.0)))
+    if (!m_vblanksignal.Wait(Round32(m_interval * -1.0)))
     {
       m_error = m_vblanksignal.GetError();
       return false; //unrecoverable error

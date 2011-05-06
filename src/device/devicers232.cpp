@@ -112,7 +112,7 @@ bool CDeviceRS232::WriteOutput()
   //put the values in 1 byte unsigned in the buffer
   for (int i = 0; i < m_channels.size(); i++)
   {
-    int64_t output = Round<int64_t>((double)m_channels[i].GetValue(now) * maxvalue);
+    int64_t output = Round64((double)m_channels[i].GetValue(now) * maxvalue);
     output = Clamp(output, 0, maxvalue);
 
     for (int j = 0; j < m_bytes; j++)

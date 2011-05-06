@@ -67,7 +67,7 @@ bool CDeviceLtbl::WriteOutput()
       isused = true;
 
     //output value is 16 bit big endian
-    int value = Clamp(Round<int>(m_channels[i].GetValue(now) * 65535.0f), 0, 65535);
+    int value = Clamp(Round32(m_channels[i].GetValue(now) * 65535.0f), 0, 65535);
     m_buff[i * 2 + 0] = (uint8_t)((value >> 8) & 0xFF);
     m_buff[i * 2 + 1] = (uint8_t)((value >> 0) & 0xFF);
   }

@@ -168,7 +168,7 @@ bool CDeviceSound::SetupDevice()
   m_started = true;
 
   m_pwmphase = 0x7FFF;
-  m_pwmperiod = Round<int>((double)m_rate / 93.75); //this will use 512 samples on 48 kHz
+  m_pwmperiod = Round32((double)m_rate / 93.75); //this will use 512 samples on 48 kHz
   m_pwmcount = 0;
 
   return true;
@@ -262,7 +262,7 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
   //store the values from m_channels, because they get recalculated for each call to GetValue()
   for (int i = 0; i < m_channels.size(); i++)
   {
-    m_outputvalues[i] = Round<int>(m_channels[i].GetValue(now) * m_pwmperiod);
+    m_outputvalues[i] = Round32(m_channels[i].GetValue(now) * m_pwmperiod);
     m_outputvalues[i] = Clamp(m_outputvalues[i], 0, m_pwmperiod);
   }
 
