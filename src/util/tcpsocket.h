@@ -54,6 +54,7 @@ class CTcpSocket //base class
 
     virtual int Open(std::string address, int port, int usectimeout = -1);
     void Close();
+    bool IsOpen() { return m_sock != -1; }
 
     std::string GetError()   { return m_error; }
     std::string GetAddress() { return m_address; }
