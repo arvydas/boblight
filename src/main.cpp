@@ -68,18 +68,20 @@ int main (int argc, char *argv[])
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
 
-  CConfig             config;  //class for loading and parsing config
-  vector<CDevice*>    devices; //where we store devices
-  vector<CLight>      lights;  //lights pool
-  CClientsHandler     clients(lights);
+  vector<CDevice*> devices; //where we store devices
+  vector<CLight>   lights;  //lights pool
+  CClientsHandler  clients(lights);
 
-  //load and parse config
-  if (!config.LoadConfigFromFile(configfile))
-    return 1;
-  if (!config.CheckConfig())
-    return 1;
-  if (!config.BuildConfig(clients, devices, lights))
-    return 1;
+  { //save some ram by removing CConfig from the stack when it's not needed anymore
+    CConfig config;  //class for loading and parsing config
+    //load and parse config
+    if (!config.LoadConfigFromFile(configfile))
+      return 1;
+    if (!config.CheckConfig())
+      return 1;
+    if (!config.BuildConfig(clients, devices, lights))
+      return 1;
+  }
 
   //start the clients handler
   clients.StartThread();
