@@ -67,49 +67,52 @@ void CClientsHandler::Process()
     }
   }
 
-  //see if there's a client we can read from
-  int sock = GetReadableFd();
-  if (sock == -1) //nope
-    return;
+  //see if there's a socket we can read from
+  vector<int> sockets;
+  GetReadableFd(sockets);
 
-  if (sock == m_socket.GetSock()) //we can read from the listening socket
+  for (vector<int>::iterator it = sockets.begin(); it != sockets.end(); it++)
   {
-    CClient* client = new CClient;
-    int returnv = m_socket.Accept(client->m_socket);
-    if (returnv == SUCCESS)
+    int sock = *it;
+    if (sock == m_socket.GetSock()) //we can read from the listening socket
     {
-      log("%s:%i connected", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
-      AddClient(client);
+      CClient* client = new CClient;
+      int returnv = m_socket.Accept(client->m_socket);
+      if (returnv == SUCCESS)
+      {
+        log("%s:%i connected", client->m_socket.GetAddress().c_str(), client->m_socket.GetPort());
+        AddClient(client);
+      }
+      else
+      {
+        delete client;
+        log("%s", m_socket.GetError().c_str());
+      }
     }
     else
     {
-      delete client;
-      log("%s", m_socket.GetError().c_str());
+      //get the client the sock fd belongs to
+      CClient* client = GetClientFromSock(sock);
+      if (client == NULL) //guess it belongs to nobody
+        continue;
+
+      //try to read data from the client
+      CTcpData data;
+      int returnv = client->m_socket.Read(data);
+      if (returnv == FAIL)
+      { //socket broke probably
+        log("%s", client->m_socket.GetError().c_str());
+        RemoveClient(client);
+        continue;
+      }
+
+      //add data to the messagequeue
+      client->m_messagequeue.AddData(data.GetData(), data.GetSize());
+
+      //check messages from the messaqueue and parse them, if it fails remove the client
+      if (!HandleMessages(client))
+        RemoveClient(client);
     }
-  }
-  else
-  {
-    //get the client the sock fd belongs to
-    CClient* client = GetClientFromSock(sock);
-    if (client == NULL) //guess it belongs to nobody
-      return;
-
-    //try to read data from the client
-    CTcpData data;
-    int returnv = client->m_socket.Read(data);
-    if (returnv == FAIL)
-    { //socket broke probably
-      log("%s", client->m_socket.GetError().c_str());
-      RemoveClient(client);
-      return;
-    }
-
-    //add data to the messagequeue
-    client->m_messagequeue.AddData(data.GetData(), data.GetSize());
-
-    //check messages from the messaqueue and parse them, if it fails remove the client
-    if (!HandleMessages(client))
-      RemoveClient(client);
   }
 }
 
@@ -152,9 +155,8 @@ void CClientsHandler::AddClient(CClient* client)
 
 #define WAITTIME 10000000
 //does select on all the client sockets, with a timeout of 10 seconds
-int CClientsHandler::GetReadableFd()
+void CClientsHandler::GetReadableFd(vector<int>& sockets)
 {
-  vector<int> sockets;
   CLock lock(m_mutex);
 
   //no clients so we just sleep
@@ -162,52 +164,50 @@ int CClientsHandler::GetReadableFd()
   {
     lock.Leave();
     USleep(WAITTIME, &g_stop);
-    return -1;
+    return;
   }
 
   //store all the client sockets
-  sockets.push_back(m_socket.GetSock());
+  vector<int> waitsockets;
+  waitsockets.push_back(m_socket.GetSock());
   for (int i = 0; i < m_clients.size(); i++)
-    sockets.push_back(m_clients[i]->m_socket.GetSock());
+    waitsockets.push_back(m_clients[i]->m_socket.GetSock());
 
   lock.Leave();
   
-  int returnv, highestsock = -1;
+  int    highestsock = -1;
   fd_set rsocks;
-  struct timeval tv;
 
   FD_ZERO(&rsocks);
-
-  for (int i = 0; i < sockets.size(); i++)
+  for (int i = 0; i < waitsockets.size(); i++)
   {
-    FD_SET(sockets[i], &rsocks);
-    if (sockets[i] > highestsock)
-      highestsock = sockets[i];
+    FD_SET(waitsockets[i], &rsocks);
+    if (waitsockets[i] > highestsock)
+      highestsock = waitsockets[i];
   }
 
+  struct timeval tv;
   tv.tv_sec = WAITTIME / 1000000;
   tv.tv_usec = (WAITTIME % 1000000);
 
-  returnv = select(highestsock + 1, &rsocks, NULL, NULL, &tv);
+  int returnv = select(highestsock + 1, &rsocks, NULL, NULL, &tv);
 
   if (returnv == 0) //select timed out
   {
-    return -1;
+    return;
   }
   else if (returnv == -1) //select had an error
   {
     log("select() %s", GetErrno().c_str());
-    return -1;
+    return;
   }
 
-  //just return the first socket which can be read
-  for (int i = 0; i < sockets.size(); i++)
+  //return all sockets that can be read
+  for (int i = 0; i < waitsockets.size(); i++)
   {
-    if (FD_ISSET(sockets[i], &rsocks))
-      return sockets[i];
+    if (FD_ISSET(waitsockets[i], &rsocks))
+      sockets.push_back(waitsockets[i]);
   }
-
-  return -1;
 }
 
 //gets a client from a socket fd
