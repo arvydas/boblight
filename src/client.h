@@ -71,7 +71,7 @@ class CClientsHandler
 
     CMutex   m_mutex; //lock for the clients
     void     AddClient(CClient* client);
-    int      GetReadableClient();             //does select on all the client sockets, with a timeout of 100 ms
+    int      GetReadableFd();                 //does select on all the sockets
     CClient* GetClientFromSock(int sock);     //gets a client from a socket fd
     void     RemoveClient(int sock);          //removes a client based on socket
     void     RemoveClient(CClient* client);   //removes a client based on pointer

@@ -68,7 +68,7 @@ void CClientsHandler::Process()
   }
 
   //see if there's a client we can read from
-  int sock = GetReadableClient();
+  int sock = GetReadableFd();
   if (sock == -1) //nope
     return;
 
@@ -152,7 +152,7 @@ void CClientsHandler::AddClient(CClient* client)
 
 #define WAITTIME 10000000
 //does select on all the client sockets, with a timeout of 10 seconds
-int CClientsHandler::GetReadableClient()
+int CClientsHandler::GetReadableFd()
 {
   vector<int> sockets;
   CLock lock(m_mutex);
