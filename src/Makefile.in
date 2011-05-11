@@ -129,15 +129,6 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 SOURCES = $(libboblight_la_SOURCES) $(boblight_X11_SOURCES) \
 	$(boblight_constant_SOURCES) $(boblight_v4l_SOURCES) \
 	$(boblightd_SOURCES)
@@ -266,97 +257,60 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = 
 AM_CFLAGS = \
-	 -Wall\
+	 -Wall \
 	 -g
 
 boblight_v4l_SOURCES = \
-	clients/boblight-v4l/boblight-v4l.cpp\
+	clients/boblight-v4l/boblight-v4l.cpp \
 	clients/boblight-v4l/flagmanager-v4l.cpp \
-	clients/boblight-v4l/flagmanager-v4l.h \
 	util/misc.cpp \
-	util/misc.h \
 	clients/flagmanager.cpp \
-	clients/flagmanager.h \
-	clients/boblight-v4l/videograbber.cpp \
-	clients/boblight-v4l/videograbber.h 
+	clients/boblight-v4l/videograbber.cpp
 
 boblight_v4l_LDFLAGS = -lavutil -lavcodec -lavformat -lswscale -lavdevice -lX11
 boblight_constant_SOURCES = \
-	clients/boblight-constant/boblight-constant.cpp\
+	clients/boblight-constant/boblight-constant.cpp \
 	clients/flagmanager.cpp \
-	clients/flagmanager.h \
 	clients/boblight-constant/flagmanager-constant.cpp \
-	clients/boblight-constant/flagmanager-constant.h \
-	util/misc.cpp \
-	util/misc.h
+	util/misc.cpp
 
 boblight_X11_SOURCES = \
-	clients/boblight-X11/boblight-X11.cpp\
+	clients/boblight-X11/boblight-X11.cpp \
 	clients/boblight-X11/vblanksignal.cpp \
-	clients/boblight-X11/vblanksignal.h \
 	util/timer.cpp \
 	util/clock.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
 	util/thread.cpp \
 	util/misc.cpp \
-	util/misc.h \
 	clients/boblight-X11/grabber-base.cpp \
-	clients/boblight-X11/grabber-base.h \
 	clients/boblight-X11/grabber-xgetimage.cpp \
-	clients/boblight-X11/grabber-xgetimage.h \
 	clients/boblight-X11/grabber-xrender.cpp \
-	clients/boblight-X11/grabber-xrender.h \
 	clients/boblight-X11/flagmanager-X11.cpp \
-	clients/boblight-X11/flagmanager-X11.h \
-	clients/flagmanager.cpp \
-	clients/flagmanager.h
+	clients/flagmanager.cpp
 
 boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
 boblightd_SOURCES = \
-	util/clock.cpp    \
-	util/clock.h    \
-	util/condition.cpp    \
-	util/condition.h    \
-	util/lock.h    \
-	util/log.cpp    \
-	util/log.h    \
-	util/misc.cpp    \
-	util/misc.h    \
-	util/mutex.cpp    \
-	util/mutex.h    \
-	util/thread.cpp    \
-	util/thread.h    \
-	util/timer.cpp    \
-	util/timer.h    \
-	util/serialport.cpp    \
-	util/serialport.h    \
-	main.cpp    \
-	util/tcpsocket.cpp    \
-	util/tcpsocket.h    \
-	util/messagequeue.cpp    \
-	util/messagequeue.h    \
-	client.cpp    \
-	client.h    \
-	light.cpp    \
-	light.h    \
-	util/baudrate.h    \
-	configuration.h    \
-	configuration.cpp    \
-	device/device.cpp    \
-	device/device.h    \
-	device/devicepopen.cpp    \
-	device/devicepopen.h    \
-	device/deviceltbl.cpp    \
-	device/deviceltbl.h    \
-	device/devicesound.cpp    \
-	device/devicesound.h    \
-	device/devicers232.cpp    \
-	device/devicers232.h    \
-	device/devicedioder.cpp    \
-	device/devicedioder.h    \
-	protocolversion.h    \
-        util/signaltimer.h \
+	util/clock.cpp \
+	util/condition.cpp \
+	util/log.cpp \
+	util/misc.cpp \
+	util/mutex.cpp \
+	util/thread.cpp \
+	util/timer.cpp \
+	util/serialport.cpp \
+	main.cpp \
+	util/tcpsocket.cpp \
+	util/messagequeue.cpp \
+	client.cpp \
+	light.cpp \
+	configuration.cpp \
+	device/device.cpp \
+	device/devicepopen.cpp \
+	device/deviceltbl.cpp \
+	device/devicesound.cpp \
+	device/devicers232.cpp \
+	device/devicedioder.cpp \
         util/signaltimer.cpp
 
 boblightd_LDFLAGS = -lportaudio
@@ -365,20 +319,12 @@ lib_LTLIBRARIES = \
 	libboblight.la
 
 libboblight_la_SOURCES = \
-	lib/boblight-client.cpp\
-	lib/boblight-client.h \
+	lib/boblight-client.cpp \
 	lib/boblight.cpp \
-	lib/boblight.h \
 	util/clock.cpp \
-	util/clock.h \
 	util/messagequeue.cpp \
-	util/messagequeue.h \
 	util/misc.cpp \
-	util/misc.h \
-	util/tcpsocket.cpp \
-	util/tcpsocket.h \
-	lib/boblight-functions.h \
-	lib/options.h
+	util/tcpsocket.cpp
 
 libboblight_la_CPPFLAGS = $(AM_CPPFLAGS)
 all: all-am
