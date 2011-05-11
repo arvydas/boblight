@@ -36,7 +36,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = boblightd$(EXEEXT) boblight-X11$(EXEEXT) \
-	boblight-constant$(EXEEXT) boblight-v4l$(EXEEXT)
+	boblight-constant$(EXEEXT) $(am__EXEEXT_1)
+@HAVE_FFMPEG_TRUE@am__append_1 = boblight-v4l
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -76,6 +77,7 @@ am_libboblight_la_OBJECTS = libboblight_la-boblight-client.lo \
 	libboblight_la-messagequeue.lo libboblight_la-misc.lo \
 	libboblight_la-tcpsocket.lo
 libboblight_la_OBJECTS = $(am_libboblight_la_OBJECTS)
+@HAVE_FFMPEG_TRUE@am__EXEEXT_1 = boblight-v4l$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
 	vblanksignal.$(OBJEXT) timer.$(OBJEXT) clock.$(OBJEXT) \

@@ -33,15 +33,23 @@ dnl boblight-X11 and boblight-opengl
 AC_CHECK_LIB(GL       ,[main],AC_DEFINE([HAVE_LIBGL],        [1], [ ]),AC_MSG_ERROR([Missing a required library]))
 
 dnl boblight-v4l
-AC_CHECK_LIB(avutil   ,[main],AC_DEFINE([HAVE_LIBAVUTIL],    [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(avcodec  ,[main],AC_DEFINE([HAVE_LIBAVCODEC],   [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(avformat ,[main],AC_DEFINE([HAVE_LIBAVFORMAT],  [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavcodec -lavutil])
-AC_CHECK_LIB(swscale  ,[main],AC_DEFINE([HAVE_LIBSWSCALE],   [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavutil])
-AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE],  [1], [ ]),AC_MSG_ERROR([Missing a required library]), [-lavcodec -lavutil -lavformat])
+AC_ARG_WITH([ffmpeg], [AS_HELP_STRING([--without-ffmpeg], [Disable ffmpeg support (boblight-v4l will not be built)])], [],
+[with_ffmpeg=check])
+
+errormsgh="Missing a required header, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
+errormsgl="Missing a required library, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
+AS_IF([test "x$with_ffmpeg" = xcheck], [
+AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h],,AC_MSG_ERROR([$errormsgh]))
+AC_CHECK_LIB(avutil   ,[main],AC_DEFINE([HAVE_LIBAVUTIL],    [1], [ ]),AC_MSG_ERROR([$errormsgl])) 
+AC_CHECK_LIB(avcodec  ,[main],AC_DEFINE([HAVE_LIBAVCODEC],   [1], [ ]),AC_MSG_ERROR([$errormsgl]))
+AC_CHECK_LIB(avformat ,[main],AC_DEFINE([HAVE_LIBAVFORMAT],  [1], [ ]),AC_MSG_ERROR([$errormsgl]), [-lavcodec -lavutil])
+AC_CHECK_LIB(swscale  ,[main],AC_DEFINE([HAVE_LIBSWSCALE],   [1], [ ]),AC_MSG_ERROR([$errormsgl]), [-lavutil])
+AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE],  [1], [ ]),AC_MSG_ERROR([$errormsgl]), [-lavcodec -lavutil -lavformat])
+])
+AM_CONDITIONAL(HAVE_FFMPEG, [test "x$with_ffmpeg" = xcheck])
 
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,AC_MSG_ERROR([Missing a required header]), [#include <X11/Xlib.h>])
-AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([portaudio.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_TYPE([PaStreamCallbackTimeInfo], , AC_MSG_ERROR([boblight requires portaudio v19 headers!]), [[#include <portaudio.h>]])
 
@@ -49,3 +57,5 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 ])
+
+AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--without-ffmpeg passed, boblight-v4l will not be built])])

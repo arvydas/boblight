@@ -8,8 +8,11 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = boblightd \
 	boblight-X11\
-	boblight-constant\
-	boblight-v4l
+	boblight-constant
+        
+if HAVE_FFMPEG
+bin_PROGRAMS += boblight-v4l
+endif
 
 boblight_v4l_SOURCES = \
 	clients/boblight-v4l/boblight-v4l.cpp\
