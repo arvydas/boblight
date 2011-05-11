@@ -665,6 +665,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
     }
     else if (type == "sound")
     {
+#ifdef HAVE_LIBPORTAUDIO
       CDevice* device = NULL;
       if (!BuildSound(device, i, clients))
       {
@@ -673,6 +674,11 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
         return false;
       }
       devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without portaudio, no support for sound devices",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
     }
     else if (type == "dioder")
     {
@@ -872,6 +878,7 @@ bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients
   return true;
 }
 
+#ifdef HAVE_LIBPORTAUDIO
 bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   CDeviceSound* sounddevice = new CDeviceSound(clients);
@@ -907,6 +914,7 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
 
   return true;
 }
+#endif
 
 bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
@@ -1061,6 +1069,7 @@ void CConfig::SetDevicePostfix(CDeviceRS232* device, int devicenr)
   device->SetPostfix(postfix);
 }
 
+#ifdef HAVE_LIBPORTAUDIO
 bool CConfig::SetDevicePeriod(CDeviceSound* device, int devicenr)
 {
   string line, strvalue;
@@ -1092,6 +1101,7 @@ void CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
   StrToFloat(strvalue, latency);
   device->SetLatency(latency);
 }
+#endif
 
 void CConfig::SetDeviceAllowSync(CDevice* device, int devicenr)
 {

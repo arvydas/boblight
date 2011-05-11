@@ -21,7 +21,17 @@ AC_CHECK_LIB(m,[main])
 AC_CHECK_LIB(dl,[main])
 
 dnl boblightd
-AC_CHECK_LIB(portaudio,[main],AC_DEFINE([HAVE_LIBPORTAUDIO], [1], [ ]),AC_MSG_ERROR([Missing a required library]))
+AC_ARG_WITH([portaudio], [AS_HELP_STRING([--without-portaudio], [Disable portaudio support (no support for sound devices)])], [],
+            [with_portaudio=check])
+AS_IF([test "x$with_portaudio" = xcheck], [
+AC_CHECK_HEADERS([portaudio.h],[],
+  [AC_MSG_ERROR([Missing a required header, please install it or disable portaudio support by passing --without-portaudio to configure])])
+AC_CHECK_TYPE([PaStreamCallbackTimeInfo],[],
+  [AC_MSG_ERROR([boblight requires portaudio v19 header! Please install it or disable portaudio by passing --without-portaudio to configure])], [[#include <portaudio.h>]])
+AC_CHECK_LIB(portaudio,[main],AC_DEFINE([HAVE_LIBPORTAUDIO], [1], [ ]),
+  [AC_MSG_ERROR([Missing a required library, please install it or disable it by passing --without-portaudio to configure])])
+])
+AM_CONDITIONAL(HAVE_PORTAUDIO, [test "x$with_portaudio" = xcheck])
 
 dnl boblight-X11 and boblight-v4l
 AC_CHECK_LIB(X11      ,[main],AC_DEFINE([HAVE_LIBX11],       [1], [ ]),AC_MSG_ERROR([Missing a required library]))
@@ -50,12 +60,11 @@ AM_CONDITIONAL(HAVE_FFMPEG, [test "x$with_ffmpeg" = xcheck])
 
 AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h GL/glx.h],,AC_MSG_ERROR([Missing a required header]))
 AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,AC_MSG_ERROR([Missing a required header]), [#include <X11/Xlib.h>])
-AC_CHECK_HEADERS([portaudio.h],,AC_MSG_ERROR([Missing a required header]))
-AC_CHECK_TYPE([PaStreamCallbackTimeInfo], , AC_MSG_ERROR([boblight requires portaudio v19 headers!]), [[#include <portaudio.h>]])
 
 AC_OUTPUT([
 Makefile
 src/Makefile
 ])
 
+AS_IF([test "x$with_portaudio" != xcheck], [AC_MSG_WARN([--without-portaudio passed, boblightd will not have support for sound devices])])
 AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--without-ffmpeg passed, boblight-v4l will not be built])])

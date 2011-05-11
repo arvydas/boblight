@@ -64,14 +64,18 @@ boblightd_SOURCES = \
 	device/device.cpp \
 	device/devicepopen.cpp \
 	device/deviceltbl.cpp \
-	device/devicesound.cpp \
 	device/devicers232.cpp \
 	device/devicedioder.cpp \
         util/signaltimer.cpp
 
-boblightd_LDFLAGS = -lportaudio
+boblightd_LDFLAGS =
 
 boblightd_LDADD = 
+
+if HAVE_PORTAUDIO
+boblightd_SOURCES += device/devicesound.cpp
+boblightd_LDFLAGS += -lportaudio
+endif
 
 lib_LTLIBRARIES = \
 	libboblight.la

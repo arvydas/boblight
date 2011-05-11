@@ -745,6 +745,8 @@ LTLIBOBJS
 LIBOBJS
 HAVE_FFMPEG_FALSE
 HAVE_FFMPEG_TRUE
+HAVE_PORTAUDIO_FALSE
+HAVE_PORTAUDIO_TRUE
 CXXCPP
 OTOOL64
 OTOOL
@@ -871,6 +873,7 @@ with_pic
 enable_fast_install
 with_gnu_ld
 enable_libtool_lock
+with_portaudio
 with_ffmpeg
 '
       ac_precious_vars='build_alias
@@ -1521,6 +1524,8 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
+  --without-portaudio     Disable portaudio support (no support for sound
+                          devices)
   --without-ffmpeg        Disable ffmpeg support (boblight-v4l will not be
                           built)
 
@@ -6040,13 +6045,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6043: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6048: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6046: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6051: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6049: output\"" >&5)
+  (eval echo "\"\$as_me:6054: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7251,7 +7256,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7254 "configure"' > conftest.$ac_ext
+  echo '#line 7259 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9054,11 +9059,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9057: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9062: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9061: \$? = $ac_status" >&5
+   echo "$as_me:9066: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9393,11 +9398,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9396: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9401: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9400: \$? = $ac_status" >&5
+   echo "$as_me:9405: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9498,11 +9503,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9501: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9506: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9505: \$? = $ac_status" >&5
+   echo "$as_me:9510: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9553,11 +9558,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9556: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9561: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9560: \$? = $ac_status" >&5
+   echo "$as_me:9565: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11937,7 +11942,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11940 "configure"
+#line 11945 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12033,7 +12038,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12036 "configure"
+#line 12041 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13989,11 +13994,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13992: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13997: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13996: \$? = $ac_status" >&5
+   echo "$as_me:14001: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14088,11 +14093,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14091: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14096: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14095: \$? = $ac_status" >&5
+   echo "$as_me:14100: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14140,11 +14145,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14143: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14148: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14147: \$? = $ac_status" >&5
+   echo "$as_me:14152: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15265,6 +15270,38 @@ _ACEOF
 fi
 
 
+
+# Check whether --with-portaudio was given.
+if test "${with_portaudio+set}" = set; then :
+  withval=$with_portaudio;
+else
+  with_portaudio=check
+fi
+
+if test "x$with_portaudio" = xcheck; then :
+
+for ac_header in portaudio.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "portaudio.h" "ac_cv_header_portaudio_h" "$ac_includes_default"
+if test "x$ac_cv_header_portaudio_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PORTAUDIO_H 1
+_ACEOF
+
+else
+  as_fn_error "Missing a required header, please install it or disable portaudio support by passing --without-portaudio to configure" "$LINENO" 5
+fi
+
+done
+
+ac_fn_c_check_type "$LINENO" "PaStreamCallbackTimeInfo" "ac_cv_type_PaStreamCallbackTimeInfo" "#include <portaudio.h>
+"
+if test "x$ac_cv_type_PaStreamCallbackTimeInfo" = x""yes; then :
+
+else
+  as_fn_error "boblight requires portaudio v19 header! Please install it or disable portaudio by passing --without-portaudio to configure" "$LINENO" 5
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lportaudio" >&5
 $as_echo_n "checking for main in -lportaudio... " >&6; }
 if test "${ac_cv_lib_portaudio_main+set}" = set; then :
@@ -15300,7 +15337,17 @@ if test "x$ac_cv_lib_portaudio_main" = x""yes; then :
 $as_echo "#define HAVE_LIBPORTAUDIO 1" >>confdefs.h
 
 else
-  as_fn_error "Missing a required library" "$LINENO" 5
+  as_fn_error "Missing a required library, please install it or disable it by passing --without-portaudio to configure" "$LINENO" 5
+fi
+
+
+fi
+ if test "x$with_portaudio" = xcheck; then
+  HAVE_PORTAUDIO_TRUE=
+  HAVE_PORTAUDIO_FALSE='#'
+else
+  HAVE_PORTAUDIO_TRUE='#'
+  HAVE_PORTAUDIO_FALSE=
 fi
 
 
@@ -15684,28 +15731,6 @@ fi
 
 done
 
-for ac_header in portaudio.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "portaudio.h" "ac_cv_header_portaudio_h" "$ac_includes_default"
-if test "x$ac_cv_header_portaudio_h" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_PORTAUDIO_H 1
-_ACEOF
-
-else
-  as_fn_error "Missing a required header" "$LINENO" 5
-fi
-
-done
-
-ac_fn_c_check_type "$LINENO" "PaStreamCallbackTimeInfo" "ac_cv_type_PaStreamCallbackTimeInfo" "#include <portaudio.h>
-"
-if test "x$ac_cv_type_PaStreamCallbackTimeInfo" = x""yes; then :
-
-else
-  as_fn_error "boblight requires portaudio v19 headers!" "$LINENO" 5
-fi
-
 
 ac_config_files="$ac_config_files Makefile src/Makefile"
 
@@ -15836,6 +15861,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_PORTAUDIO_TRUE}" && test -z "${HAVE_PORTAUDIO_FALSE}"; then
+  as_fn_error "conditional \"HAVE_PORTAUDIO\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_FFMPEG_TRUE}" && test -z "${HAVE_FFMPEG_FALSE}"; then
@@ -18315,6 +18344,10 @@ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
 
+if test "x$with_portaudio" != xcheck; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-portaudio passed, boblightd will not have support for sound devices" >&5
+$as_echo "$as_me: WARNING: --without-portaudio passed, boblightd will not have support for sound devices" >&2;}
+fi
 if test "x$with_ffmpeg" != xcheck; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-ffmpeg passed, boblight-v4l will not be built" >&5
 $as_echo "$as_me: WARNING: --without-ffmpeg passed, boblight-v4l will not be built" >&2;}

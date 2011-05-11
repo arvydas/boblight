@@ -38,6 +38,8 @@ host_triplet = @host@
 bin_PROGRAMS = boblightd$(EXEEXT) boblight-X11$(EXEEXT) \
 	boblight-constant$(EXEEXT) $(am__EXEEXT_1)
 @HAVE_FFMPEG_TRUE@am__append_1 = boblight-v4l
+@HAVE_PORTAUDIO_TRUE@am__append_2 = device/devicesound.cpp
+@HAVE_PORTAUDIO_TRUE@am__append_3 = -lportaudio
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -103,14 +105,22 @@ boblight_v4l_LDADD = $(LDADD)
 boblight_v4l_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(boblight_v4l_LDFLAGS) $(LDFLAGS) -o $@
+am__boblightd_SOURCES_DIST = util/clock.cpp util/condition.cpp \
+	util/log.cpp util/misc.cpp util/mutex.cpp util/thread.cpp \
+	util/timer.cpp util/serialport.cpp main.cpp util/tcpsocket.cpp \
+	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
+	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
+	device/devicers232.cpp device/devicedioder.cpp \
+	util/signaltimer.cpp device/devicesound.cpp
+@HAVE_PORTAUDIO_TRUE@am__objects_1 = devicesound.$(OBJEXT)
 am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
 	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
 	timer.$(OBJEXT) serialport.$(OBJEXT) main.$(OBJEXT) \
 	tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) client.$(OBJEXT) \
 	light.$(OBJEXT) configuration.$(OBJEXT) device.$(OBJEXT) \
 	devicepopen.$(OBJEXT) deviceltbl.$(OBJEXT) \
-	devicesound.$(OBJEXT) devicers232.$(OBJEXT) \
-	devicedioder.$(OBJEXT) signaltimer.$(OBJEXT)
+	devicers232.$(OBJEXT) devicedioder.$(OBJEXT) \
+	signaltimer.$(OBJEXT) $(am__objects_1)
 boblightd_OBJECTS = $(am_boblightd_OBJECTS)
 boblightd_DEPENDENCIES =
 boblightd_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -134,7 +144,7 @@ SOURCES = $(libboblight_la_SOURCES) $(boblight_X11_SOURCES) \
 	$(boblightd_SOURCES)
 DIST_SOURCES = $(libboblight_la_SOURCES) $(boblight_X11_SOURCES) \
 	$(boblight_constant_SOURCES) $(boblight_v4l_SOURCES) \
-	$(boblightd_SOURCES)
+	$(am__boblightd_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -290,30 +300,14 @@ boblight_X11_SOURCES = \
 	clients/flagmanager.cpp
 
 boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
-boblightd_SOURCES = \
-	util/clock.cpp \
-	util/condition.cpp \
-	util/log.cpp \
-	util/misc.cpp \
-	util/mutex.cpp \
-	util/thread.cpp \
-	util/timer.cpp \
-	util/serialport.cpp \
-	main.cpp \
-	util/tcpsocket.cpp \
-	util/messagequeue.cpp \
-	client.cpp \
-	light.cpp \
-	configuration.cpp \
-	device/device.cpp \
-	device/devicepopen.cpp \
-	device/deviceltbl.cpp \
-	device/devicesound.cpp \
-	device/devicers232.cpp \
-	device/devicedioder.cpp \
-        util/signaltimer.cpp
-
-boblightd_LDFLAGS = -lportaudio
+boblightd_SOURCES = util/clock.cpp util/condition.cpp util/log.cpp \
+	util/misc.cpp util/mutex.cpp util/thread.cpp util/timer.cpp \
+	util/serialport.cpp main.cpp util/tcpsocket.cpp \
+	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
+	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
+	device/devicers232.cpp device/devicedioder.cpp \
+	util/signaltimer.cpp $(am__append_2)
+boblightd_LDFLAGS = $(am__append_3)
 boblightd_LDADD = 
 lib_LTLIBRARIES = \
 	libboblight.la
@@ -909,20 +903,6 @@ deviceltbl.obj: device/deviceltbl.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceltbl.obj `if test -f 'device/deviceltbl.cpp'; then $(CYGPATH_W) 'device/deviceltbl.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceltbl.cpp'; fi`
 
-devicesound.o: device/devicesound.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicesound.o -MD -MP -MF $(DEPDIR)/devicesound.Tpo -c -o devicesound.o `test -f 'device/devicesound.cpp' || echo '$(srcdir)/'`device/devicesound.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicesound.Tpo $(DEPDIR)/devicesound.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicesound.cpp' object='devicesound.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicesound.o `test -f 'device/devicesound.cpp' || echo '$(srcdir)/'`device/devicesound.cpp
-
-devicesound.obj: device/devicesound.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicesound.obj -MD -MP -MF $(DEPDIR)/devicesound.Tpo -c -o devicesound.obj `if test -f 'device/devicesound.cpp'; then $(CYGPATH_W) 'device/devicesound.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicesound.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicesound.Tpo $(DEPDIR)/devicesound.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicesound.cpp' object='devicesound.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicesound.obj `if test -f 'device/devicesound.cpp'; then $(CYGPATH_W) 'device/devicesound.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicesound.cpp'; fi`
-
 devicers232.o: device/devicers232.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicers232.o -MD -MP -MF $(DEPDIR)/devicers232.Tpo -c -o devicers232.o `test -f 'device/devicers232.cpp' || echo '$(srcdir)/'`device/devicers232.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicers232.Tpo $(DEPDIR)/devicers232.Po
@@ -964,6 +944,20 @@ signaltimer.obj: util/signaltimer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/signaltimer.cpp' object='signaltimer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o signaltimer.obj `if test -f 'util/signaltimer.cpp'; then $(CYGPATH_W) 'util/signaltimer.cpp'; else $(CYGPATH_W) '$(srcdir)/util/signaltimer.cpp'; fi`
+
+devicesound.o: device/devicesound.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicesound.o -MD -MP -MF $(DEPDIR)/devicesound.Tpo -c -o devicesound.o `test -f 'device/devicesound.cpp' || echo '$(srcdir)/'`device/devicesound.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicesound.Tpo $(DEPDIR)/devicesound.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicesound.cpp' object='devicesound.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicesound.o `test -f 'device/devicesound.cpp' || echo '$(srcdir)/'`device/devicesound.cpp
+
+devicesound.obj: device/devicesound.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicesound.obj -MD -MP -MF $(DEPDIR)/devicesound.Tpo -c -o devicesound.obj `if test -f 'device/devicesound.cpp'; then $(CYGPATH_W) 'device/devicesound.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicesound.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicesound.Tpo $(DEPDIR)/devicesound.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicesound.cpp' object='devicesound.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicesound.obj `if test -f 'device/devicesound.cpp'; then $(CYGPATH_W) 'device/devicesound.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicesound.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
