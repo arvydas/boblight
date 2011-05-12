@@ -112,22 +112,22 @@ inline A Round(B value)
 
 inline int32_t Round32(float value)
 {
-  return lrintf(value);
+  return lroundf(value);
 }
 
 inline int32_t Round32(double value)
 {
-  return lrint(value);
+  return lround(value);
 }
 
 inline int64_t Round64(float value)
 {
-  return llrintf(value);
+  return llroundf(value);
 }
 
 inline int64_t Round64(double value)
 {
-  return llrint(value);
+  return llround(value);
 }
 
 inline bool StrToInt(const std::string& data, int& value)
