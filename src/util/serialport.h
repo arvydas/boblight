@@ -26,8 +26,6 @@
 #include <string>
 #include <termios.h>
 
-#include "clock.h"
-
 #define PAR_NONE 0
 #define PAR_EVEN 1
 #define PAR_ODD  2
@@ -52,7 +50,6 @@ class CSerialPort
     int         m_fd;
     std::string m_error;
     std::string m_name;
-    CClock      m_clock;
     bool        m_tostdout;
 
     struct termios m_options;

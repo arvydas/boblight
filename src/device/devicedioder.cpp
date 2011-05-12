@@ -20,6 +20,7 @@
 #include "util/log.h"
 #include "util/misc.h"
 #include "util/sleep.h"
+#include "util/timeutils.h"
 
 // support from device from: http://cauldrondevelopment.com/blog/2009/12/29/a-real-ikea-dioder-hack/
 
@@ -84,7 +85,7 @@ bool CDeviceDioder::SetupDevice()
 bool CDeviceDioder::WriteOutput()
 {
   //get the channel values from the clienshandler
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
   char colors[3] = {'r', 'g', 'b'};

@@ -25,7 +25,6 @@
 
 #include "util/timer.h"
 #include "vblanksignal.h"
-#include "util/clock.h"
 
 extern volatile bool xerror;
 
@@ -69,7 +68,6 @@ class CGrabber
     GC                m_debuggc;
 
     void              UpdateDebugFps();                          //the title of the debug window is the fps we capture at
-    CClock            m_fpsclock;                                //we have to measure fps with something
     long double       m_lastupdate;
     long double       m_lastmeasurement;
     long double       m_measurements;

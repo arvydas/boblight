@@ -19,6 +19,7 @@
 #include "timer.h"
 #include "misc.h"
 #include "sleep.h"
+#include "timeutils.h"
 
 #include <iostream>
 using namespace std;
@@ -42,7 +43,7 @@ int64_t CTimer::GetInterval()
 
 void CTimer::Reset()
 {
-  m_time = m_clock.GetTime();
+  m_time = GetTimeUs();
 }
 
 void CTimer::Wait()
@@ -50,7 +51,7 @@ void CTimer::Wait()
   int64_t sleeptime;
 
   //keep looping until we have a timestamp that's not too old
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   do
   {
     m_time += m_interval;

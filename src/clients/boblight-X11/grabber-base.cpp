@@ -28,6 +28,7 @@
 
 #include "util/misc.h"
 #include "grabber-base.h"
+#include "util/timeutils.h"
 
 using namespace std;
 
@@ -142,7 +143,7 @@ void CGrabber::SetDebug(const char* display)
   m_debuggc = XCreateGC(m_debugdpy, m_debugwindow, 0, NULL);
 
   //set up stuff for measuring fps
-  m_lastupdate = m_fpsclock.GetSecTime<long double>();
+  m_lastupdate = GetTimeSec<long double>();
   m_lastmeasurement = m_lastupdate;
   m_measurements = 0.0;
   m_nrmeasurements = 0.0;
@@ -154,7 +155,7 @@ void CGrabber::UpdateDebugFps()
 {
   if (m_debug)
   {
-    long double now = m_fpsclock.GetSecTime<long double>(); //current timestamp
+    long double now = GetTimeSec<long double>(); //current timestamp
     m_measurements += now - m_lastmeasurement;              //diff between last time we were here
     m_nrmeasurements++;                                     //got another measurement
     m_lastmeasurement = now;                                //save the timestamp

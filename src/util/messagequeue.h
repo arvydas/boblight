@@ -19,10 +19,12 @@
 #ifndef CMESSAGEQUEUE
 #define CMESSAGEQUEUE
 
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+
 #include <vector>
 #include <string>
-
-#include "clock.h"
 
 #define MAXDATA 100000 //max data sent without a newline, to prevent memleaks from bogus clients
 
@@ -48,7 +50,6 @@ class CMessageQueue
 
     std::vector<CMessage> m_messages;
     CMessage              m_remainingdata;
-    CClock                m_clock;
 };
 
 #endif //CMESSAGEQUEUE

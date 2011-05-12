@@ -26,6 +26,7 @@
 
 #include "boblight-client.h"
 #include "util/misc.h"
+#include "util/timeutils.h"
 #include "protocolversion.h"
 
 using namespace std;
@@ -353,7 +354,7 @@ CBoblight::CBoblight()
 bool CBoblight::ReadDataToQueue()
 {
   CTcpData data;
-  int64_t  now = m_clock.GetTime();
+  int64_t  now = GetTimeUs();
   int64_t  target = now + m_usectimeout; 
   int      nrmessages = m_messagequeue.GetNrMessages();
 
@@ -373,7 +374,7 @@ bool CBoblight::ReadDataToQueue()
       return false;
     }
 
-    now = m_clock.GetTime();
+    now = GetTimeUs();
   }
 
   if (nrmessages == m_messagequeue.GetNrMessages())

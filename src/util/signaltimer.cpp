@@ -19,6 +19,7 @@
 #include "signaltimer.h"
 #include "lock.h"
 #include "misc.h"
+#include "timeutils.h"
 
 CSignalTimer::CSignalTimer(volatile bool* stop /*= NULL*/): CTimer(stop)
 {
@@ -30,7 +31,7 @@ void CSignalTimer::Wait()
   CLock lock(m_condition);
 
   //keep looping until we have a timestamp that's not too old
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   int64_t sleeptime;
   do
   {
@@ -49,7 +50,7 @@ void CSignalTimer::Wait()
   while (!m_signaled && sleeptime > 0LL && !(m_timerstop && *m_timerstop))
   {
     m_condition.Wait(Min(sleeptime, 1000000LL));
-    now = m_clock.GetTime();
+    now = GetTimeUs();
     sleeptime = m_time - now;
   }
 

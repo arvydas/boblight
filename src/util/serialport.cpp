@@ -25,6 +25,7 @@
 #include "serialport.h"
 #include "misc.h"
 #include "baudrate.h"
+#include "timeutils.h"
 
 using namespace std;
 
@@ -95,7 +96,7 @@ int CSerialPort::Read(uint8_t* data, int len, int64_t usecs /*= -1*/)
     return -1;
   }
 
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   int64_t target = now + usecs;
   int     bytesread = 0;
 
@@ -142,7 +143,7 @@ int CSerialPort::Read(uint8_t* data, int len, int64_t usecs /*= -1*/)
 
     bytesread += returnv;
 
-    now = m_clock.GetTime();
+    now = GetTimeUs();
   }
 
   //print what's read to stdout for debugging

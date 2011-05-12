@@ -24,7 +24,6 @@
 
 #include "util/tcpsocket.h"
 #include "util/messagequeue.h"
-#include "util/clock.h"
 
 namespace boblight
 {
@@ -95,7 +94,6 @@ namespace boblight
       int              m_port;
       std::string      m_error;
       CMessageQueue    m_messagequeue;
-      CClock           m_clock;
       int              m_usectimeout;
 
       bool             ReadDataToQueue();

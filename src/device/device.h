@@ -38,7 +38,6 @@
 
 //#include "client.h"
 #include "util/thread.h"
-#include "util/clock.h"
 #include "util/signaltimer.h"
 
 class CClientsHandler; //forward declaration
@@ -83,8 +82,6 @@ class CChannel
 
     float   m_currentvalue; //value we're currently at
     int64_t m_lastupdate;   //when m_currentvalue was last updated
-
-    CClock  m_clock;
 };
 
 class CDevice : public CThread
@@ -125,8 +122,6 @@ class CDevice : public CThread
     bool        m_allowsync;
     bool        m_debug;
     int64_t     m_delayafteropen;
-
-    CClock      m_clock;
 
     std::vector<CChannel> m_channels;
 

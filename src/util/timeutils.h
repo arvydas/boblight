@@ -16,27 +16,26 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CCLOCK
-#define CCLOCK
+#ifndef TIMEUTILS
+#define TIMEUTILS
 
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
+#include <time.h>
 
-//simple clock class
-class CClock
+inline int64_t GetTimeUs()
 {
-  public:
-    CClock();
+  struct timespec time;
+  clock_gettime(CLOCK_MONOTONIC, &time);
 
-    int64_t GetTime(); //value of the clock in microseconds
+  return ((int64_t)time.tv_sec * 1000000LL) + (int64_t)(time.tv_nsec + 500) / 1000LL;
+}
 
-    //value of the clock in seconds
-    template <class T> T GetSecTime() { return (T)GetTime() / (T)1000000LL; }
+template <class T> 
+inline T GetTimeSec()
+{
+  return (T)GetTimeUs() / (T)1000000.0;
+}
 
-  private:
-
-    int64_t m_freq; //frequency of the systemclock
-};
-
-#endif //CCLOCK
+#endif //TIMEUTILS

@@ -75,18 +75,17 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libboblight_la_LIBADD =
 am_libboblight_la_OBJECTS = libboblight_la-boblight-client.lo \
-	libboblight_la-boblight.lo libboblight_la-clock.lo \
-	libboblight_la-messagequeue.lo libboblight_la-misc.lo \
-	libboblight_la-tcpsocket.lo
+	libboblight_la-boblight.lo libboblight_la-messagequeue.lo \
+	libboblight_la-misc.lo libboblight_la-tcpsocket.lo
 libboblight_la_OBJECTS = $(am_libboblight_la_OBJECTS)
 @HAVE_FFMPEG_TRUE@am__EXEEXT_1 = boblight-v4l$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
-	vblanksignal.$(OBJEXT) timer.$(OBJEXT) clock.$(OBJEXT) \
-	condition.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
-	misc.$(OBJEXT) grabber-base.$(OBJEXT) \
-	grabber-xgetimage.$(OBJEXT) grabber-xrender.$(OBJEXT) \
-	flagmanager-X11.$(OBJEXT) flagmanager.$(OBJEXT)
+	vblanksignal.$(OBJEXT) timer.$(OBJEXT) condition.$(OBJEXT) \
+	mutex.$(OBJEXT) thread.$(OBJEXT) misc.$(OBJEXT) \
+	grabber-base.$(OBJEXT) grabber-xgetimage.$(OBJEXT) \
+	grabber-xrender.$(OBJEXT) flagmanager-X11.$(OBJEXT) \
+	flagmanager.$(OBJEXT)
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 boblight_X11_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -105,16 +104,16 @@ boblight_v4l_LDADD = $(LDADD)
 boblight_v4l_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(boblight_v4l_LDFLAGS) $(LDFLAGS) -o $@
-am__boblightd_SOURCES_DIST = util/clock.cpp util/condition.cpp \
-	util/log.cpp util/misc.cpp util/mutex.cpp util/thread.cpp \
-	util/timer.cpp util/serialport.cpp main.cpp util/tcpsocket.cpp \
+am__boblightd_SOURCES_DIST = util/condition.cpp util/log.cpp \
+	util/misc.cpp util/mutex.cpp util/thread.cpp util/timer.cpp \
+	util/serialport.cpp main.cpp util/tcpsocket.cpp \
 	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
 	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
 	device/devicers232.cpp device/devicedioder.cpp \
 	util/signaltimer.cpp device/devicesound.cpp
 @HAVE_PORTAUDIO_TRUE@am__objects_1 = devicesound.$(OBJEXT)
-am_boblightd_OBJECTS = clock.$(OBJEXT) condition.$(OBJEXT) \
-	log.$(OBJEXT) misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
+am_boblightd_OBJECTS = condition.$(OBJEXT) log.$(OBJEXT) \
+	misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
 	timer.$(OBJEXT) serialport.$(OBJEXT) main.$(OBJEXT) \
 	tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) client.$(OBJEXT) \
 	light.$(OBJEXT) configuration.$(OBJEXT) device.$(OBJEXT) \
@@ -288,7 +287,6 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp \
 	clients/boblight-X11/vblanksignal.cpp \
 	util/timer.cpp \
-	util/clock.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
 	util/thread.cpp \
@@ -300,8 +298,8 @@ boblight_X11_SOURCES = \
 	clients/flagmanager.cpp
 
 boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
-boblightd_SOURCES = util/clock.cpp util/condition.cpp util/log.cpp \
-	util/misc.cpp util/mutex.cpp util/thread.cpp util/timer.cpp \
+boblightd_SOURCES = util/condition.cpp util/log.cpp util/misc.cpp \
+	util/mutex.cpp util/thread.cpp util/timer.cpp \
 	util/serialport.cpp main.cpp util/tcpsocket.cpp \
 	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
 	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
@@ -315,7 +313,6 @@ lib_LTLIBRARIES = \
 libboblight_la_SOURCES = \
 	lib/boblight-client.cpp \
 	lib/boblight.cpp \
-	util/clock.cpp \
 	util/messagequeue.cpp \
 	util/misc.cpp \
 	util/tcpsocket.cpp
@@ -454,7 +451,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-constant.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boblight-v4l.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clock.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/condition.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/device.Po@am__quote@
@@ -472,7 +468,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grabber-xrender.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-boblight-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-boblight.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-messagequeue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libboblight_la-tcpsocket.Plo@am__quote@
@@ -524,13 +519,6 @@ libboblight_la-boblight.lo: lib/boblight.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='lib/boblight.cpp' object='libboblight_la-boblight.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-boblight.lo `test -f 'lib/boblight.cpp' || echo '$(srcdir)/'`lib/boblight.cpp
-
-libboblight_la-clock.lo: util/clock.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-clock.lo -MD -MP -MF $(DEPDIR)/libboblight_la-clock.Tpo -c -o libboblight_la-clock.lo `test -f 'util/clock.cpp' || echo '$(srcdir)/'`util/clock.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libboblight_la-clock.Tpo $(DEPDIR)/libboblight_la-clock.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/clock.cpp' object='libboblight_la-clock.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libboblight_la-clock.lo `test -f 'util/clock.cpp' || echo '$(srcdir)/'`util/clock.cpp
 
 libboblight_la-messagequeue.lo: util/messagequeue.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libboblight_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libboblight_la-messagequeue.lo -MD -MP -MF $(DEPDIR)/libboblight_la-messagequeue.Tpo -c -o libboblight_la-messagequeue.lo `test -f 'util/messagequeue.cpp' || echo '$(srcdir)/'`util/messagequeue.cpp
@@ -594,20 +582,6 @@ timer.obj: util/timer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/timer.cpp' object='timer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o timer.obj `if test -f 'util/timer.cpp'; then $(CYGPATH_W) 'util/timer.cpp'; else $(CYGPATH_W) '$(srcdir)/util/timer.cpp'; fi`
-
-clock.o: util/clock.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT clock.o -MD -MP -MF $(DEPDIR)/clock.Tpo -c -o clock.o `test -f 'util/clock.cpp' || echo '$(srcdir)/'`util/clock.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/clock.Tpo $(DEPDIR)/clock.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/clock.cpp' object='clock.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clock.o `test -f 'util/clock.cpp' || echo '$(srcdir)/'`util/clock.cpp
-
-clock.obj: util/clock.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT clock.obj -MD -MP -MF $(DEPDIR)/clock.Tpo -c -o clock.obj `if test -f 'util/clock.cpp'; then $(CYGPATH_W) 'util/clock.cpp'; else $(CYGPATH_W) '$(srcdir)/util/clock.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/clock.Tpo $(DEPDIR)/clock.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/clock.cpp' object='clock.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clock.obj `if test -f 'util/clock.cpp'; then $(CYGPATH_W) 'util/clock.cpp'; else $(CYGPATH_W) '$(srcdir)/util/clock.cpp'; fi`
 
 condition.o: util/condition.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT condition.o -MD -MP -MF $(DEPDIR)/condition.Tpo -c -o condition.o `test -f 'util/condition.cpp' || echo '$(srcdir)/'`util/condition.cpp

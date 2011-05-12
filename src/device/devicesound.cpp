@@ -27,6 +27,7 @@
 #include "util/sleep.h"
 #include "util/misc.h"
 #include "devicesound.h"
+#include "util/timeutils.h"
 
 using namespace std;
 
@@ -256,7 +257,7 @@ int CDeviceSound::PaStreamCallback(const void *input, void *output, unsigned lon
 void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
 {
   //get the channel values from the clienshandler
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
   //store the values from m_channels, because they get recalculated for each call to GetValue()

@@ -25,8 +25,6 @@
 
 #include <unistd.h>
 
-#include "clock.h"
-
 class CTimer
 {
   public:
@@ -40,7 +38,6 @@ class CTimer
   protected:
     int64_t        m_time;
     int64_t        m_interval;
-    CClock         m_clock;
     volatile bool* m_timerstop;
 };
 

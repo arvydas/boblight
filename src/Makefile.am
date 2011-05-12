@@ -33,7 +33,6 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp \
 	clients/boblight-X11/vblanksignal.cpp \
 	util/timer.cpp \
-	util/clock.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
 	util/thread.cpp \
@@ -47,7 +46,6 @@ boblight_X11_SOURCES = \
 boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
 
 boblightd_SOURCES = \
-	util/clock.cpp \
 	util/condition.cpp \
 	util/log.cpp \
 	util/misc.cpp \
@@ -83,7 +81,6 @@ lib_LTLIBRARIES = \
 libboblight_la_SOURCES = \
 	lib/boblight-client.cpp \
 	lib/boblight.cpp \
-	util/clock.cpp \
 	util/messagequeue.cpp \
 	util/misc.cpp \
 	util/tcpsocket.cpp

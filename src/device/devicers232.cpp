@@ -22,6 +22,7 @@
 #include "util/misc.h"
 #include "devicers232.h"
 #include "util/sleep.h"
+#include "util/timeutils.h"
 
 CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice(clients)
 {
@@ -104,7 +105,7 @@ bool CDeviceRS232::SetupDevice()
 bool CDeviceRS232::WriteOutput()
 {
   //get the channel values from the clienshandler
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
   int64_t maxvalue = (1 << m_bits) - 1;

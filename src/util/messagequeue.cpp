@@ -19,6 +19,7 @@
 #include <string.h>
 #include <iostream> //debug
 #include "messagequeue.h"
+#include "timeutils.h"
 
 using namespace std;
 
@@ -36,7 +37,7 @@ CMessage CMessageQueue::GetMessage()
 
 void CMessageQueue::AddData(std::string data)
 {
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   int nlpos = data.find('\n'); //position of the newline
 
   //no newline

@@ -20,6 +20,7 @@
 #include "util/log.h"
 #include "util/misc.h"
 #include "util/sleep.h"
+#include "util/timeutils.h"
 
 #include <iostream>
 
@@ -57,7 +58,7 @@ bool CDevicePopen::SetupDevice()
 bool CDevicePopen::WriteOutput()
 {
   //get the channel values from the clienshandler
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
   if (m_debug) //print debug info to stdout when debug is on

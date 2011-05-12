@@ -20,6 +20,7 @@
 #include "util/log.h"
 #include "util/misc.h"
 #include "util/sleep.h"
+#include "util/timeutils.h"
 
 CDeviceLtbl::CDeviceLtbl(CClientsHandler& clients) : CDeviceRS232(clients)
 {
@@ -56,7 +57,7 @@ bool CDeviceLtbl::WriteOutput()
   uint8_t prefix[4] = {0x55, 0xAA, 0x00, m_channels.size()};
 
   //get the channel values from the clienshandler
-  int64_t now = m_clock.GetTime();
+  int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
   //put channel values in the output buffer
