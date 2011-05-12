@@ -18,7 +18,6 @@
 
 #include "timer.h"
 #include "misc.h"
-#include "sleep.h"
 #include "timeutils.h"
 
 #include <iostream>

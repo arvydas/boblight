@@ -20,7 +20,7 @@
 
 #include "device.h"
 #include "util/log.h"
-#include "util/sleep.h"
+#include "util/timeutils.h"
 
 CSignalTimer test;
 

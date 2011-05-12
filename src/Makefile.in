@@ -83,9 +83,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_boblight_X11_OBJECTS = boblight-X11.$(OBJEXT) \
 	vblanksignal.$(OBJEXT) timer.$(OBJEXT) condition.$(OBJEXT) \
 	mutex.$(OBJEXT) thread.$(OBJEXT) misc.$(OBJEXT) \
-	grabber-base.$(OBJEXT) grabber-xgetimage.$(OBJEXT) \
-	grabber-xrender.$(OBJEXT) flagmanager-X11.$(OBJEXT) \
-	flagmanager.$(OBJEXT)
+	timeutils.$(OBJEXT) grabber-base.$(OBJEXT) \
+	grabber-xgetimage.$(OBJEXT) grabber-xrender.$(OBJEXT) \
+	flagmanager-X11.$(OBJEXT) flagmanager.$(OBJEXT)
 boblight_X11_OBJECTS = $(am_boblight_X11_OBJECTS)
 boblight_X11_LDADD = $(LDADD)
 boblight_X11_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -106,18 +106,19 @@ boblight_v4l_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(boblight_v4l_LDFLAGS) $(LDFLAGS) -o $@
 am__boblightd_SOURCES_DIST = util/condition.cpp util/log.cpp \
 	util/misc.cpp util/mutex.cpp util/thread.cpp util/timer.cpp \
-	util/serialport.cpp main.cpp util/tcpsocket.cpp \
-	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
-	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
-	device/devicers232.cpp device/devicedioder.cpp \
-	util/signaltimer.cpp device/devicesound.cpp
+	util/serialport.cpp util/timeutils.cpp main.cpp \
+	util/tcpsocket.cpp util/messagequeue.cpp client.cpp light.cpp \
+	configuration.cpp device/device.cpp device/devicepopen.cpp \
+	device/deviceltbl.cpp device/devicers232.cpp \
+	device/devicedioder.cpp util/signaltimer.cpp \
+	device/devicesound.cpp
 @HAVE_PORTAUDIO_TRUE@am__objects_1 = devicesound.$(OBJEXT)
 am_boblightd_OBJECTS = condition.$(OBJEXT) log.$(OBJEXT) \
 	misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
-	timer.$(OBJEXT) serialport.$(OBJEXT) main.$(OBJEXT) \
-	tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) client.$(OBJEXT) \
-	light.$(OBJEXT) configuration.$(OBJEXT) device.$(OBJEXT) \
-	devicepopen.$(OBJEXT) deviceltbl.$(OBJEXT) \
+	timer.$(OBJEXT) serialport.$(OBJEXT) timeutils.$(OBJEXT) \
+	main.$(OBJEXT) tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) \
+	client.$(OBJEXT) light.$(OBJEXT) configuration.$(OBJEXT) \
+	device.$(OBJEXT) devicepopen.$(OBJEXT) deviceltbl.$(OBJEXT) \
 	devicers232.$(OBJEXT) devicedioder.$(OBJEXT) \
 	signaltimer.$(OBJEXT) $(am__objects_1)
 boblightd_OBJECTS = $(am_boblightd_OBJECTS)
@@ -291,6 +292,7 @@ boblight_X11_SOURCES = \
 	util/mutex.cpp \
 	util/thread.cpp \
 	util/misc.cpp \
+        util/timeutils.cpp \
 	clients/boblight-X11/grabber-base.cpp \
 	clients/boblight-X11/grabber-xgetimage.cpp \
 	clients/boblight-X11/grabber-xrender.cpp \
@@ -300,11 +302,11 @@ boblight_X11_SOURCES = \
 boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
 boblightd_SOURCES = util/condition.cpp util/log.cpp util/misc.cpp \
 	util/mutex.cpp util/thread.cpp util/timer.cpp \
-	util/serialport.cpp main.cpp util/tcpsocket.cpp \
-	util/messagequeue.cpp client.cpp light.cpp configuration.cpp \
-	device/device.cpp device/devicepopen.cpp device/deviceltbl.cpp \
-	device/devicers232.cpp device/devicedioder.cpp \
-	util/signaltimer.cpp $(am__append_2)
+	util/serialport.cpp util/timeutils.cpp main.cpp \
+	util/tcpsocket.cpp util/messagequeue.cpp client.cpp light.cpp \
+	configuration.cpp device/device.cpp device/devicepopen.cpp \
+	device/deviceltbl.cpp device/devicers232.cpp \
+	device/devicedioder.cpp util/signaltimer.cpp $(am__append_2)
 boblightd_LDFLAGS = $(am__append_3)
 boblightd_LDADD = 
 lib_LTLIBRARIES = \
@@ -482,6 +484,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tcpsocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeutils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vblanksignal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/videograbber.Po@am__quote@
 
@@ -638,6 +641,20 @@ misc.obj: util/misc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/misc.cpp' object='misc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o misc.obj `if test -f 'util/misc.cpp'; then $(CYGPATH_W) 'util/misc.cpp'; else $(CYGPATH_W) '$(srcdir)/util/misc.cpp'; fi`
+
+timeutils.o: util/timeutils.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT timeutils.o -MD -MP -MF $(DEPDIR)/timeutils.Tpo -c -o timeutils.o `test -f 'util/timeutils.cpp' || echo '$(srcdir)/'`util/timeutils.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/timeutils.Tpo $(DEPDIR)/timeutils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/timeutils.cpp' object='timeutils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o timeutils.o `test -f 'util/timeutils.cpp' || echo '$(srcdir)/'`util/timeutils.cpp
+
+timeutils.obj: util/timeutils.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT timeutils.obj -MD -MP -MF $(DEPDIR)/timeutils.Tpo -c -o timeutils.obj `if test -f 'util/timeutils.cpp'; then $(CYGPATH_W) 'util/timeutils.cpp'; else $(CYGPATH_W) '$(srcdir)/util/timeutils.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/timeutils.Tpo $(DEPDIR)/timeutils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/timeutils.cpp' object='timeutils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o timeutils.obj `if test -f 'util/timeutils.cpp'; then $(CYGPATH_W) 'util/timeutils.cpp'; else $(CYGPATH_W) '$(srcdir)/util/timeutils.cpp'; fi`
 
 grabber-base.o: clients/boblight-X11/grabber-base.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT grabber-base.o -MD -MP -MF $(DEPDIR)/grabber-base.Tpo -c -o grabber-base.o `test -f 'clients/boblight-X11/grabber-base.cpp' || echo '$(srcdir)/'`clients/boblight-X11/grabber-base.cpp

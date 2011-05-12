@@ -24,7 +24,6 @@
 #include "util/misc.h"
 #include "util/mutex.h"
 #include "util/lock.h"
-#include "util/sleep.h"
 #include "util/misc.h"
 #include "devicesound.h"
 #include "util/timeutils.h"

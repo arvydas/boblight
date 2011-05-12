@@ -16,18 +16,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef USLEEP
-#define USLEEP
-
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
-
-#include <time.h>
-
 #include "timeutils.h"
 
-inline void USleep(int64_t usecs, volatile bool* stop = NULL)
+void USleep(int64_t usecs, volatile bool* stop /*= NULL*/)
 {
   if (usecs <= 0)
   {
@@ -61,6 +52,4 @@ inline void USleep(int64_t usecs, volatile bool* stop = NULL)
     nanosleep(&sleeptime, NULL);
   }
 }
-
-#endif //USLEEP
 

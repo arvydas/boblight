@@ -19,7 +19,6 @@
 #include "devicepopen.h"
 #include "util/log.h"
 #include "util/misc.h"
-#include "util/sleep.h"
 #include "util/timeutils.h"
 
 #include <iostream>

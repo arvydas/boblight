@@ -19,7 +19,6 @@
 #include "devicedioder.h"
 #include "util/log.h"
 #include "util/misc.h"
-#include "util/sleep.h"
 #include "util/timeutils.h"
 
 // support from device from: http://cauldrondevelopment.com/blog/2009/12/29/a-real-ikea-dioder-hack/

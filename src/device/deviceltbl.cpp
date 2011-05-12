@@ -19,7 +19,6 @@
 #include "deviceltbl.h"
 #include "util/log.h"
 #include "util/misc.h"
-#include "util/sleep.h"
 #include "util/timeutils.h"
 
 CDeviceLtbl::CDeviceLtbl(CClientsHandler& clients) : CDeviceRS232(clients)

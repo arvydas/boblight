@@ -37,6 +37,7 @@ boblight_X11_SOURCES = \
 	util/mutex.cpp \
 	util/thread.cpp \
 	util/misc.cpp \
+        util/timeutils.cpp \
 	clients/boblight-X11/grabber-base.cpp \
 	clients/boblight-X11/grabber-xgetimage.cpp \
 	clients/boblight-X11/grabber-xrender.cpp \
@@ -53,6 +54,7 @@ boblightd_SOURCES = \
 	util/thread.cpp \
 	util/timer.cpp \
 	util/serialport.cpp \
+        util/timeutils.cpp \
 	main.cpp \
 	util/tcpsocket.cpp \
 	util/messagequeue.cpp \

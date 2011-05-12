@@ -26,7 +26,7 @@
 #include "client.h"
 #include "util/lock.h"
 #include "util/log.h"
-#include "util/sleep.h"
+#include "util/timeutils.h"
 #include "protocolversion.h"
 
 using namespace std;

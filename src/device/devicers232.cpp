@@ -21,7 +21,6 @@
 #include "util/log.h"
 #include "util/misc.h"
 #include "devicers232.h"
-#include "util/sleep.h"
 #include "util/timeutils.h"
 
 CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice(clients)

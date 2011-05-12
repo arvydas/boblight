@@ -38,4 +38,6 @@ inline T GetTimeSec()
   return (T)GetTimeUs() / (T)1000000.0;
 }
 
+void USleep(int64_t usecs, volatile bool* stop = NULL);
+
 #endif //TIMEUTILS
