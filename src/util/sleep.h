@@ -23,7 +23,8 @@
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 
-#include <unistd.h>
+#include <time.h>
+
 #include "timeutils.h"
 
 inline void USleep(int64_t usecs, volatile bool* stop = NULL)
@@ -32,25 +33,32 @@ inline void USleep(int64_t usecs, volatile bool* stop = NULL)
   {
     return;
   }
-  else if (usecs > 1000000) //when sleeping for more than one second, keep checking stop every second
+  else if (stop) //when a pointer to a bool is passed, check it every seconds and stop when it's true
   {
     int64_t now = GetTimeUs();
     int64_t end = now + usecs;
+    struct timespec sleeptime = {};
+
     while (now < end)
     {
-      if (stop && *stop)
+      if (*stop)
         return;
       else if (end - now >= 1000000)
-        sleep(1);
+        sleeptime.tv_sec = 1;
       else
-        usleep(end - now);
+        sleeptime.tv_nsec = ((end - now) % 1000000) * 1000;
 
+      nanosleep(&sleeptime, NULL);
       now = GetTimeUs();
     }
   }
   else
   {
-    usleep(usecs);
+    struct timespec sleeptime;
+    sleeptime.tv_sec = usecs / 1000000;
+    sleeptime.tv_nsec = (usecs % 1000000) * 1000;
+
+    nanosleep(&sleeptime, NULL);
   }
 }
 
