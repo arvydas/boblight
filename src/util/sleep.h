@@ -24,28 +24,34 @@
 #include <stdint.h>
 
 #include <unistd.h>
+#include "timeutils.h"
 
 inline void USleep(int64_t usecs, volatile bool* stop = NULL)
 {
   if (usecs <= 0)
-    return;
-
-  //usleep() can only sleep up to 999999 microseconds
-
-  int count     = usecs / 1000000;
-  int remainder = usecs % 1000000;
-
-  for (int i = 0; i < count; i++)
   {
-    sleep(1); 
-
-    if (stop)
+    return;
+  }
+  else if (usecs > 1000000) //when sleeping for more than one second, keep checking stop every second
+  {
+    int64_t now = GetTimeUs();
+    int64_t end = now + usecs;
+    while (now < end)
     {
-      if (*stop) return;
+      if (stop && *stop)
+        return;
+      else if (end - now >= 1000000)
+        sleep(1);
+      else
+        usleep(end - now);
+
+      now = GetTimeUs();
     }
   }
-
-  usleep(remainder);
+  else
+  {
+    usleep(usecs);
+  }
 }
 
 #endif //USLEEP
