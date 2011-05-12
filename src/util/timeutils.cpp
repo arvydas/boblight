@@ -28,10 +28,11 @@ void USleep(int64_t usecs, volatile bool* stop /*= NULL*/)
   {
     int64_t now = GetTimeUs();
     int64_t end = now + usecs;
-    struct timespec sleeptime = {};
 
     while (now < end)
     {
+      struct timespec sleeptime = {};
+
       if (*stop)
         return;
       else if (end - now >= 1000000)
