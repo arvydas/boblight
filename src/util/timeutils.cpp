@@ -24,7 +24,7 @@ void USleep(int64_t usecs, volatile bool* stop /*= NULL*/)
   {
     return;
   }
-  else if (stop) //when a pointer to a bool is passed, check it every seconds and stop when it's true
+  else if (stop && usecs > 1000000) //when a pointer to a bool is passed, check it every second and stop when it's true
   {
     int64_t now = GetTimeUs();
     int64_t end = now + usecs;
