@@ -135,6 +135,7 @@ bool CVblankSignal::Setup()
   }
 
   m_prevvblank = vblankcount;
+  m_vblankclock = vblankcount;
   m_isreset = false;
   
   return true;
@@ -167,7 +168,7 @@ void CVblankSignal::Close()
   m_glXWaitVideoSyncSGI = NULL;
 }
 
-bool CVblankSignal::Wait(unsigned int nrvblanks /*= -1*/)
+bool CVblankSignal::Wait(unsigned int nrvblanks /*= 1*/)
 {
   int          returnv;
   unsigned int vblankcount;
@@ -180,12 +181,17 @@ bool CVblankSignal::Wait(unsigned int nrvblanks /*= -1*/)
     return false;
   }
 
-  //wait for a vblank in the future
-  returnv = m_glXWaitVideoSyncSGI(nrvblanks + 1, (vblankcount + nrvblanks) % (nrvblanks + 1), &vblankcount);
-  if (returnv)
+  //wait until we hit the requested vblank timestamp
+  m_vblankclock += nrvblanks;
+  int diff = (int)m_vblankclock - (int)vblankcount;
+  if (diff > 0)
   {
-    m_error = "glXGetVideoSyncSGI returned " + ToString(returnv);
-    return false;
+    returnv = m_glXWaitVideoSyncSGI(diff + 1, m_vblankclock % (diff + 1), &vblankcount);
+    if (returnv)
+    {
+      m_error = "glXGetVideoSyncSGI returned " + ToString(returnv);
+      return false;
+    }
   }
 
   //if the vblank counter updated we're good

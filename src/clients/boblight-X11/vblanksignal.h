@@ -51,6 +51,7 @@ class CVblankSignal
     GLXContext   m_context;
 
     unsigned int m_prevvblank; //previous value of the vblank counter
+    unsigned int m_vblankclock;//vblank value we need to wait for
     bool         m_isreset;    //glxwaitvideosyncsgi can break, try to reset once
 };
 
