@@ -15481,7 +15481,7 @@ errormsgh="Missing a required header, please install it or disable ffmpeg suppor
 errormsgl="Missing a required library, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
 if test "x$with_ffmpeg" = xcheck; then :
 
-for ac_header in libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h
+for ac_header in libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h linux/videodev2.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"

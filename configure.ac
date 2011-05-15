@@ -49,7 +49,7 @@ AC_ARG_WITH([ffmpeg], [AS_HELP_STRING([--without-ffmpeg], [Disable ffmpeg suppor
 errormsgh="Missing a required header, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
 errormsgl="Missing a required library, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
 AS_IF([test "x$with_ffmpeg" = xcheck], [
-AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h],,AC_MSG_ERROR([$errormsgh]))
+AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libswscale/swscale.h linux/videodev2.h],,AC_MSG_ERROR([$errormsgh]))
 AC_CHECK_LIB(avutil   ,[main],AC_DEFINE([HAVE_LIBAVUTIL],    [1], [ ]),AC_MSG_ERROR([$errormsgl])) 
 AC_CHECK_LIB(avcodec  ,[main],AC_DEFINE([HAVE_LIBAVCODEC],   [1], [ ]),AC_MSG_ERROR([$errormsgl]))
 AC_CHECK_LIB(avformat ,[main],AC_DEFINE([HAVE_LIBAVFORMAT],  [1], [ ]),AC_MSG_ERROR([$errormsgl]), [-lavcodec -lavutil])
