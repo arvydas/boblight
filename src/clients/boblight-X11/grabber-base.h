@@ -23,8 +23,12 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include "config.h"
 #include "util/timer.h"
-#include "vblanksignal.h"
+
+#ifdef HAVE_LIBGL
+  #include "vblanksignal.h"
+#endif
 
 extern volatile bool xerror;
 
@@ -75,9 +79,11 @@ class CGrabber
     
     double            m_interval;                                //interval in seconds, or negative for vblanks
     CTimer            m_timer;                                   //our timer
-    CVblankSignal     m_vblanksignal;                            //class that gets vblank signals with glxwaitvideosyncsgi
     bool              m_sync;                                    //sync mode for libboblight
     
+#ifdef HAVE_LIBGL
+    CVblankSignal     m_vblanksignal;                            //class that gets vblank signals with glxwaitvideosyncsgi
+#endif
 };
 
 #endif //GRABBER

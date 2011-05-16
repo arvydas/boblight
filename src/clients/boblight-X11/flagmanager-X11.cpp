@@ -43,10 +43,15 @@ void CFlagManagerX11::ParseFlagsExtended(int& argc, char**& argv, int& c, char*&
   if (c == 'i') //interval
   {
     bool vblank = false;
+
     if (optarg[0] == 'v') //starting interval with v means vblank interval
     {
+#ifdef HAVE_LIBGL
       optarg++;
       vblank = true;
+#else
+      throw string("Compiled without opengl support");
+#endif
     }
 
     if (!StrToFloat(optarg, m_interval) || m_interval <= 0.0)
@@ -97,7 +102,9 @@ void CFlagManagerX11::PrintHelpMessage()
   cout << "  -o  add libboblight option, syntax: [light:]option=value\n";
   cout << "  -l  list libboblight options\n";
   cout << "  -i  set the interval in seconds, default is 0.1\n";
+#ifdef HAVE_LIBGL
   cout << "      prefix the value with v to wait for a number of vertical blanks instead\n";
+#endif
   cout << "  -u  set the number of pixels/rows to use\n";
   cout << "      default is 64 for xrender and 16 for xgetimage\n";
   cout << "  -x  use XGetImage instead of XRender\n";

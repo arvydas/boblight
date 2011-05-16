@@ -31,7 +31,6 @@ boblight_constant_SOURCES = \
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp \
-	clients/boblight-X11/vblanksignal.cpp \
 	util/timer.cpp \
 	util/condition.cpp \
 	util/mutex.cpp \
@@ -44,7 +43,12 @@ boblight_X11_SOURCES = \
 	clients/boblight-X11/flagmanager-X11.cpp \
 	clients/flagmanager.cpp
 
-boblight_X11_LDFLAGS = -lX11 -lXrender -lGL
+boblight_X11_LDFLAGS = -lX11 -lXrender -lXext
+
+if HAVE_OPENGL
+  boblight_X11_SOURCES += clients/boblight-X11/vblanksignal.cpp
+  boblight_X11_LDFLAGS += -lGL
+endif
 
 boblightd_SOURCES = \
 	util/condition.cpp \

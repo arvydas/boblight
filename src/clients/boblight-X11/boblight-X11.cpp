@@ -32,7 +32,6 @@
 
 #include "util/misc.h"
 #include "util/timer.h"
-#include "vblanksignal.h"
 #include "config.h"
 #include "flagmanager-X11.h"
 

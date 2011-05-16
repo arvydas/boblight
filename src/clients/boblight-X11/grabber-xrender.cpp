@@ -180,7 +180,9 @@ bool CGrabberXRender::Run()
 
     if (!Wait())
     {
+#ifdef HAVE_LIBGL
       m_error = m_vblanksignal.GetError();
+#endif
       return false; //unrecoverable error
     }
 

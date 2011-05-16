@@ -80,6 +80,7 @@ bool CGrabber::Setup()
   {
     m_timer.SetInterval(Round64(m_interval * 1000000.0));
   }
+#ifdef HAVE_LIBGL
   else //interval is negative so sync to vblank instead
   {
     if (!m_vblanksignal.Setup())
@@ -88,6 +89,7 @@ bool CGrabber::Setup()
       return false; //unrecoverable error
     }
   }
+#endif
 
   m_error.clear();
 
@@ -115,6 +117,7 @@ bool CGrabber::Wait()
   {
     m_timer.Wait();
   }
+#ifdef HAVE_LIBGL
   else //interval is negative, wait for vblanks
   {
     if (!m_vblanksignal.Wait(Round32(m_interval * -1.0)))
@@ -123,6 +126,7 @@ bool CGrabber::Wait()
       return false; //unrecoverable error
     }
   }
+#endif
 
   return true;
 }
