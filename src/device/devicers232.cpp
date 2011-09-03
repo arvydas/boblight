@@ -119,6 +119,14 @@ bool CDeviceRS232::WriteOutput()
       m_buff[m_prefix.size() + i * m_bytes + j] = (output >> ((m_bytes - j - 1) * 8)) & 0xFF;
   }
 
+  //calculate checksum
+  if (m_type == KARATE)
+  {
+    m_buff[2] = m_buff[0] ^ m_buff[1];
+    for (int i = 3; i < m_buffsize; i++)
+      m_buff[2] ^= m_buff[i];
+  }
+
   //write the channel values out the serial port
   if (m_serialport.Write(m_buff, m_buffsize) == -1)
   {
