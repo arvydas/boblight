@@ -134,6 +134,8 @@ int CTcpSocket::SetSockOptions()
 {
   int flag = 1;
 
+#if defined(SO_KEEPALIVE) && defined(TCP_KEEPCNT) && defined(TCP_KEEPIDLE) && defined(TCP_KEEPINTVL)
+
   //turn keepalive on
   if (setsockopt(m_sock, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof(flag)) == -1)
   {
@@ -143,7 +145,7 @@ int CTcpSocket::SetSockOptions()
 
   //two keepalive probes
   flag = 2;
-  if (setsockopt(m_sock, SOL_TCP, TCP_KEEPCNT, &flag, sizeof(flag)) == -1)
+  if (setsockopt(m_sock, IPPROTO_TCP, TCP_KEEPCNT, &flag, sizeof(flag)) == -1)
   {
     m_error = "TCP_KEEPCNT " + GetErrno();
     return FAIL;
@@ -151,7 +153,7 @@ int CTcpSocket::SetSockOptions()
 
   //20 seconds before we start using keepalive
   flag = 20;
-  if (setsockopt(m_sock, SOL_TCP, TCP_KEEPIDLE, &flag, sizeof(flag)) == -1)
+  if (setsockopt(m_sock, IPPROTO_TCP, TCP_KEEPIDLE, &flag, sizeof(flag)) == -1)
   {
     m_error = "TCP_KEEPIDLE " + GetErrno();
     return FAIL;
@@ -159,15 +161,21 @@ int CTcpSocket::SetSockOptions()
 
   //20 seconds timeout of each keepalive packet
   flag = 20;
-  if (setsockopt(m_sock, SOL_TCP, TCP_KEEPINTVL, &flag, sizeof(flag)) == -1)
+  if (setsockopt(m_sock, IPPROTO_TCP, TCP_KEEPINTVL, &flag, sizeof(flag)) == -1)
   {
     m_error = "TCP_KEEPINTVL " + GetErrno();
     return FAIL;
   }
 
+#else
+
+#warning keepalive support not compiled in
+
+#endif
+
   //disable nagle algorithm
   flag = 1;
-  if (setsockopt(m_sock, SOL_TCP, TCP_NODELAY, &flag, sizeof(flag)) == -1)
+  if (setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag)) == -1)
   {
     m_error = "TCP_NODELAY " + GetErrno();
     return FAIL;
