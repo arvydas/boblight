@@ -33,12 +33,26 @@ AC_CHECK_LIB(portaudio,[main],AC_DEFINE([HAVE_LIBPORTAUDIO], [1], [ ]),
 ])
 AM_CONDITIONAL(HAVE_PORTAUDIO, [test "x$with_portaudio" = xcheck])
 
-dnl boblight-X11 and boblight-v4l
-AC_CHECK_LIB(X11      ,[main],AC_DEFINE([HAVE_LIBX11],       [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-
 dnl boblight-X11
-AC_CHECK_LIB(Xrender  ,[main],AC_DEFINE([HAVE_LIBXRENDER],   [1], [ ]),AC_MSG_ERROR([Missing a required library]))
-AC_CHECK_LIB(Xext     ,[main],AC_DEFINE([HAVE_LIBXRENDER],   [1], [ ]),AC_MSG_ERROR([Missing a required library]))
+AC_ARG_WITH([x11], [AS_HELP_STRING([--without-x11], [Disable x11 support])], [],
+            [with_x11=check])
+
+errormsgh="Missing a required header, please install it or disable X11 support by passing --without-x11 to configure"
+errormsgl="Missing a required library, please install it or disable X11 support by passing --without-x11 to configure"
+AS_IF([test "x$with_x11" = xcheck], [
+AC_CHECK_LIB(X11      ,[main],AC_DEFINE([HAVE_LIBX11],       [1], [ ]),
+  [AC_MSG_ERROR([$errormsgl])])
+AC_CHECK_LIB(Xrender  ,[main],AC_DEFINE([HAVE_LIBXRENDER],   [1], [ ]),
+  [AC_MSG_ERROR([$errormsgl])])
+AC_CHECK_LIB(Xext     ,[main],AC_DEFINE([HAVE_LIBXRENDER],   [1], [ ]),
+  [AC_MSG_ERROR([$errormsgl])])
+AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h],,
+  [AC_MSG_ERROR([$errormsgh])])
+AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,
+  [AC_MSG_ERROR([$errormsgh])], [#include <X11/Xlib.h>])
+])
+AM_CONDITIONAL(HAVE_X11, [test "x$with_x11" = xcheck])
+
 AC_ARG_WITH([opengl], [AS_HELP_STRING([--without-opengl], [Disable opengl support (boblight-X11 will not be able to capture on vblanks)])], [], [with_opengl=check])
 AS_IF([test "x$with_opengl" = xcheck], [
 AC_CHECK_LIB(GL, [main], AC_DEFINE([HAVE_LIBGL], [1], [ ]),
@@ -64,9 +78,6 @@ AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE],  [1], [ ]),AC_MSG_ER
 ])
 AM_CONDITIONAL(HAVE_FFMPEG, [test "x$with_ffmpeg" = xcheck])
 
-AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h],,AC_MSG_ERROR([Missing a required header]))
-AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,AC_MSG_ERROR([Missing a required header]), [#include <X11/Xlib.h>])
-
 AC_OUTPUT([
 Makefile
 src/Makefile
@@ -75,4 +86,5 @@ src/Makefile
 AS_IF([test "x$with_portaudio" != xcheck], [AC_MSG_WARN([--without-portaudio passed, boblightd will not have support for sound devices])])
 AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--without-ffmpeg passed, boblight-v4l will not be built])])
 AS_IF([test "x$with_opengl" != xcheck], [AC_MSG_WARN([--without-opengl passed, boblight-X11 will not be able to capture on vblanks])])
+AS_IF([test "x$with_x11" != xcheck], [AC_MSG_WARN([--without-x11 passed, boblight-X11 and boblight-v4l will not be built])])
 

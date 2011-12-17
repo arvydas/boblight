@@ -7,11 +7,16 @@ AM_CFLAGS =\
 	 -g
 
 bin_PROGRAMS = boblightd \
-	boblight-X11 \
 	boblight-constant
         
+
+if HAVE_X11
+bin_PROGRAMS += boblight-X11
+
 if HAVE_FFMPEG
 bin_PROGRAMS += boblight-v4l
+endif
+
 endif
 
 boblight_v4l_SOURCES = \

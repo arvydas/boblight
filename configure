@@ -747,6 +747,8 @@ HAVE_FFMPEG_FALSE
 HAVE_FFMPEG_TRUE
 HAVE_OPENGL_FALSE
 HAVE_OPENGL_TRUE
+HAVE_X11_FALSE
+HAVE_X11_TRUE
 HAVE_PORTAUDIO_FALSE
 HAVE_PORTAUDIO_TRUE
 CXXCPP
@@ -876,6 +878,7 @@ enable_fast_install
 with_gnu_ld
 enable_libtool_lock
 with_portaudio
+with_x11
 with_opengl
 with_ffmpeg
 '
@@ -1529,6 +1532,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --without-portaudio     Disable portaudio support (no support for sound
                           devices)
+  --without-x11           Disable x11 support
   --without-opengl        Disable opengl support (boblight-X11 will not be
                           able to capture on vblanks)
   --without-ffmpeg        Disable ffmpeg support (boblight-v4l will not be
@@ -6050,13 +6054,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6053: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6057: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6056: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6060: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6059: output\"" >&5)
+  (eval echo "\"\$as_me:6063: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7261,7 +7265,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7264 "configure"' > conftest.$ac_ext
+  echo '#line 7268 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9064,11 +9068,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9067: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9071: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9071: \$? = $ac_status" >&5
+   echo "$as_me:9075: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9403,11 +9407,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9406: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9410: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9410: \$? = $ac_status" >&5
+   echo "$as_me:9414: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9508,11 +9512,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9511: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9515: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9515: \$? = $ac_status" >&5
+   echo "$as_me:9519: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9563,11 +9567,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9566: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9570: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9570: \$? = $ac_status" >&5
+   echo "$as_me:9574: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11947,7 +11951,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11950 "configure"
+#line 11954 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12043,7 +12047,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12046 "configure"
+#line 12050 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13999,11 +14003,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14002: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14006: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14006: \$? = $ac_status" >&5
+   echo "$as_me:14010: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14098,11 +14102,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14101: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14105: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14105: \$? = $ac_status" >&5
+   echo "$as_me:14109: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14150,11 +14154,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14153: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14157: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14157: \$? = $ac_status" >&5
+   echo "$as_me:14161: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15356,6 +15360,19 @@ else
 fi
 
 
+
+# Check whether --with-x11 was given.
+if test "${with_x11+set}" = set; then :
+  withval=$with_x11;
+else
+  with_x11=check
+fi
+
+
+errormsgh="Missing a required header, please install it or disable X11 support by passing --without-x11 to configure"
+errormsgl="Missing a required library, please install it or disable X11 support by passing --without-x11 to configure"
+if test "x$with_x11" = xcheck; then :
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lX11      " >&5
 $as_echo_n "checking for main in -lX11      ... " >&6; }
 if test "${ac_cv_lib_X11_______main+set}" = set; then :
@@ -15391,9 +15408,8 @@ if test "x$ac_cv_lib_X11_______main" = x""yes; then :
 $as_echo "#define HAVE_LIBX11 1" >>confdefs.h
 
 else
-  as_fn_error "Missing a required library" "$LINENO" 5
+  as_fn_error "$errormsgl" "$LINENO" 5
 fi
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lXrender  " >&5
 $as_echo_n "checking for main in -lXrender  ... " >&6; }
@@ -15430,7 +15446,7 @@ if test "x$ac_cv_lib_Xrender___main" = x""yes; then :
 $as_echo "#define HAVE_LIBXRENDER 1" >>confdefs.h
 
 else
-  as_fn_error "Missing a required library" "$LINENO" 5
+  as_fn_error "$errormsgl" "$LINENO" 5
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lXext     " >&5
@@ -15468,8 +15484,52 @@ if test "x$ac_cv_lib_Xext______main" = x""yes; then :
 $as_echo "#define HAVE_LIBXRENDER 1" >>confdefs.h
 
 else
-  as_fn_error "Missing a required library" "$LINENO" 5
+  as_fn_error "$errormsgl" "$LINENO" 5
 fi
+
+for ac_header in X11/Xlib.h X11/Xutil.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+eval as_val=\$$as_ac_Header
+   if test "x$as_val" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  as_fn_error "$errormsgh" "$LINENO" 5
+fi
+
+done
+
+for ac_header in X11/extensions/Xrender.h X11/extensions/XShm.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "#include <X11/Xlib.h>
+"
+eval as_val=\$$as_ac_Header
+   if test "x$as_val" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  as_fn_error "$errormsgh" "$LINENO" 5
+fi
+
+done
+
+
+fi
+ if test "x$with_x11" = xcheck; then
+  HAVE_X11_TRUE=
+  HAVE_X11_FALSE='#'
+else
+  HAVE_X11_TRUE='#'
+  HAVE_X11_FALSE=
+fi
+
 
 
 # Check whether --with-opengl was given.
@@ -15774,40 +15834,6 @@ else
 fi
 
 
-for ac_header in X11/Xlib.h X11/Xutil.h
-do :
-  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
-eval as_val=\$$as_ac_Header
-   if test "x$as_val" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-else
-  as_fn_error "Missing a required header" "$LINENO" 5
-fi
-
-done
-
-for ac_header in X11/extensions/Xrender.h X11/extensions/XShm.h
-do :
-  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "#include <X11/Xlib.h>
-"
-eval as_val=\$$as_ac_Header
-   if test "x$as_val" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-else
-  as_fn_error "Missing a required header" "$LINENO" 5
-fi
-
-done
-
-
 ac_config_files="$ac_config_files Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
@@ -15941,6 +15967,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_PORTAUDIO_TRUE}" && test -z "${HAVE_PORTAUDIO_FALSE}"; then
   as_fn_error "conditional \"HAVE_PORTAUDIO\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_X11_TRUE}" && test -z "${HAVE_X11_FALSE}"; then
+  as_fn_error "conditional \"HAVE_X11\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_OPENGL_TRUE}" && test -z "${HAVE_OPENGL_FALSE}"; then
@@ -18435,5 +18465,9 @@ fi
 if test "x$with_opengl" != xcheck; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-opengl passed, boblight-X11 will not be able to capture on vblanks" >&5
 $as_echo "$as_me: WARNING: --without-opengl passed, boblight-X11 will not be able to capture on vblanks" >&2;}
+fi
+if test "x$with_x11" != xcheck; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-x11 passed, boblight-X11 and boblight-v4l will not be built" >&5
+$as_echo "$as_me: WARNING: --without-x11 passed, boblight-X11 and boblight-v4l will not be built" >&2;}
 fi
 

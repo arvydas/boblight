@@ -35,13 +35,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = boblightd$(EXEEXT) boblight-X11$(EXEEXT) \
-	boblight-constant$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_FFMPEG_TRUE@am__append_1 = boblight-v4l
-@HAVE_OPENGL_TRUE@am__append_2 = clients/boblight-X11/vblanksignal.cpp
-@HAVE_OPENGL_TRUE@am__append_3 = -lGL
-@HAVE_PORTAUDIO_TRUE@am__append_4 = device/devicesound.cpp
-@HAVE_PORTAUDIO_TRUE@am__append_5 = -lportaudio
+bin_PROGRAMS = boblightd$(EXEEXT) boblight-constant$(EXEEXT) \
+	$(am__EXEEXT_1) $(am__EXEEXT_2)
+@HAVE_X11_TRUE@am__append_1 = boblight-X11
+@HAVE_FFMPEG_TRUE@@HAVE_X11_TRUE@am__append_2 = boblight-v4l
+@HAVE_OPENGL_TRUE@am__append_3 = clients/boblight-X11/vblanksignal.cpp
+@HAVE_OPENGL_TRUE@am__append_4 = -lGL
+@HAVE_PORTAUDIO_TRUE@am__append_5 = device/devicesound.cpp
+@HAVE_PORTAUDIO_TRUE@am__append_6 = -lportaudio
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -80,7 +81,8 @@ am_libboblight_la_OBJECTS = libboblight_la-boblight-client.lo \
 	libboblight_la-boblight.lo libboblight_la-messagequeue.lo \
 	libboblight_la-misc.lo libboblight_la-tcpsocket.lo
 libboblight_la_OBJECTS = $(am_libboblight_la_OBJECTS)
-@HAVE_FFMPEG_TRUE@am__EXEEXT_1 = boblight-v4l$(EXEEXT)
+@HAVE_X11_TRUE@am__EXEEXT_1 = boblight-X11$(EXEEXT)
+@HAVE_FFMPEG_TRUE@@HAVE_X11_TRUE@am__EXEEXT_2 = boblight-v4l$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am__boblight_X11_SOURCES_DIST = clients/boblight-X11/boblight-X11.cpp \
 	util/timer.cpp util/condition.cpp util/mutex.cpp \
@@ -302,16 +304,16 @@ boblight_X11_SOURCES = clients/boblight-X11/boblight-X11.cpp \
 	clients/boblight-X11/grabber-xgetimage.cpp \
 	clients/boblight-X11/grabber-xrender.cpp \
 	clients/boblight-X11/flagmanager-X11.cpp \
-	clients/flagmanager.cpp $(am__append_2)
-boblight_X11_LDFLAGS = -lX11 -lXrender -lXext $(am__append_3)
+	clients/flagmanager.cpp $(am__append_3)
+boblight_X11_LDFLAGS = -lX11 -lXrender -lXext $(am__append_4)
 boblightd_SOURCES = util/condition.cpp util/log.cpp util/misc.cpp \
 	util/mutex.cpp util/thread.cpp util/timer.cpp \
 	util/serialport.cpp util/timeutils.cpp main.cpp \
 	util/tcpsocket.cpp util/messagequeue.cpp client.cpp light.cpp \
 	configuration.cpp device/device.cpp device/devicepopen.cpp \
 	device/deviceltbl.cpp device/devicers232.cpp \
-	device/devicedioder.cpp util/signaltimer.cpp $(am__append_4)
-boblightd_LDFLAGS = $(am__append_5)
+	device/devicedioder.cpp util/signaltimer.cpp $(am__append_5)
+boblightd_LDFLAGS = $(am__append_6)
 boblightd_LDADD = 
 lib_LTLIBRARIES = \
 	libboblight.la
