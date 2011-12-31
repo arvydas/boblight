@@ -16,26 +16,19 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CCONDITION
-#define CCONDITION
+//file to include stdint.h, __STDC_CONSTANT_MACROS and __STDC_LIMIT_MACROS
+//need to be defined before it
 
-#include "inclstdint.h"
+#ifndef INCLSTDINT_H
+  #define INCLSTDINT_H
 
-#include "mutex.h"
+  #ifndef __STDC_CONSTANT_MACROS
+    #define __STDC_CONSTANT_MACROS
+  #endif
 
-//pthread condition variable class
-class CCondition : public CMutex
-{
-  public:
-    CCondition();
-    ~CCondition();
+  #ifndef __STDC_LIMIT_MACROS
+    #define __STDC_LIMIT_MACROS
+  #endif
 
-    void Signal();
-    void Broadcast();
-    bool Wait(int64_t usecs = -1);
-
-  private:
-    pthread_cond_t m_cond;    
-};
-
-#endif //CCONDITION
+  #include <stdint.h>
+#endif

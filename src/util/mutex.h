@@ -19,9 +19,7 @@
 #ifndef CMUTEX
 #define CMUTEX
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
+#include "inclstdint.h"
 
 #include <pthread.h>
 

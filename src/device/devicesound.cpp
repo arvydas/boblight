@@ -16,10 +16,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
-
 #include "util/log.h"
 #include "util/misc.h"
 #include "util/mutex.h"

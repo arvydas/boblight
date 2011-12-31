@@ -19,9 +19,7 @@
 #ifndef CDEVICE
 #define CDEVICE
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
+#include "util/inclstdint.h"
 
 //device types
 #define NOTHING 0

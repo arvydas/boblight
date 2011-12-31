@@ -19,9 +19,7 @@
 #ifndef CLIGHT
 #define CLIGHT
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
+#include "util/inclstdint.h"
 
 #include <string>
 #include <vector>

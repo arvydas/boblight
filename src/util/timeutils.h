@@ -19,9 +19,8 @@
 #ifndef TIMEUTILS
 #define TIMEUTILS
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
+#include "inclstdint.h"
+
 #include <time.h>
 
 inline int64_t GetTimeUs()

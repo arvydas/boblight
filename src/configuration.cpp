@@ -16,9 +16,10 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "util/inclstdint.h"
+
 #include <iostream>
 #include <fstream>
-#include <stdint.h>
 
 #include "util/log.h"
 #include "util/misc.h"

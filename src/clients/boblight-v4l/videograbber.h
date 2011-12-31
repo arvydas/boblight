@@ -19,9 +19,7 @@
 #ifndef VIDEOGRABBER
 #define VIDEOGRABBER
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
+#include "util/inclstdint.h"
 
 //debug stuff
 #include <X11/Xlib.h>
