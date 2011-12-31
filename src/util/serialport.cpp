@@ -221,7 +221,10 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
   else m_options.c_cflag |= CSTOPB;
   
   //I guessed a little here
-  m_options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG | XCASE | ECHOK | ECHONL | ECHOCTL | ECHOPRT | ECHOKE | TOSTOP);
+  m_options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG | ECHOK | ECHONL | ECHOCTL | ECHOPRT | ECHOKE | TOSTOP);
+#ifdef XCASE //freebsd doesn't have XCASE
+  m_options.c_lflag &= ~XCASE;
+#endif
 
   if (parity == PAR_NONE)
   {
@@ -233,6 +236,10 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
   }
 
   m_options.c_iflag &= ~(IXON | IXOFF | IXANY | BRKINT | INLCR | IGNCR | ICRNL | IUCLC | IMAXBEL);
+#ifdef IUCLC //freebsd doesn't have IUCLC
+  m_options.c_iflag &= ~IUCLC;
+#endif
+
   m_options.c_oflag &= ~(OPOST | ONLCR | OCRNL);
 
   if (tcsetattr(m_fd, TCSANOW, &m_options) != 0)
