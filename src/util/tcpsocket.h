@@ -73,6 +73,7 @@ class CTcpSocket //base class
 
     int SetNonBlock(bool nonblock = true);
     int SetSockOptions();
+    int SetKeepalive();
     int WaitForSocket(bool write, std::string timeoutstr);
 };
 

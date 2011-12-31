@@ -132,9 +132,25 @@ int CTcpSocket::SetNonBlock(bool nonblock)
 
 int CTcpSocket::SetSockOptions()
 {
-  int flag = 1;
+  //set tcp keepalive
+  SetKeepalive();
 
+  //disable nagle algorithm
+  int flag = 1;
+  if (setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag)) == -1)
+  {
+    m_error = "TCP_NODELAY " + GetErrno();
+    return FAIL;
+  }
+
+  return SUCCESS;
+}
+
+int CTcpSocket::SetKeepalive()
+{
 #if defined(SO_KEEPALIVE) && defined(TCP_KEEPCNT) && defined(TCP_KEEPIDLE) && defined(TCP_KEEPINTVL)
+
+  int flag = 1;
 
   //turn keepalive on
   if (setsockopt(m_sock, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof(flag)) == -1)
@@ -172,14 +188,6 @@ int CTcpSocket::SetSockOptions()
 #warning keepalive support not compiled in
 
 #endif
-
-  //disable nagle algorithm
-  flag = 1;
-  if (setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag)) == -1)
-  {
-    m_error = "TCP_NODELAY " + GetErrno();
-    return FAIL;
-  }
 
   return SUCCESS;
 }
@@ -290,9 +298,10 @@ int CTcpClientSocket::Open(std::string address, int port, int usectimeout /*= -1
   if (returnv == FAIL || returnv == TIMEOUT)
     return returnv;
 
-  returnv = SetSockOptions();
+  //if this fails the socket might still work, so don't return an error
+  SetSockOptions();
   
-  return returnv;
+  return SUCCESS;
 }
 
 int CTcpClientSocket::Read(CTcpData& data)
