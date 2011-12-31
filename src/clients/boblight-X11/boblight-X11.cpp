@@ -100,6 +100,7 @@ int main (int argc, char *argv[])
   //set up signal handlers
   signal(SIGTERM, SignalHandler);
   signal(SIGINT, SignalHandler);
+  XSetErrorHandler(ErrorHandler);
 
   //keeps running until some unrecoverable error happens
   return Run();
