@@ -1535,8 +1535,7 @@ Optional Packages:
   --without-x11           Disable x11 support
   --without-opengl        Disable opengl support (boblight-X11 will not be
                           able to capture on vblanks)
-  --without-ffmpeg        Disable ffmpeg support (boblight-v4l will not be
-                          built)
+  --with-ffmpeg           Enable ffmpeg support (boblight-v4l will be built)
 
 Some influential environment variables:
   CC          C compiler command
@@ -6054,13 +6053,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6057: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6056: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6060: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6059: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6063: output\"" >&5)
+  (eval echo "\"\$as_me:6062: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7265,7 +7264,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7268 "configure"' > conftest.$ac_ext
+  echo '#line 7267 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9068,11 +9067,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9071: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9070: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9075: \$? = $ac_status" >&5
+   echo "$as_me:9074: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9407,11 +9406,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9410: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9409: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9414: \$? = $ac_status" >&5
+   echo "$as_me:9413: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9512,11 +9511,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9515: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9514: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9519: \$? = $ac_status" >&5
+   echo "$as_me:9518: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9567,11 +9566,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9570: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9569: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9574: \$? = $ac_status" >&5
+   echo "$as_me:9573: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11951,7 +11950,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11954 "configure"
+#line 11953 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12047,7 +12046,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12050 "configure"
+#line 12049 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14003,11 +14002,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14006: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14005: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14010: \$? = $ac_status" >&5
+   echo "$as_me:14009: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14102,11 +14101,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14105: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14104: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14109: \$? = $ac_status" >&5
+   echo "$as_me:14108: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14154,11 +14153,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14157: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14156: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14161: \$? = $ac_status" >&5
+   echo "$as_me:14160: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15607,9 +15606,7 @@ fi
 
 # Check whether --with-ffmpeg was given.
 if test "${with_ffmpeg+set}" = set; then :
-  withval=$with_ffmpeg;
-else
-  with_ffmpeg=check
+  withval=$with_ffmpeg; with_ffmpeg=check
 fi
 
 
@@ -18459,8 +18456,8 @@ if test "x$with_portaudio" != xcheck; then :
 $as_echo "$as_me: WARNING: --without-portaudio passed, boblightd will not have support for sound devices" >&2;}
 fi
 if test "x$with_ffmpeg" != xcheck; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-ffmpeg passed, boblight-v4l will not be built" >&5
-$as_echo "$as_me: WARNING: --without-ffmpeg passed, boblight-v4l will not be built" >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-ffmpeg not passed, boblight-v4l will not be built (if you don't plan to use boblight-v4l this is ok!)" >&5
+$as_echo "$as_me: WARNING: --with-ffmpeg not passed, boblight-v4l will not be built (if you don't plan to use boblight-v4l this is ok!)" >&2;}
 fi
 if test "x$with_opengl" != xcheck; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --without-opengl passed, boblight-X11 will not be able to capture on vblanks" >&5

@@ -63,8 +63,8 @@ AC_CHECK_HEADERS([GL/glx.h], [],
 AM_CONDITIONAL(HAVE_OPENGL, [test "x$with_opengl" = xcheck])
 
 dnl boblight-v4l
-AC_ARG_WITH([ffmpeg], [AS_HELP_STRING([--without-ffmpeg], [Disable ffmpeg support (boblight-v4l will not be built)])], [],
-[with_ffmpeg=check])
+AC_ARG_WITH([ffmpeg], [AS_HELP_STRING([--with-ffmpeg], [Enable ffmpeg support (boblight-v4l will be built)])], [with_ffmpeg=check],
+[])
 
 errormsgh="Missing a required header, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
 errormsgl="Missing a required library, please install it or disable ffmpeg support by passing --without-ffmpeg to configure"
@@ -84,7 +84,7 @@ src/Makefile
 ])
 
 AS_IF([test "x$with_portaudio" != xcheck], [AC_MSG_WARN([--without-portaudio passed, boblightd will not have support for sound devices])])
-AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--without-ffmpeg passed, boblight-v4l will not be built])])
+AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--with-ffmpeg not passed, boblight-v4l will not be built (if you don't plan to use boblight-v4l this is ok!)])])
 AS_IF([test "x$with_opengl" != xcheck], [AC_MSG_WARN([--without-opengl passed, boblight-X11 will not be able to capture on vblanks])])
 AS_IF([test "x$with_x11" != xcheck], [AC_MSG_WARN([--without-x11 passed, boblight-X11 and boblight-v4l will not be built])])
 
