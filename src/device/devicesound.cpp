@@ -258,8 +258,8 @@ void CDeviceSound::FillOutput(int16_t* out, unsigned long framecount)
   //store the values from m_channels, because they get recalculated for each call to GetValue()
   for (int i = 0; i < m_channels.size(); i++)
   {
-    m_outputvalues[i] = Round32(m_channels[i].GetValue(now) * m_pwmperiod);
-    m_outputvalues[i] = Clamp(m_outputvalues[i], 0, m_pwmperiod);
+    int out = Round32(m_channels[i].GetValue(now) * m_pwmperiod);
+    m_outputvalues[i] = Clamp(out, 0, m_pwmperiod);
   }
 
   //calculate the pwm wave for each channnel
