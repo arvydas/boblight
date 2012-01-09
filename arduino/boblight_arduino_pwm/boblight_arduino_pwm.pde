@@ -21,13 +21,23 @@ void setup()
   Serial.begin(38400);
 }
 
+//uncomment one of the lines below to match your arduino
+//#define DUEMILANOVE
+//#define MEGA
+
+//this could be done automatically, but then I have to check
+//if newer arduino boards are released etc etc, meh (I tried, it sucked)
+
 //on the Arduino megam, 12 pwm outputs are available, on the duemilanove there are 6
-#ifdef __AVR_ATmega1280__
+#ifdef MEGA
   //mega
   uint8_t outputs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-#else
+#elif defined(DUEMILANOVE)
   //duemilanove
   uint8_t outputs[] = {3, 5, 6, 9, 10, 11};
+#else
+  #error please uncomment a line matching your arduino board (you're actually required to edit the code now)
+  uint8_t outputs[] = {0};
 #endif
 
 #define NROUTPUTS (sizeof(outputs))
