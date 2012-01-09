@@ -15538,7 +15538,7 @@ else
   with_opengl=check
 fi
 
-if test "x$with_opengl" = xcheck; then :
+if test "x$with_opengl" = xcheck && test "x$with_x11" = xcheck; then :
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lGL" >&5
 $as_echo_n "checking for main in -lGL... " >&6; }
@@ -15594,7 +15594,7 @@ done
 
 
 fi
- if test "x$with_opengl" = xcheck; then
+ if test "x$with_opengl" = xcheck && test "x$with_x11" = xcheck; then
   HAVE_OPENGL_TRUE=
   HAVE_OPENGL_FALSE='#'
 else

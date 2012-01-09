@@ -54,13 +54,13 @@ AC_CHECK_HEADERS([X11/extensions/Xrender.h X11/extensions/XShm.h],,
 AM_CONDITIONAL(HAVE_X11, [test "x$with_x11" = xcheck])
 
 AC_ARG_WITH([opengl], [AS_HELP_STRING([--without-opengl], [Disable opengl support (boblight-X11 will not be able to capture on vblanks)])], [], [with_opengl=check])
-AS_IF([test "x$with_opengl" = xcheck], [
+AS_IF([test "x$with_opengl" = xcheck && test "x$with_x11" = xcheck], [
 AC_CHECK_LIB(GL, [main], AC_DEFINE([HAVE_LIBGL], [1], [ ]),
   [AC_MSG_ERROR([Missing a required library, please install it or disable opengl by passing --without-opengl to configure])])
 AC_CHECK_HEADERS([GL/glx.h], [],
   [AC_MSG_ERROR([Missing a required header, please install it or disable opengl by passing --without-opengl to configure])])
 ])
-AM_CONDITIONAL(HAVE_OPENGL, [test "x$with_opengl" = xcheck])
+AM_CONDITIONAL(HAVE_OPENGL, [test "x$with_opengl" = xcheck && test "x$with_x11" = xcheck])
 
 dnl boblight-v4l
 AC_ARG_WITH([ffmpeg], [AS_HELP_STRING([--with-ffmpeg], [Enable ffmpeg support (boblight-v4l will be built)])], [with_ffmpeg=check],
