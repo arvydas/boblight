@@ -60,42 +60,11 @@ bool CMutex::TryLock()
   }
 }
 
-bool CMutex::Lock(int64_t usecs /*= -1*/)
+bool CMutex::Lock()
 {
-  if (usecs < 0) //wait indefinitely
-  {
-    pthread_mutex_lock(&m_mutex);
-    m_refcount++;
-    assert(m_refcount > 0);
-    return true;
-  }
-  else
-  {
-    //get the current time
-    struct timespec currtime;
-    clock_gettime(CLOCK_REALTIME, &currtime);
-
-    //add the number of microseconds
-    currtime.tv_sec += usecs / 1000000;
-    currtime.tv_nsec += (usecs % 1000000) * 1000;
-    
-    if (currtime.tv_nsec >= 1000000000)
-    {
-      currtime.tv_sec += currtime.tv_nsec / 1000000000;
-      currtime.tv_nsec %= 1000000000;
-    }
-
-    //try to lock the mutex
-    if (pthread_mutex_timedlock(&m_mutex, &currtime) == 0)
-    {
-      m_refcount++;
-      assert(m_refcount > 0);
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
+  pthread_mutex_lock(&m_mutex);
+  m_refcount++;
+  assert(m_refcount > 0);
+  return true;
 }
 

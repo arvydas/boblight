@@ -28,7 +28,7 @@ class CMutex
   public:
     CMutex();
     ~CMutex();
-    bool Lock(int64_t usecs = -1);
+    bool Lock();
     void Unlock();
     bool TryLock();
 
