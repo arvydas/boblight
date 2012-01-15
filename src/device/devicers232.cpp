@@ -27,7 +27,7 @@ CDeviceRS232::CDeviceRS232(CClientsHandler& clients) : m_timer(&m_stop), CDevice
 {
   m_type = -1;
   m_buff = NULL;
-  m_bits = 8;
+  m_max = 255;
   m_buffsize = 0;
 }
 
@@ -73,7 +73,9 @@ bool CDeviceRS232::SetupDevice()
     USleep(m_delayafteropen, &m_stop);
 
   //bytes per channel
-  m_bytes = m_bits / 8 + ((m_bits % 8) ? 1 : 0);
+  m_bytes = 1;
+  while (Round64(pow(256, m_bytes)) <= m_max)
+    m_bytes++;
 
   //allocate a buffer, that can hold the prefix,the number of bytes per channel and the postfix
   m_buffsize = m_prefix.size() + m_channels.size() * m_bytes + m_postfix.size();
@@ -107,13 +109,11 @@ bool CDeviceRS232::WriteOutput()
   int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
-  int64_t maxvalue = (1 << m_bits) - 1;
-
   //put the values in 1 byte unsigned in the buffer
   for (int i = 0; i < m_channels.size(); i++)
   {
-    int64_t output = Round64((double)m_channels[i].GetValue(now) * maxvalue);
-    output = Clamp(output, 0, maxvalue);
+    int64_t output = Round64((double)m_channels[i].GetValue(now) * m_max);
+    output = Clamp(output, 0, m_max);
 
     for (int j = 0; j < m_bytes; j++)
       m_buff[m_prefix.size() + i * m_bytes + j] = (output >> ((m_bytes - j - 1) * 8)) & 0xFF;

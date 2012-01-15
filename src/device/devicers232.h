@@ -30,7 +30,7 @@ class CDeviceRS232 : public CDevice
     void SetPrefix(std::vector<uint8_t> prefix)   { m_prefix = prefix; }
     void SetPostfix(std::vector<uint8_t> postfix) { m_postfix = postfix; }
     void SetType(int type);
-    void SetBits(int bits) { m_bits = bits; }
+    void SetMax(int64_t max) { m_max = max; }
 
     void Sync();
 
@@ -47,7 +47,7 @@ class CDeviceRS232 : public CDevice
     int                  m_buffsize;
     std::vector<uint8_t> m_prefix;
     std::vector<uint8_t> m_postfix;
-    int64_t              m_bits;
+    int64_t              m_max;
     int                  m_bytes;
 };
 

@@ -1143,7 +1143,7 @@ void CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)
 
   int bits;
   StrToInt(strvalue, bits);
-  device->SetBits(bits);
+  device->SetMax((1 << (int64_t)bits) - 1);
 }
 
 void CConfig::SetDeviceDelayAfterOpen(CDevice* device, int devicenr)
