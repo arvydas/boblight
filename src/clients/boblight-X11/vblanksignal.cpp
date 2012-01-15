@@ -16,10 +16,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-
-#include "vblanksignal.h"
 #include "util/misc.h"
+#include <string.h>
+#include "vblanksignal.h"
 
 using namespace std;
 

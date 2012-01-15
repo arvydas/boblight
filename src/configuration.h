@@ -111,7 +111,8 @@ class CConfig
 #endif
     void SetDeviceAllowSync(CDevice* device, int devicenr);
     void SetDeviceDebug(CDevice* device, int devicenr);
-    void SetDeviceBits(CDeviceRS232* device, int devicenr);
+    bool SetDeviceBits(CDeviceRS232* device, int devicenr);
+    bool SetDeviceMax(CDeviceRS232* device, int devicenr);
     void SetDeviceDelayAfterOpen(CDevice* device, int devicenr);
 
     bool SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr);

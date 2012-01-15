@@ -291,10 +291,11 @@ bool CConfig::CheckDeviceConfig()
       {
         continue; //can't check these here
       }
-      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" || key == "bits" || key == "delayafteropen")
+      else if (key == "rate" || key == "channels" || key == "interval" || key == "period" ||
+               key == "bits" || key == "delayafteropen" || key == "max")
       { //these are of type integer not lower than 1
-        int ivalue;
-        if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32))
+        int64_t ivalue;
+        if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32) || (key == "max" && ivalue > 0xFFFFFFFF))
         {
           LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
@@ -830,8 +831,15 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
-  SetDeviceBits(rs232device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
+
+  bool hasbits = SetDeviceBits(rs232device, devicenr);
+  bool hasmax  = SetDeviceMax(rs232device, devicenr);
+  if (hasbits && hasmax)
+  {
+    LogError("%s: device %s has both bits and max set", m_filename.c_str(), rs232device->GetName().c_str());
+    return false;
+  }
 
   if (type == "momo")
   {
@@ -1132,19 +1140,38 @@ void CConfig::SetDeviceDebug(CDevice* device, int devicenr)
   device->SetDebug(debug);
 }
 
-void CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)
+bool CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("bits", m_devicelines[devicenr].lines, line);
   if (linenr == -1)
-    return;
+    return false;
 
   GetWord(line, strvalue);
 
   int bits;
   StrToInt(strvalue, bits);
   device->SetMax((1 << (int64_t)bits) - 1);
+
+  return true;
 }
+
+bool CConfig::SetDeviceMax(CDeviceRS232* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("max", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return false;
+
+  GetWord(line, strvalue);
+
+  int64_t max;
+  StrToInt(strvalue, max);
+  device->SetMax(max);
+
+  return true;
+}
+
 
 void CConfig::SetDeviceDelayAfterOpen(CDevice* device, int devicenr)
 {

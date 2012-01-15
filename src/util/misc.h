@@ -133,9 +133,19 @@ inline bool StrToInt(const std::string& data, int& value)
   return sscanf(data.c_str(), "%i", &value) == 1;
 }
 
+inline bool StrToInt(const std::string& data, int64_t& value)
+{
+  return sscanf(data.c_str(), "%" PRIi64, &value) == 1;
+}
+
 inline bool HexStrToInt(const std::string& data, int& value)
 {
   return sscanf(data.c_str(), "%x", &value) == 1;
+}
+
+inline bool HexStrToInt(const std::string& data, int64_t& value)
+{
+  return sscanf(data.c_str(), "%" PRIx64, &value) == 1;
 }
 
 inline bool StrToFloat(const std::string& data, float& value)
