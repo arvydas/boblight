@@ -25,6 +25,16 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+//compile fix
+#define AVMediaType		CodecType
+#define AVMEDIA_TYPE_UNKNOWN    CODEC_TYPE_UNKNOWN
+#define AVMEDIA_TYPE_VIDEO      CODEC_TYPE_VIDEO
+#define AVMEDIA_TYPE_AUDIO      CODEC_TYPE_AUDIO
+#define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
+#define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
+#define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
+#define AVMEDIA_TYPE_NB         CODEC_TYPE_NB
+
 //have to sort out these includes, might not need all of them
 extern "C"
 {

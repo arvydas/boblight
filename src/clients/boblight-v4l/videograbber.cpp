@@ -237,7 +237,12 @@ void CVideoGrabber::Run(volatile bool& stop, void* boblight)
     if (pkt.stream_index == m_videostream)
     {
       int framefinished;
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,23,0)
+      avcodec_decode_video2(m_codeccontext, m_inputframe, &framefinished, &pkt);
+#else
       avcodec_decode_video(m_codeccontext, m_inputframe, &framefinished, pkt.data, pkt.size);
+#endif
 
       if (framefinished)
       {
