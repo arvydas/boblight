@@ -17,7 +17,7 @@
  */
 
 #include "boblight.h"
-#include "boblight-client.h"
+#include "boblight_client.h"
 
 using namespace boblight;
 

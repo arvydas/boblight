@@ -90,7 +90,7 @@ lib_LTLIBRARIES = \
 	libboblight.la
 
 libboblight_la_SOURCES = \
-	lib/boblight-client.cpp \
+	lib/boblight_client.cpp \
 	lib/boblight.cpp \
 	util/messagequeue.cpp \
 	util/misc.cpp \

@@ -23,7 +23,7 @@
 #include <iostream> //debug
 #include <sstream>
 
-#include "boblight-client.h"
+#include "boblight_client.h"
 #include "util/misc.h"
 #include "util/timeutils.h"
 #include "protocolversion.h"
