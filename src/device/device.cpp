@@ -22,8 +22,6 @@
 #include "util/log.h"
 #include "util/timeutils.h"
 
-CSignalTimer test;
-
 CChannel::CChannel()
 {
   m_color = -1;
