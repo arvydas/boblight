@@ -231,7 +231,7 @@ bool CConfig::CheckGlobalConfig()
 
     if (!GetWord(line, value)) //every line here needs to have another word
     {
-      LogError("%s line %i: no value for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
+      LogError("%s line %i section [global]: no value for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
       continue;
     }
@@ -245,13 +245,14 @@ bool CConfig::CheckGlobalConfig()
       int port;
       if (!StrToInt(value, port) || port < 0 || port > 65535)
       {
-        LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, value.c_str(), key.c_str());
+        LogError("%s line %i section [global]: wrong value %s for key %s",
+                 m_filename.c_str(), m_globalconfiglines[i].linenr, value.c_str(), key.c_str());
         valid = false;
       }
     }
     else //we don't know this one
     {
-      LogError("%s line %i: unknown key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
+      LogError("%s line %i section [global]: unknown key %s", m_filename.c_str(), m_globalconfiglines[i].linenr, key.c_str());
       valid = false;
     }
   }
@@ -282,7 +283,7 @@ bool CConfig::CheckDeviceConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [device]: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -297,7 +298,7 @@ bool CConfig::CheckDeviceConfig()
         int64_t ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32) || (key == "max" && ivalue > 0xFFFFFFFF))
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }          
       }
@@ -308,7 +309,7 @@ bool CConfig::CheckDeviceConfig()
         {
           if (!HexStrToInt(value, ivalue) || (ivalue > 0xFF))
           {
-            LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+            LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
             valid = false;
           }
           if (!GetWord(line, value))
@@ -320,7 +321,7 @@ bool CConfig::CheckDeviceConfig()
         double latency;
         if (!StrToFloat(value, latency) || latency <= 0.0)
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
@@ -329,13 +330,13 @@ bool CConfig::CheckDeviceConfig()
         bool bValue;
         if (!StrToBool(value, bValue))
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
       else //don't know this one
       {
-        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [device]: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
@@ -367,7 +368,7 @@ bool CConfig::CheckColorConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [color]: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -381,7 +382,7 @@ bool CConfig::CheckColorConfig()
         float fvalue;
         if (!StrToFloat(value, fvalue) || fvalue < 0.0 || (key != "gamma" && fvalue > 1.0))
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i section [color]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
@@ -390,13 +391,13 @@ bool CConfig::CheckColorConfig()
         int rgb;
         if (!HexStrToInt(value, rgb) || (rgb & 0xFF000000))
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          LogError("%s line %i section [color]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }
       }
       else //don't know this one
       {
-        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [color]: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
@@ -428,7 +429,7 @@ bool CConfig::CheckLightConfig()
 
       if (!GetWord(line, value)) //every line here needs to have another word
       {
-        LogError("%s line %i: no value for key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [light]: no value for key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
         continue;
       }
@@ -443,7 +444,7 @@ bool CConfig::CheckLightConfig()
         float scan[2];
         if (!GetWord(line, scanrange))
         {
-          LogError("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
+          LogError("%s line %i section [light]: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
           valid = false;
           continue;
         }
@@ -453,7 +454,7 @@ bool CConfig::CheckLightConfig()
         if (sscanf(scanrange.c_str(), "%f %f", scan, scan + 1) != 2
             || scan[0] < 0.0 || scan[0] > 100.0 || scan[1] < 0.0 || scan[1] > 100.0 || scan[0] > scan[1])
         {
-          LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, scanrange.c_str(), key.c_str());
+          LogError("%s line %i section [light]: wrong value %s for key %s", m_filename.c_str(), linenr, scanrange.c_str(), key.c_str());
           valid = false;
           continue;
         }
@@ -466,7 +467,7 @@ bool CConfig::CheckLightConfig()
         {
           if (!GetWord(line, value))
           {
-            LogError("%s line %i: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
+            LogError("%s line %i section [light]: not enough values for key %s", m_filename.c_str(), linenr, key.c_str());
             valid = false;
             break;
           }
@@ -476,14 +477,14 @@ bool CConfig::CheckLightConfig()
           int channel;
           if (!StrToInt(value, channel) || channel <= 0)
           {
-            LogError("%s line %i: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+            LogError("%s line %i section [light]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
             valid = false;
           }
         }
       }
       else //don't know this one
       {
-        LogError("%s line %i: unknown key %s", m_filename.c_str(), linenr, key.c_str());
+        LogError("%s line %i section [light]: unknown key %s", m_filename.c_str(), linenr, key.c_str());
         valid = false;
       }      
     }
