@@ -239,7 +239,7 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     m_options.c_iflag |= INPCK | ISTRIP;
   }
 
-  m_options.c_iflag &= ~(IXON | IXOFF | IXANY | BRKINT | INLCR | IGNCR | ICRNL | IUCLC | IMAXBEL);
+  m_options.c_iflag &= ~(IXON | IXOFF | IXANY | BRKINT | INLCR | IGNCR | ICRNL | IMAXBEL);
 #ifdef IUCLC //freebsd doesn't have IUCLC
   m_options.c_iflag &= ~IUCLC;
 #endif
