@@ -17,8 +17,10 @@
  */
 
 #include <time.h>
+#include <sys/time.h>
 #include <assert.h>
 #include "condition.h"
+#include "config.h"
 
 CCondition::CCondition()
 {
@@ -64,7 +66,14 @@ bool CCondition::Wait(int64_t usecs /*= -1*/)
   {
     //get the current time
     struct timespec currtime;
+#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_REALTIME)
     clock_gettime(CLOCK_REALTIME, &currtime);
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    currtime.tv_sec = tv.tv_sec;
+    currtime.tv_nsec = tv.tv_usec * 1000;
+#endif
 
     //add the number of microseconds
 

@@ -20,15 +20,22 @@
 #define TIMEUTILS
 
 #include "inclstdint.h"
+#include "config.h"
 
 #include <time.h>
+#include <sys/time.h>
 
 inline int64_t GetTimeUs()
 {
+#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
   struct timespec time;
   clock_gettime(CLOCK_MONOTONIC, &time);
-
   return ((int64_t)time.tv_sec * 1000000LL) + (int64_t)(time.tv_nsec + 500) / 1000LL;
+#else
+  struct timeval time;
+  gettimeofday(&time, NULL);
+  return ((int64_t)time.tv_sec * 1000000LL) + (int64_t)time.tv_usec;
+#endif
 }
 
 template <class T> 
