@@ -322,7 +322,12 @@ bool CSerialPort::SetPortOptions(int databits, int stopbits, int parity)
 
   if (tcsetattr(m_fd, TCSANOW, &m_options) != 0)
   {
-    m_error = "tcsetattr() " + GetErrno();
+    string error = "tcsetattr() " + GetErrno();
+    if (m_error.empty())
+      m_error = error;
+    else
+      m_error += ", " + error; //use += so we don't lose the error from SetBaudRate
+
     return false;
   }
 

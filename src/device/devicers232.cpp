@@ -154,7 +154,11 @@ bool CDeviceRS232::OpenSerialPort()
 {
   bool opened = m_serialport.Open(m_output, m_rate);
   if (m_serialport.HasError())
+  {
     LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+    if (opened)
+      Log("%s: %s had a non fatal error, it might still work, continuing", m_name.c_str(), m_output.c_str());
+  }
 
   m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
 
