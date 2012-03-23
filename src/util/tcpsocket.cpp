@@ -239,7 +239,7 @@ int CTcpSocket::WaitForSocket(bool write, std::string timeoutstr)
   }
   else if (sockstate) //socket had an error
   {
-    m_error = "getsockopt() " + m_address + ":" + ToString(m_port) + " " + GetErrno(sockstate);
+    m_error = "SO_ERROR " + m_address + ":" + ToString(m_port) + " " + GetErrno(sockstate);
     return FAIL;
   }
 
