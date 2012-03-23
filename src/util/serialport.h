@@ -42,6 +42,7 @@ class CSerialPort
     bool IsOpen() { return m_fd != -1; }
     void PrintToStdOut(bool tostdout) { m_tostdout = tostdout; }
 
+    bool        HasError();
     std::string GetError();
 
   private:
@@ -53,6 +54,7 @@ class CSerialPort
     struct termios m_options;
 
     bool SetBaudRate(int baudrate);
+    bool SetPortOptions(int databits, int stopbits, int parity);
 };
 
 #endif //CSERIALPORT

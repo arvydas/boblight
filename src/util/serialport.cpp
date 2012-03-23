@@ -193,9 +193,84 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
 
   fcntl(m_fd, F_SETFL, 0);
 
-  if (!SetBaudRate(baudrate))
-    return false;
+  //set port attributes, don't bail if they fail because the port might still be usable
+  if (tcgetattr(m_fd, &m_options) == 0)
+  {
+    SetBaudRate(baudrate);
+    SetPortOptions(databits, stopbits, parity);
+  }
+  else
+  {
+    m_error = "tcgetattr() " + GetErrno();
+  }
 
+  //non-blocking port
+  fcntl(m_fd, F_SETFL, FNDELAY);
+
+  return true;
+}
+
+void CSerialPort::Close()
+{
+  if (m_fd != -1)
+  {
+    close(m_fd);
+    m_fd = -1;
+    m_name = "";
+    m_error = "";
+  }
+}
+
+bool CSerialPort::HasError()
+{
+  return !m_error.empty();
+}
+
+string CSerialPort::GetError()
+{
+  return m_name + ": " + m_error;
+}
+
+bool CSerialPort::SetBaudRate(int baudrate)
+{
+  int rate = IntToRate(baudrate);
+  if (rate == -1)
+  {
+    char buff[255];
+    sprintf(buff, "%i is not a valid baudrate", baudrate);
+    m_error = buff;
+    return false;
+  }
+  
+  if (cfsetispeed(&m_options, rate) != 0)
+  {
+    m_error = "cfsetispeed() " + GetErrno();
+    return false;
+  }
+  
+  if (cfsetospeed(&m_options, rate) != 0)
+  {
+    m_error = "cfsetospeed() " + GetErrno();
+    return false;
+  }
+
+  return true;
+}
+
+int CSerialPort::IntToRate(int baudrate)
+{
+  for (int i = 0; i < sizeof(baudrates) / sizeof(sbaudrate) - 1; i++)
+  {
+    if (baudrates[i].rate == baudrate)
+    {
+      return baudrates[i].symbol;
+    }
+  }
+  return -1;
+}
+
+bool CSerialPort::SetPortOptions(int databits, int stopbits, int parity)
+{
   m_options.c_cflag |= (CLOCAL | CREAD);
   m_options.c_cflag &= ~HUPCL;
 
@@ -250,71 +325,7 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     m_error = "tcsetattr() " + GetErrno();
     return false;
   }
-  
-  //non-blocking port
-  fcntl(m_fd, F_SETFL, FNDELAY);
 
   return true;
-}
-
-void CSerialPort::Close()
-{
-  if (m_fd != -1)
-  {
-    close(m_fd);
-    m_fd = -1;
-    m_name = "";
-    m_error = "";
-  }
-}
-
-string CSerialPort::GetError()
-{
-  return m_name + ": " + m_error;
-}
-
-bool CSerialPort::SetBaudRate(int baudrate)
-{
-  int rate = IntToRate(baudrate);
-  if (rate == -1)
-  {
-    char buff[255];
-    sprintf(buff, "%i is not a valid baudrate", baudrate);
-    m_error = buff;
-    return false;
-  }
-  
-  //get the current port attributes
-  if (tcgetattr(m_fd, &m_options) != 0)
-  {
-    m_error = "tcgetattr() " + GetErrno();
-    return false;
-  }
-
-  if (cfsetispeed(&m_options, rate) != 0)
-  {
-    m_error = "cfsetispeed() " + GetErrno();
-    return false;
-  }
-  
-  if (cfsetospeed(&m_options, rate) != 0)
-  {
-    m_error = "cfsetospeed() " + GetErrno();
-    return false;
-  }
-
-  return true;
-}
-
-int CSerialPort::IntToRate(int baudrate)
-{
-  for (int i = 0; i < sizeof(baudrates) / sizeof(sbaudrate) - 1; i++)
-  {
-    if (baudrates[i].rate == baudrate)
-    {
-      return baudrates[i].symbol;
-    }
-  }
-  return -1;
 }
 
