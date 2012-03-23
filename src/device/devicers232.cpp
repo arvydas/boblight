@@ -61,13 +61,8 @@ bool CDeviceRS232::SetupDevice()
 {
   m_timer.SetInterval(m_interval);
 
-  bool opened = m_serialport.Open(m_output, m_rate);
-  if (m_serialport.HasError())
-    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-  if (!opened)
+  if (!OpenSerialPort())
     return false;
-
-  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
 
   if (m_delayafteropen > 0)
     USleep(m_delayafteropen, &m_stop);
@@ -153,5 +148,16 @@ void CDeviceRS232::CloseDevice()
   }
 
   m_serialport.Close();
+}
+
+bool CDeviceRS232::OpenSerialPort()
+{
+  bool opened = m_serialport.Open(m_output, m_rate);
+  if (m_serialport.HasError())
+    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
+
+  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
+
+  return opened;
 }
 

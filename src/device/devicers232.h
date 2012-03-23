@@ -40,6 +40,8 @@ class CDeviceRS232 : public CDevice
     bool WriteOutput();
     void CloseDevice();
     
+    bool OpenSerialPort();
+
     CSignalTimer m_timer;
     CSerialPort  m_serialport;
 
