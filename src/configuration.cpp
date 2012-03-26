@@ -59,11 +59,13 @@ bool CConfig::LoadConfigFromFile(string file)
   {
     string buff;
     getline(configfile, buff);
+    linenr++;
     if (configfile.fail())
     {
+      if (!configfile.eof())
+        LogError("reading %s line %i: %s", file.c_str(), linenr, GetErrno().c_str());
       break;
     }
-    linenr++;
 
     string line = buff;
     string key;
