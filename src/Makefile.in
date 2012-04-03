@@ -122,7 +122,7 @@ am__boblightd_SOURCES_DIST = util/condition.cpp util/log.cpp \
 	util/serialport.cpp util/timeutils.cpp main.cpp \
 	util/tcpsocket.cpp util/messagequeue.cpp client.cpp light.cpp \
 	configuration.cpp device/device.cpp device/devicepopen.cpp \
-	device/deviceltbl.cpp device/devicers232.cpp \
+	device/devicers232.cpp device/deviceltbl.cpp \
 	device/devicedioder.cpp util/signaltimer.cpp \
 	device/devicesound.cpp
 @HAVE_PORTAUDIO_TRUE@am__objects_2 = devicesound.$(OBJEXT)
@@ -131,8 +131,8 @@ am_boblightd_OBJECTS = condition.$(OBJEXT) log.$(OBJEXT) \
 	timer.$(OBJEXT) serialport.$(OBJEXT) timeutils.$(OBJEXT) \
 	main.$(OBJEXT) tcpsocket.$(OBJEXT) messagequeue.$(OBJEXT) \
 	client.$(OBJEXT) light.$(OBJEXT) configuration.$(OBJEXT) \
-	device.$(OBJEXT) devicepopen.$(OBJEXT) deviceltbl.$(OBJEXT) \
-	devicers232.$(OBJEXT) devicedioder.$(OBJEXT) \
+	device.$(OBJEXT) devicepopen.$(OBJEXT) devicers232.$(OBJEXT) \
+	deviceltbl.$(OBJEXT) devicedioder.$(OBJEXT) \
 	signaltimer.$(OBJEXT) $(am__objects_2)
 boblightd_OBJECTS = $(am_boblightd_OBJECTS)
 boblightd_DEPENDENCIES =
@@ -311,7 +311,7 @@ boblightd_SOURCES = util/condition.cpp util/log.cpp util/misc.cpp \
 	util/serialport.cpp util/timeutils.cpp main.cpp \
 	util/tcpsocket.cpp util/messagequeue.cpp client.cpp light.cpp \
 	configuration.cpp device/device.cpp device/devicepopen.cpp \
-	device/deviceltbl.cpp device/devicers232.cpp \
+	device/devicers232.cpp device/deviceltbl.cpp \
 	device/devicedioder.cpp util/signaltimer.cpp $(am__append_5)
 boblightd_LDFLAGS = $(am__append_6)
 boblightd_LDADD = 
@@ -886,20 +886,6 @@ devicepopen.obj: device/devicepopen.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicepopen.obj `if test -f 'device/devicepopen.cpp'; then $(CYGPATH_W) 'device/devicepopen.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicepopen.cpp'; fi`
 
-deviceltbl.o: device/deviceltbl.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deviceltbl.o -MD -MP -MF $(DEPDIR)/deviceltbl.Tpo -c -o deviceltbl.o `test -f 'device/deviceltbl.cpp' || echo '$(srcdir)/'`device/deviceltbl.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/deviceltbl.Tpo $(DEPDIR)/deviceltbl.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/deviceltbl.cpp' object='deviceltbl.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceltbl.o `test -f 'device/deviceltbl.cpp' || echo '$(srcdir)/'`device/deviceltbl.cpp
-
-deviceltbl.obj: device/deviceltbl.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deviceltbl.obj -MD -MP -MF $(DEPDIR)/deviceltbl.Tpo -c -o deviceltbl.obj `if test -f 'device/deviceltbl.cpp'; then $(CYGPATH_W) 'device/deviceltbl.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceltbl.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/deviceltbl.Tpo $(DEPDIR)/deviceltbl.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/deviceltbl.cpp' object='deviceltbl.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceltbl.obj `if test -f 'device/deviceltbl.cpp'; then $(CYGPATH_W) 'device/deviceltbl.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceltbl.cpp'; fi`
-
 devicers232.o: device/devicers232.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicers232.o -MD -MP -MF $(DEPDIR)/devicers232.Tpo -c -o devicers232.o `test -f 'device/devicers232.cpp' || echo '$(srcdir)/'`device/devicers232.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicers232.Tpo $(DEPDIR)/devicers232.Po
@@ -913,6 +899,20 @@ devicers232.obj: device/devicers232.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicers232.cpp' object='devicers232.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicers232.obj `if test -f 'device/devicers232.cpp'; then $(CYGPATH_W) 'device/devicers232.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicers232.cpp'; fi`
+
+deviceltbl.o: device/deviceltbl.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deviceltbl.o -MD -MP -MF $(DEPDIR)/deviceltbl.Tpo -c -o deviceltbl.o `test -f 'device/deviceltbl.cpp' || echo '$(srcdir)/'`device/deviceltbl.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/deviceltbl.Tpo $(DEPDIR)/deviceltbl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/deviceltbl.cpp' object='deviceltbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceltbl.o `test -f 'device/deviceltbl.cpp' || echo '$(srcdir)/'`device/deviceltbl.cpp
+
+deviceltbl.obj: device/deviceltbl.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deviceltbl.obj -MD -MP -MF $(DEPDIR)/deviceltbl.Tpo -c -o deviceltbl.obj `if test -f 'device/deviceltbl.cpp'; then $(CYGPATH_W) 'device/deviceltbl.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceltbl.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/deviceltbl.Tpo $(DEPDIR)/deviceltbl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/deviceltbl.cpp' object='deviceltbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceltbl.obj `if test -f 'device/deviceltbl.cpp'; then $(CYGPATH_W) 'device/deviceltbl.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceltbl.cpp'; fi`
 
 devicedioder.o: device/devicedioder.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicedioder.o -MD -MP -MF $(DEPDIR)/devicedioder.Tpo -c -o devicedioder.o `test -f 'device/devicedioder.cpp' || echo '$(srcdir)/'`device/devicedioder.cpp

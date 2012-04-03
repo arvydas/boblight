@@ -72,8 +72,8 @@ boblightd_SOURCES = \
 	configuration.cpp \
 	device/device.cpp \
 	device/devicepopen.cpp \
-	device/deviceltbl.cpp \
 	device/devicers232.cpp \
+	device/deviceltbl.cpp \
 	device/devicedioder.cpp \
         util/signaltimer.cpp
 
