@@ -100,11 +100,11 @@ bool CDeviceRS232::SetupDevice()
 
 bool CDeviceRS232::WriteOutput()
 {
-  //get the channel values from the clienshandler
+  //get the channel values from the clientshandler
   int64_t now = GetTimeUs();
   m_clients.FillChannels(m_channels, now, this);
 
-  //put the values in 1 byte unsigned in the buffer
+  //put the values in the buffer, big endian
   for (int i = 0; i < m_channels.size(); i++)
   {
     int64_t output = Round64((double)m_channels[i].GetValue(now) * m_max);
