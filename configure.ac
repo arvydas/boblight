@@ -19,7 +19,7 @@ AC_CHECK_LIB(pthread,[main])
 AC_CHECK_LIB(rt,[main])
 AC_CHECK_LIB(m,[main])
 AC_CHECK_LIB(dl,[main])
-AC_CHECK_DECL([clock_gettime], AC_DEFINE([HAVE_CLOCK_GETTIME], [1], [ ]), [ ], [[#include <time.h>]])
+AC_CHECK_DECL([clock_gettime], AC_DEFINE([HAVE_CLOCK_GETTIME], [1], [ ]), [], [[#include <time.h>]])
 
 dnl boblightd
 AC_ARG_WITH([portaudio], [AS_HELP_STRING([--without-portaudio], [Disable portaudio support (no support for sound devices)])], [],
