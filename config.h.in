@@ -55,6 +55,12 @@
 #undef HAVE_LIBSWSCALE_SWSCALE_H
 
 /* */
+#undef HAVE_LIBUSB
+
+/* Define to 1 if you have the <libusb-1.0/libusb.h> header file. */
+#undef HAVE_LIBUSB_1_0_LIBUSB_H
+
+/* */
 #undef HAVE_LIBX11
 
 /* */

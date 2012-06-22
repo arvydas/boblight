@@ -34,6 +34,14 @@ AC_CHECK_LIB(portaudio,[main],AC_DEFINE([HAVE_LIBPORTAUDIO], [1], [ ]),
 ])
 AM_CONDITIONAL(HAVE_PORTAUDIO, [test "x$with_portaudio" = xcheck])
 
+AC_ARG_WITH([libusb], [AS_HELP_STRING([--without-libusb], [Disable libusb support (no support for iBeLight)])], [],
+            [with_libusb=check])
+AS_IF([test "x$with_libusb" = xcheck], [
+AC_CHECK_LIB([usb-1.0],[main],AC_DEFINE([HAVE_LIBUSB], [1], [ ]))
+AC_CHECK_HEADERS([libusb-1.0/libusb.h],[],[AC_MSG_ERROR([Missing a required header, please install it])])
+])
+AM_CONDITIONAL(HAVE_LIBUSB, [test "x$with_libusb" = xcheck])
+
 dnl boblight-X11
 AC_ARG_WITH([x11], [AS_HELP_STRING([--without-x11], [Disable x11 support])], [],
             [with_x11=check])

@@ -86,6 +86,11 @@ boblightd_SOURCES += device/devicesound.cpp
 boblightd_LDFLAGS += -lportaudio
 endif
 
+if HAVE_LIBUSB
+boblightd_SOURCES += device/deviceibelight.cpp
+boblightd_LDFLAGS += -lusb-1.0
+endif
+
 lib_LTLIBRARIES = \
 	libboblight.la
 
