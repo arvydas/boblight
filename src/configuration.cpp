@@ -146,7 +146,7 @@ void CConfig::PrintConfig()
     Log("%i %s", m_globalconfiglines[i].linenr, line.c_str());
   }
 
-  Log("%i devices", m_devicelines.size());
+  Log("%zu devices", m_devicelines.size());
   for (int i = 0; i < m_devicelines.size(); i++)
   {
     Log("[device] %i", i);
@@ -158,7 +158,7 @@ void CConfig::PrintConfig()
     }
   }
 
-  Log("%i colors", m_colorlines.size());
+  Log("%zu colors", m_colorlines.size());
   for (int i = 0; i < m_colorlines.size(); i++)
   {
     Log("[color] %i", i);
@@ -170,7 +170,7 @@ void CConfig::PrintConfig()
     }
   }
 
-  Log("%i lights", m_lightlines.size());
+  Log("%zu lights", m_lightlines.size());
   for (int i = 0; i < m_lightlines.size(); i++)
   {
     Log("[light] %i", i);

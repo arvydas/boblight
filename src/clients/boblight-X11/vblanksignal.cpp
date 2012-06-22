@@ -26,7 +26,7 @@ CVblankSignal::CVblankSignal()
 {
   m_dpy = NULL;
   m_vinfo = NULL;
-  m_window = NULL;
+  m_window = (Window)0;
   m_context = NULL;
 }
 
@@ -54,7 +54,7 @@ bool CVblankSignal::Setup()
   m_dpy = NULL;
   m_vinfo = NULL;
   m_context = NULL;
-  m_window = NULL;
+  m_window = (Window)0;
 
   m_dpy = XOpenDisplay(NULL);
   if (!m_dpy)
@@ -155,7 +155,7 @@ void CVblankSignal::Close()
   if (m_window)
   {
     XDestroyWindow(m_dpy, m_window);
-    m_window = NULL;
+    m_window = (Window)0;
   }
   if (m_dpy)
   {
