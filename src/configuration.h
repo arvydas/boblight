@@ -32,6 +32,9 @@
 #ifdef HAVE_LIBPORTAUDIO
   #include "device/devicesound.h"
 #endif
+#ifdef HAVE_LIBUSB
+  #include "device/deviceibelight.h"
+#endif
 
 //place to store relevant lines from the config file
 class CConfigLine
@@ -97,6 +100,9 @@ class CConfig
 #ifdef HAVE_LIBPORTAUDIO
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
+#ifdef HAVE_LIBUSB
+    bool BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& clients);
+#endif
 
     bool SetDeviceName(CDevice* device, int devicenr);
     bool SetDeviceOutput(CDevice* device, int devicenr);
@@ -108,6 +114,10 @@ class CConfig
 #ifdef HAVE_LIBPORTAUDIO
     bool SetDevicePeriod(CDeviceSound* device, int devicenr);
     void SetDeviceLatency(CDeviceSound* device, int devicenr);
+#endif
+#ifdef HAVE_LIBUSB
+    void SetDeviceBus(CDeviceiBeLight* device, int devicenr);
+    void SetDeviceAddress(CDeviceiBeLight* device, int devicenr);
 #endif
     void SetDeviceAllowSync(CDevice* device, int devicenr);
     void SetDeviceDebug(CDevice* device, int devicenr);

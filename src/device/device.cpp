@@ -112,7 +112,10 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
 
 void CDevice::Process()
 {
-  Log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
+  if (m_output.empty())
+    Log("%s: starting", m_name.c_str());
+  else
+    Log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
       
   while(!m_stop)
   {

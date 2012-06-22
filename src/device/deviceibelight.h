@@ -19,4 +19,36 @@
 #ifndef CDEVICEIBELIGHT
 #define CDEVICEIBELIGHT 
 
+#include "device.h"
+#include <libusb-1.0/libusb.h>
+
+class CDeviceiBeLight : public CDevice
+{
+  public:
+    CDeviceiBeLight(CClientsHandler& clients);
+    void Sync();
+
+    void SetBusNr(int busnr)     { m_busnr = busnr;     }
+    void SetAddress(int address) { m_address = address; }
+
+  protected:
+
+    bool SetupDevice();
+    bool WriteOutput();
+    void CloseDevice();
+
+    bool SetPixelCount();
+    bool SetColors();
+    int  BulkTransfer(struct libusb_device_handle* dev_handle, unsigned char endpoint,
+                      unsigned char* data, int length, int* transferred, unsigned int timeout);
+
+    int  m_busnr;
+    int  m_address;
+
+    CSignalTimer          m_timer;
+    libusb_context*       m_usbcontext;
+    libusb_device_handle* m_devicehandle;
+    uint8_t*              m_chanbuffer;
+};
+
 #endif //CDEVICEIBELIGHT 

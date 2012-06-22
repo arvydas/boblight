@@ -22,14 +22,15 @@
 #include "util/inclstdint.h"
 
 //device types
-#define NOTHING 0
-#define MOMO    1
-#define ATMO    2
-#define POPEN   3
-#define LTBL    4
-#define SOUND   5
-#define DIODER  6
-#define KARATE  7
+#define NOTHING  0
+#define MOMO     1
+#define ATMO     2
+#define POPEN    3
+#define LTBL     4
+#define SOUND    5
+#define DIODER   6
+#define KARATE   7
+#define IBELIGHT 8
 
 #include <string>
 #include <vector>

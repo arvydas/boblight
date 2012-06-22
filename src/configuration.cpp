@@ -336,6 +336,15 @@ bool CConfig::CheckDeviceConfig()
           valid = false;
         }
       }
+      else if (key == "bus" || key == "address") //int, 0 to 255
+      {
+        int ivalue;
+        if (!StrToInt(value, ivalue) || ivalue < 0 || ivalue > 255)
+        {
+          LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          valid = false;
+        }
+      }
       else //don't know this one
       {
         LogError("%s line %i section [device]: unknown key %s", m_filename.c_str(), linenr, key.c_str());
@@ -696,6 +705,23 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       }
       devices.push_back(device);
     }
+    else if (type == "ibelight")
+    {
+#ifdef HAVE_LIBUSB
+      CDevice* device = NULL;
+      if (!BuildiBeLight(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without libusb, no support for ibelight devices",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
+    }
     else
     {
       LogError("%s line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());
@@ -928,6 +954,32 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
 }
 #endif
 
+#ifdef HAVE_LIBUSB
+bool CConfig::BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  CDeviceiBeLight* ibedevice = new CDeviceiBeLight(clients);
+  device = ibedevice;
+
+  if (!SetDeviceName(ibedevice, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(ibedevice, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(device, devicenr))
+    return false;
+
+  SetDeviceBus(ibedevice, devicenr);
+  SetDeviceAddress(ibedevice, devicenr);
+  SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
+
+  ibedevice->SetType(IBELIGHT);
+
+  return true;
+}
+#endif
+
 bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
   CDeviceDioder* dioderdevice = new CDeviceDioder(clients);
@@ -1112,6 +1164,36 @@ void CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
   double latency;
   StrToFloat(strvalue, latency);
   device->SetLatency(latency);
+}
+#endif
+
+#ifdef HAVE_LIBUSB
+void CConfig::SetDeviceBus(CDeviceiBeLight* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("bus", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  int busnr;
+  StrToInt(strvalue, busnr);
+  device->SetBusNr(busnr);
+}
+
+void CConfig::SetDeviceAddress(CDeviceiBeLight* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("address", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  int address;
+  StrToInt(strvalue, address);
+  device->SetAddress(address);
 }
 #endif
 
