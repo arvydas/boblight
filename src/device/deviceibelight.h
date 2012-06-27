@@ -42,6 +42,8 @@ class CDeviceiBeLight : public CDevice
     int  BulkTransfer(struct libusb_device_handle* dev_handle, unsigned char endpoint,
                       unsigned char* data, int length, int* transferred, unsigned int timeout);
 
+    const char* UsbErrorName(int errcode);
+
     int  m_busnr;
     int  m_address;
 

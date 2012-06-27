@@ -38,6 +38,7 @@ AC_ARG_WITH([libusb], [AS_HELP_STRING([--without-libusb], [Disable libusb suppor
             [with_libusb=check])
 AS_IF([test "x$with_libusb" = xcheck], [
 AC_CHECK_LIB([usb-1.0],[main],AC_DEFINE([HAVE_LIBUSB], [1], [ ]))
+AC_CHECK_LIB([usb-1.0],[libusb_error_name],AC_DEFINE([HAVE_LIBUSB_ERROR_NAME], [1], [ ]))
 AC_CHECK_HEADERS([libusb-1.0/libusb.h],[],[AC_MSG_ERROR([Missing a required header, please install it])])
 ])
 AM_CONDITIONAL(HAVE_LIBUSB, [test "x$with_libusb" = xcheck])

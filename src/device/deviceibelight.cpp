@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include "deviceibelight.h"
 #include "util/log.h"
 #include "util/misc.h"
@@ -47,7 +48,7 @@ bool CDeviceiBeLight::SetupDevice()
   int error;
   if ((error = libusb_init(&m_usbcontext)) != LIBUSB_SUCCESS)
   {
-    LogError("%s: error setting up usb context, error:%i %s", m_name.c_str(), error, libusb_error_name(error));
+    LogError("%s: error setting up usb context, error:%i %s", m_name.c_str(), error, UsbErrorName(error));
     m_usbcontext = NULL;
     return false;
   }
@@ -65,7 +66,7 @@ bool CDeviceiBeLight::SetupDevice()
     error = libusb_get_device_descriptor(devicelist[i], &descriptor);
     if (error != LIBUSB_SUCCESS)
     {
-      LogError("%s: error getting device descriptor for device %zi, error %i %s", m_name.c_str(), i, error, libusb_error_name(error));
+      LogError("%s: error getting device descriptor for device %zi, error %i %s", m_name.c_str(), i, error, UsbErrorName(error));
       continue;
     }
 
@@ -110,13 +111,13 @@ bool CDeviceiBeLight::SetupDevice()
   libusb_free_device_list(devicelist, 1);
   if (error != LIBUSB_SUCCESS)
   {
-    LogError("%s: error opening device, error %i %s", m_name.c_str(), error, libusb_error_name(error));
+    LogError("%s: error opening device, error %i %s", m_name.c_str(), error, UsbErrorName(error));
     return false;
   }
 
   if ((error = libusb_claim_interface(m_devicehandle, IBE_INTERFACE)) != LIBUSB_SUCCESS)
   {
-    LogError("%s: error claiming interface %i, error:%i %s", m_name.c_str(), IBE_INTERFACE, error, libusb_error_name(error));
+    LogError("%s: error claiming interface %i, error:%i %s", m_name.c_str(), IBE_INTERFACE, error, UsbErrorName(error));
     return false;
   }
 
@@ -202,7 +203,7 @@ bool CDeviceiBeLight::SetPixelCount()
 
   if (error != LIBUSB_SUCCESS)
   {
-    LogError("%s: error setting pixel count, error:%i %s", m_name.c_str(), error, libusb_error_name(error));
+    LogError("%s: error setting pixel count, error:%i %s", m_name.c_str(), error, UsbErrorName(error));
     return false;
   }
 
@@ -236,7 +237,7 @@ bool CDeviceiBeLight::SetColors()
     error = BulkTransfer(m_devicehandle, IBE_ENDPOINT | LIBUSB_ENDPOINT_OUT, report, end + 2, &byteswritten, IBE_TIMEOUT);
     if (error != LIBUSB_SUCCESS)
     {
-      LogError("%s: error storing colors, error:%i %s", m_name.c_str(), error, libusb_error_name(error));
+      LogError("%s: error storing colors, error:%i %s", m_name.c_str(), error, UsbErrorName(error));
       return false;
     }
   }
@@ -246,7 +247,7 @@ bool CDeviceiBeLight::SetColors()
   error = BulkTransfer(m_devicehandle, IBE_ENDPOINT | LIBUSB_ENDPOINT_OUT, report, 1, &byteswritten, IBE_TIMEOUT);
   if (error != LIBUSB_SUCCESS)
   {
-    LogError("%s: error setting output to stored color, error:%i %s", m_name.c_str(), error, libusb_error_name(error));
+    LogError("%s: error setting output to stored color, error:%i %s", m_name.c_str(), error, UsbErrorName(error));
     return false;
   }
 
@@ -271,5 +272,14 @@ int CDeviceiBeLight::BulkTransfer(struct libusb_device_handle* dev_handle, unsig
   }
 
   return returnv;
+}
+
+const char* CDeviceiBeLight::UsbErrorName(int errcode)
+{
+#ifdef HAVE_LIBUSB_ERROR_NAME
+  return libusb_error_name(errcode);
+#else
+  return "";
+#endif
 }
 
