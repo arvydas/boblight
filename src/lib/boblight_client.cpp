@@ -110,9 +110,18 @@ void CLight::AddPixel(int* rgb)
 {
   if (rgb[0] >= m_threshold || rgb[1] >= m_threshold || rgb[2] >= m_threshold)
   {
-    m_rgbd[0] += Clamp(rgb[0], 0, 255);
-    m_rgbd[1] += Clamp(rgb[1], 0, 255);
-    m_rgbd[2] += Clamp(rgb[2], 0, 255);
+    if (m_gamma == 1.0)
+    {
+      m_rgbd[0] += Clamp(rgb[0], 0, 255);
+      m_rgbd[1] += Clamp(rgb[1], 0, 255);
+      m_rgbd[2] += Clamp(rgb[2], 0, 255);
+    }
+    else
+    {
+      m_rgbd[0] += Clamp(Round32(powf((float)rgb[0] / 255.0f, m_gamma) * 255.0f), 0, 255);
+      m_rgbd[1] += Clamp(Round32(powf((float)rgb[1] / 255.0f, m_gamma) * 255.0f), 0, 255);
+      m_rgbd[2] += Clamp(Round32(powf((float)rgb[2] / 255.0f, m_gamma) * 255.0f), 0, 255);
+    }
   }
   m_rgbd[3]++;
 }
