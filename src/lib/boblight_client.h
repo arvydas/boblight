@@ -36,6 +36,7 @@ namespace boblight
       std::string GetOption(const char* option, std::string& output);
 
       void        SetScanRange(int width, int height);
+      void        AddPixel(int* rgb);
       
       std::string m_name;
       float       m_speed;

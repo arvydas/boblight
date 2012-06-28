@@ -106,6 +106,17 @@ std::string CLight::GetOption(const char* option, std::string& output)
   return "unknown option";
 }
 
+void CLight::AddPixel(int* rgb)
+{
+  if (rgb[0] >= m_threshold || rgb[1] >= m_threshold || rgb[2] >= m_threshold)
+  {
+    m_rgbd[0] += Clamp(rgb[0], 0, 255);
+    m_rgbd[1] += Clamp(rgb[1], 0, 255);
+    m_rgbd[2] += Clamp(rgb[2], 0, 255);
+  }
+  m_rgbd[3]++;
+}
+
 void CLight::GetRGB(float* rgb)
 {
   //if no pixels are set, the denominator is 0, so just return black
@@ -507,25 +518,11 @@ int CBoblight::AddPixel(int lightnr, int* rgb)
   if (lightnr < 0)
   {
     for (int i = 0; i < m_lights.size(); i++)
-    {
-      if (rgb[0] >= m_lights[i].m_threshold || rgb[1] >= m_lights[i].m_threshold || rgb[2] >= m_lights[i].m_threshold)
-      {
-        m_lights[i].m_rgbd[0] += Clamp(rgb[0], 0, 255);
-        m_lights[i].m_rgbd[1] += Clamp(rgb[1], 0, 255);
-        m_lights[i].m_rgbd[2] += Clamp(rgb[2], 0, 255);
-      }
-      m_lights[i].m_rgbd[3]++;
-    }
+      m_lights[i].AddPixel(rgb);
   }
   else
   {
-    if (rgb[0] >= m_lights[lightnr].m_threshold || rgb[1] >= m_lights[lightnr].m_threshold || rgb[2] >= m_lights[lightnr].m_threshold)
-    {
-      m_lights[lightnr].m_rgbd[0] += Clamp(rgb[0], 0, 255);
-      m_lights[lightnr].m_rgbd[1] += Clamp(rgb[1], 0, 255);
-      m_lights[lightnr].m_rgbd[2] += Clamp(rgb[2], 0, 255);
-    }
-    m_lights[lightnr].m_rgbd[3]++;
+    m_lights[lightnr].AddPixel(rgb);
   }
 
   return 1;
@@ -538,13 +535,7 @@ void CBoblight::AddPixel(int* rgb, int x, int y)
     if (x >= m_lights[i].m_hscanscaled[0] && x <= m_lights[i].m_hscanscaled[1] &&
         y >= m_lights[i].m_vscanscaled[0] && y <= m_lights[i].m_vscanscaled[1])
     {
-      if (rgb[0] >= m_lights[i].m_threshold || rgb[1] >= m_lights[i].m_threshold || rgb[2] >= m_lights[i].m_threshold)
-      {
-        m_lights[i].m_rgbd[0] += Clamp(rgb[0], 0, 255);
-        m_lights[i].m_rgbd[1] += Clamp(rgb[1], 0, 255);
-        m_lights[i].m_rgbd[2] += Clamp(rgb[2], 0, 255);
-      }
-      m_lights[i].m_rgbd[3]++;
+      m_lights[i].AddPixel(rgb);
     }
   }
 }
