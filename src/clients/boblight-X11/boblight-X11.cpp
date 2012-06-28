@@ -80,6 +80,8 @@ int main (int argc, char *argv[])
     return 1;
   }
 
+  g_flagmanager.SetVideoGamma();
+
   if (g_flagmanager.m_fork)
   {
     if (fork())
@@ -101,7 +103,6 @@ int main (int argc, char *argv[])
 
   //keeps running until some unrecoverable error happens
   return Run();
-
 }
 
 int Run()

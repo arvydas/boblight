@@ -19,6 +19,8 @@
 #ifndef FLAGMANAGER
 #define FLAGMANAGER
 
+#define VIDEOGAMMA 2.2
+
 #include <string>
 #include <vector>
 
@@ -52,6 +54,7 @@ class CFlagManager
 
     void         PrintBoblightOptions();                    //printing of boblight options (-o [light:]option=value)
     void         ParseBoblightOptions(void* boblight);      //parsing of boblight options
+    bool         SetVideoGamma();                           //set gamma to 2.2 if not given, returns true if done
 
   protected:
 

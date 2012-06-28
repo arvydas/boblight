@@ -233,3 +233,25 @@ void CFlagManager::ParseBoblightOptions(void* boblight)
   }
 }
 
+bool CFlagManager::SetVideoGamma()
+{
+  for (int i = 0; i < m_options.size(); i++)
+  {
+    string option = m_options[i];
+    if (option.find(':') != string::npos)
+      option = option.substr(option.find(':') + 1); //shave off the lightname
+
+    if (option.find('=') != string::npos)
+    {
+      if (option.substr(0, option.find('=')) == "gamma")
+        return false; //gamma set by user, don't override
+    }
+  }
+
+  m_options.push_back("gamma=" + ToString(VIDEOGAMMA));
+
+  cout << "Gamma not set, using " << VIDEOGAMMA << " since this is default for video\n";
+
+  return true;
+}
+

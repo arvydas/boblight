@@ -72,6 +72,8 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  g_flagmanager.SetVideoGamma();
+
   if (g_flagmanager.m_fork)
   {
     if (fork())
