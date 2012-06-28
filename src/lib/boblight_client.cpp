@@ -31,6 +31,8 @@
 using namespace std;
 using namespace boblight;
 
+#define GAMMASIZE (sizeof(m_gammacurve) / sizeof(m_gammacurve[0]))
+
 CLight::CLight()
 {
   #define BOBLIGHT_OPTION(name, type, min, max, default, variable, postprocess) variable = default;
@@ -46,6 +48,9 @@ CLight::CLight()
   memset(m_prevrgb, 0, sizeof(m_prevrgb));
   memset(m_hscanscaled, 0, sizeof(m_hscanscaled));
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
+
+  for (int i = 0; i < GAMMASIZE; i++)
+    m_gammacurve[i] = i;
 }
 
 string CLight::SetOption(const char* option, bool& send)
@@ -118,9 +123,9 @@ void CLight::AddPixel(int* rgb)
     }
     else
     {
-      m_rgbd[0] += Clamp(Round32(powf((float)rgb[0] / 255.0f, m_gamma) * 255.0f), 0, 255);
-      m_rgbd[1] += Clamp(Round32(powf((float)rgb[1] / 255.0f, m_gamma) * 255.0f), 0, 255);
-      m_rgbd[2] += Clamp(Round32(powf((float)rgb[2] / 255.0f, m_gamma) * 255.0f), 0, 255);
+      m_rgbd[0] += m_gammacurve[Clamp(rgb[0], 0, GAMMASIZE - 1)];
+      m_rgbd[1] += m_gammacurve[Clamp(rgb[1], 0, GAMMASIZE - 1)];
+      m_rgbd[2] += m_gammacurve[Clamp(rgb[2], 0, GAMMASIZE - 1)];
     }
   }
   m_rgbd[3]++;
