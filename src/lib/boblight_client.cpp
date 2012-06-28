@@ -360,8 +360,10 @@ CBoblight::CBoblight()
     option += #max;\
     option.append(Max(8 - strlen(#max), 1), ' ');\
     \
-    option += #default;\
-    option.append(Max(8 - strlen(#default), 1), ' ');\
+    if (strcmp(#default, "-1.0") == 0)\
+      option += "set by boblightd";\
+    else\
+      option += #default;\
     \
     m_options.push_back(option);\
   }
