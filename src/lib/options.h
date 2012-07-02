@@ -31,7 +31,7 @@ BOBLIGHT_OPTION(threshold,     int,    0,   255,   0,      m_threshold,     m_th
 
 BOBLIGHT_OPTION(gamma,         float,  0.0, 10.0,  1.0,    m_gamma,         m_gamma = Max(m_gamma, 0.0); \
   for (int i = 0; i < GAMMASIZE; i++) \
-    m_gammacurve[i] = Round32(pow((float)i / ((float)GAMMASIZE - 1.0f), m_gamma) * (GAMMASIZE - 1.0f));)
+    m_gammacurve[i] = pow((float)i / ((float)GAMMASIZE - 1.0f), m_gamma) * (GAMMASIZE - 1.0f);)
 
 BOBLIGHT_OPTION(hscanstart,    float,  0.0, 100.0, -1.0,   m_hscan[0],      m_hscan[0] = Clamp(m_hscan[0], 0.0, m_hscan[1]);    SetScanRange(m_width, m_height);)
 BOBLIGHT_OPTION(hscanend,      float,  0.0, 100.0, -1.0,   m_hscan[1],      m_hscan[1] = Clamp(m_hscan[1], m_hscan[0], 100.0);  SetScanRange(m_width, m_height);)

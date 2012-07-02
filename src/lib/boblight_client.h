@@ -52,7 +52,7 @@ namespace boblight
       float       m_satrange[2];
       int         m_threshold;
       float       m_gamma;
-      int         m_gammacurve[256];
+      float       m_gammacurve[256];
 
       float       m_rgb[3];
       int         m_rgbcount;
