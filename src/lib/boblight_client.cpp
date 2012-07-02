@@ -44,7 +44,8 @@ CLight::CLight()
   m_width = -1;
   m_height = -1;
 
-  memset(m_rgbd, 0, sizeof(m_rgbd));
+  memset(m_rgb, 0, sizeof(m_rgb));
+  m_rgbcount = 0;
   memset(m_prevrgb, 0, sizeof(m_prevrgb));
   memset(m_hscanscaled, 0, sizeof(m_hscanscaled));
   memset(m_vscanscaled, 0, sizeof(m_vscanscaled));
@@ -117,37 +118,41 @@ void CLight::AddPixel(int* rgb)
   {
     if (m_gamma == 1.0)
     {
-      m_rgbd[0] += Clamp(rgb[0], 0, 255);
-      m_rgbd[1] += Clamp(rgb[1], 0, 255);
-      m_rgbd[2] += Clamp(rgb[2], 0, 255);
+      m_rgb[0] += Clamp(rgb[0], 0, 255);
+      m_rgb[1] += Clamp(rgb[1], 0, 255);
+      m_rgb[2] += Clamp(rgb[2], 0, 255);
     }
     else
     {
-      m_rgbd[0] += m_gammacurve[Clamp(rgb[0], 0, GAMMASIZE - 1)];
-      m_rgbd[1] += m_gammacurve[Clamp(rgb[1], 0, GAMMASIZE - 1)];
-      m_rgbd[2] += m_gammacurve[Clamp(rgb[2], 0, GAMMASIZE - 1)];
+      m_rgb[0] += m_gammacurve[Clamp(rgb[0], 0, GAMMASIZE - 1)];
+      m_rgb[1] += m_gammacurve[Clamp(rgb[1], 0, GAMMASIZE - 1)];
+      m_rgb[2] += m_gammacurve[Clamp(rgb[2], 0, GAMMASIZE - 1)];
     }
   }
-  m_rgbd[3]++;
+  m_rgbcount++;
 }
 
 void CLight::GetRGB(float* rgb)
 {
   //if no pixels are set, the denominator is 0, so just return black
-  if (m_rgbd[3] == 0)
+  if (m_rgbcount == 0)
   {
     for (int i = 0; i < 3; i++)
+    {
       rgb[i] = 0.0f;
+      m_rgb[i] = 0.0f;
+    }
 
-    memset(m_rgbd, 0, sizeof(m_rgbd));
     return;
   }
   
   //convert from numerator/denominator to float
   for (int i = 0; i < 3; i++)
-    rgb[i] = Clamp((float)m_rgbd[i] / (float)m_rgbd[3] / 255.0f, 0.0f, 1.0f);
-
-  memset(m_rgbd, 0, sizeof(m_rgbd));
+  {
+    rgb[i] = Clamp(m_rgb[i] / (float)m_rgbcount / 255.0f, 0.0f, 1.0f);
+    m_rgb[i] = 0.0f;
+  }
+  m_rgbcount = 0;
 
   //this tries to set the speed based on how fast the input is changing
   //it needs sync mode to work properly

@@ -54,7 +54,8 @@ namespace boblight
       float       m_gamma;
       int         m_gammacurve[256];
 
-      int         m_rgbd[4];
+      float       m_rgb[3];
+      int         m_rgbcount;
       float       m_prevrgb[3];
       void        GetRGB(float* rgb);
 
