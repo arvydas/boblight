@@ -39,8 +39,17 @@
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
+/* Define to 1 if you have the `ola' library (-lola). */
+#undef HAVE_LIBOLA
+
+/* Define to 1 if you have the `olacommon' library (-lolacommon). */
+#undef HAVE_LIBOLACOMMON
+
 /* */
 #undef HAVE_LIBPORTAUDIO
+
+/* Define to 1 if you have the `protobuf' library (-lprotobuf). */
+#undef HAVE_LIBPROTOBUF
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #undef HAVE_LIBPTHREAD
@@ -74,6 +83,9 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* */
+#undef HAVE_OLA
 
 /* Define to 1 if you have the <portaudio.h> header file. */
 #undef HAVE_PORTAUDIO_H

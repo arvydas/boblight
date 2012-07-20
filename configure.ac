@@ -88,12 +88,27 @@ AC_CHECK_LIB(avdevice ,[main],AC_DEFINE([HAVE_LIBAVDEVICE],  [1], [ ]),AC_MSG_ER
 ])
 AM_CONDITIONAL(HAVE_FFMPEG, [test "x$with_ffmpeg" = xcheck])
 
+dnl ola
+AC_ARG_WITH([ola], [AS_HELP_STRING([--with-ola], [Enable ola support])], [with_ola=check],
+[])
+
+errormsgh="Missing a required header, please install it or disable ola support by passing --without-ola to configure"
+errormsgl="Missing a required library, please install it or disable ola support by passing --without-ola to configure"
+AS_IF([test "x$with_ola" = xcheck], [
+AC_CHECK_LIB(ola,[main],,AC_MSG_ERROR([$errormsgl]))
+AC_CHECK_LIB(olacommon,[main],,AC_MSG_ERROR([$errormsgl]))
+AC_CHECK_LIB(protobuf,[main],,AC_MSG_ERROR([$errormsgl]))
+AC_DEFINE([HAVE_OLA], [1], [ ])
+])
+AM_CONDITIONAL(HAVE_OLA, [test "x$with_ola" = xcheck])
+
 AC_OUTPUT([
 Makefile
 src/Makefile
 ])
 
 AS_IF([test "x$with_portaudio" != xcheck], [AC_MSG_WARN([--without-portaudio passed, boblightd will not have support for sound devices])])
+AS_IF([test "x$with_ola" != xcheck], [AC_MSG_WARN([--with-ola not passed, boblightd will not have support for ola])])
 AS_IF([test "x$with_ffmpeg" != xcheck], [AC_MSG_WARN([--with-ffmpeg not passed, boblight-v4l will not be built (if you don't plan to use boblight-v4l this is ok!)])])
 AS_IF([test "x$with_opengl" != xcheck], [AC_MSG_WARN([--without-opengl passed, boblight-X11 will not be able to capture on vblanks])])
 AS_IF([test "x$with_x11" != xcheck], [AC_MSG_WARN([--without-x11 passed, boblight-X11 and boblight-v4l will not be built])])

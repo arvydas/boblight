@@ -31,6 +31,7 @@
 #define DIODER   6
 #define KARATE   7
 #define IBELIGHT 8
+#define OLA	9
 
 #include <string>
 #include <vector>

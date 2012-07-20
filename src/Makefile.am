@@ -91,6 +91,11 @@ boblightd_SOURCES += device/deviceibelight.cpp
 boblightd_LDFLAGS += -lusb-1.0
 endif
 
+if HAVE_OLA
+boblightd_SOURCES += device/deviceola.cpp
+boblightd_LDFLAGS += -lola -lolacommon -lprotobuf
+endif
+
 lib_LTLIBRARIES = \
 	libboblight.la
 

@@ -28,6 +28,10 @@
 #include "device/devicepopen.h"
 #include "device/deviceltbl.h"
 
+#ifdef HAVE_OLA
+  #include "device/deviceola.h"
+#endif
+
 using namespace std;
 
 #define SECTNOTHING 0
@@ -677,6 +681,23 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       }
       devices.push_back(device);
     }
+    else if (type == "ola")
+    {
+#ifdef HAVE_OLA
+      CDevice* device = NULL;
+      if (!BuildOla(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without ola, recompile with enabled ola support",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
+    }
     else if (type == "sound")
     {
 #ifdef HAVE_LIBPORTAUDIO
@@ -812,6 +833,29 @@ bool CConfig::BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*
 
   return true;
 }
+
+#ifdef HAVE_OLA
+bool CConfig::BuildOla(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  device = new CDeviceOla(clients);
+
+  if (!SetDeviceName(device, devicenr))
+    return false;
+
+  if (!SetDeviceOutput(device, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(device, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(device, devicenr))
+    return false;
+
+  device->SetType(OLA);
+
+  return true;
+}
+#endif
 
 bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients)
 {

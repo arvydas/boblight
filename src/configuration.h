@@ -94,6 +94,9 @@ class CConfig
     bool BuildLightConfig(std::vector<CLight>& lights, std::vector<CDevice*>& devices, std::vector<CColor>& colors);
 
     bool BuildPopen(CDevice*& device, int devicenr, CClientsHandler& clients);
+#ifdef HAVE_OLA
+    bool BuildOla(CDevice*& device, int devicenr, CClientsHandler& clients);
+#endif
     bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients);
