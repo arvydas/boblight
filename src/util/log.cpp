@@ -146,6 +146,10 @@ void PrintLog(const char* fmt, const char* function, bool error, ...)
   {
     logbuffsize = neededbuffsize + 1;
     logbuff = reinterpret_cast<char*>(realloc(logbuff, logbuffsize)); //resize the buffer to the needed size
+
+    va_end(args); //need to reinit or we will crash
+    va_start(args, error);
+
     vsnprintf(logbuff, logbuffsize, fmt, args);                       //write to the buffer again
   }
   
