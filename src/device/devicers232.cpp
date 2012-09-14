@@ -49,6 +49,12 @@ void CDeviceRS232::SetType(int type)
     m_prefix.push_back(0);
     m_prefix.push_back(m_channels.size());
   }
+  else if (type == SEDU)
+  {
+    m_prefix.push_back(0xA5);
+    m_prefix.push_back(0x5A);
+    m_postfix.push_back(0xA1);
+  }
 }
 
 void CDeviceRS232::Sync()

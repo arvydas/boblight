@@ -32,6 +32,7 @@
 #define KARATE   7
 #define IBELIGHT 8
 #define OLA      9
+#define SEDU     10
 
 #include <string>
 #include <vector>

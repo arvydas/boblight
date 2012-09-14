@@ -659,7 +659,7 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       }
       devices.push_back(device);
     }
-    else if (type == "momo" || type == "atmo" || type == "karate")
+    else if (type == "momo" || type == "atmo" || type == "karate" || type == "sedu")
     {
       CDevice* device = NULL;
       if (!BuildRS232(device, i, clients, type))
@@ -927,6 +927,10 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
   else if (type == "karate")
   {
     device->SetType(KARATE);
+  }
+  else if (type == "sedu")
+  {
+    device->SetType(SEDU);
   }
   
   return true;
