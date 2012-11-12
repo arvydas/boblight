@@ -160,6 +160,8 @@ bool CDeviceSPI::WriteBuffer()
   {
     for (int i = 0; i < m_buffsize; i++)
       printf("%x ", m_buff[i]);
+
+    printf("\n");
   }
 
   return true;
