@@ -78,6 +78,9 @@
 /* */
 #undef HAVE_LIBXRENDER
 
+/* Define to 1 if you have the <linux/spi/spidev.h> header file. */
+#undef HAVE_LINUX_SPI_SPIDEV_H
+
 /* Define to 1 if you have the <linux/videodev2.h> header file. */
 #undef HAVE_LINUX_VIDEODEV2_H
 

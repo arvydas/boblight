@@ -43,6 +43,13 @@ AC_CHECK_HEADERS([libusb-1.0/libusb.h],[],[AC_MSG_ERROR([Missing a required head
 ])
 AM_CONDITIONAL(HAVE_LIBUSB, [test "x$with_libusb" = xcheck])
 
+AC_ARG_WITH([spi], [AS_HELP_STRING([--without-spi], [Disable spi support (no support for LPD8806)])], [],
+            [with_spi=check])
+AS_IF([test "x$with_spi" = xcheck],
+[AC_CHECK_HEADERS([linux/spi/spidev.h], [with_spi=yes],
+  [AC_MSG_WARN([Missing spidev.h, if you want spi support (for LPD8806) please install the linux kernel headers.])])])
+AM_CONDITIONAL(HAVE_SPI, [test "x$with_spi" = xyes])
+
 dnl boblight-X11
 AC_ARG_WITH([x11], [AS_HELP_STRING([--without-x11], [Disable x11 support])], [],
             [with_x11=check])
