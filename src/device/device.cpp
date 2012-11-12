@@ -117,12 +117,16 @@ void CDevice::Process()
   else
     Log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
       
+  int64_t setuptime;
+
   while(!m_stop)
   {
     //keep trying to set up the device every 10 seconds
     while(!m_stop)
     {
       Log("%s: setting up", m_name.c_str());
+
+      setuptime = GetTimeUs();
       if (!SetupDevice())
       {
         CloseDevice();
@@ -140,7 +144,11 @@ void CDevice::Process()
     while(!m_stop)
     {
       if (!WriteOutput())
+      {
+        //make sure to wait at least one second before trying to set up again
+        USleep(Max(1000000LL - (GetTimeUs() - setuptime), 0));
         break;
+      }
     }
 
     CloseDevice();
