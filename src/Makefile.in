@@ -47,6 +47,7 @@ bin_PROGRAMS = boblightd$(EXEEXT) boblight-constant$(EXEEXT) \
 @HAVE_LIBUSB_TRUE@am__append_8 = -lusb-1.0
 @HAVE_OLA_TRUE@am__append_9 = device/deviceola.cpp
 @HAVE_OLA_TRUE@am__append_10 = -lola -lolacommon -lprotobuf
+@HAVE_SPI_TRUE@am__append_11 = device/devicespi.cpp
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -129,10 +130,11 @@ am__boblightd_SOURCES_DIST = util/condition.cpp util/log.cpp \
 	device/devicers232.cpp device/deviceltbl.cpp \
 	device/devicedioder.cpp util/signaltimer.cpp \
 	device/devicesound.cpp device/deviceibelight.cpp \
-	device/deviceola.cpp
+	device/deviceola.cpp device/devicespi.cpp
 @HAVE_PORTAUDIO_TRUE@am__objects_2 = devicesound.$(OBJEXT)
 @HAVE_LIBUSB_TRUE@am__objects_3 = deviceibelight.$(OBJEXT)
 @HAVE_OLA_TRUE@am__objects_4 = deviceola.$(OBJEXT)
+@HAVE_SPI_TRUE@am__objects_5 = devicespi.$(OBJEXT)
 am_boblightd_OBJECTS = condition.$(OBJEXT) log.$(OBJEXT) \
 	misc.$(OBJEXT) mutex.$(OBJEXT) thread.$(OBJEXT) \
 	timer.$(OBJEXT) serialport.$(OBJEXT) timeutils.$(OBJEXT) \
@@ -141,7 +143,7 @@ am_boblightd_OBJECTS = condition.$(OBJEXT) log.$(OBJEXT) \
 	device.$(OBJEXT) devicepopen.$(OBJEXT) devicers232.$(OBJEXT) \
 	deviceltbl.$(OBJEXT) devicedioder.$(OBJEXT) \
 	signaltimer.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	$(am__objects_4) $(am__objects_5)
 boblightd_OBJECTS = $(am_boblightd_OBJECTS)
 boblightd_DEPENDENCIES =
 boblightd_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -321,7 +323,7 @@ boblightd_SOURCES = util/condition.cpp util/log.cpp util/misc.cpp \
 	configuration.cpp device/device.cpp device/devicepopen.cpp \
 	device/devicers232.cpp device/deviceltbl.cpp \
 	device/devicedioder.cpp util/signaltimer.cpp $(am__append_5) \
-	$(am__append_7) $(am__append_9)
+	$(am__append_7) $(am__append_9) $(am__append_11)
 boblightd_LDFLAGS = $(am__append_6) $(am__append_8) $(am__append_10)
 boblightd_LDADD = 
 lib_LTLIBRARIES = \
@@ -478,6 +480,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicepopen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicers232.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicesound.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/devicespi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flagmanager-X11.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flagmanager-constant.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flagmanager-v4l.Po@am__quote@
@@ -994,6 +997,20 @@ deviceola.obj: device/deviceola.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/deviceola.cpp' object='deviceola.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deviceola.obj `if test -f 'device/deviceola.cpp'; then $(CYGPATH_W) 'device/deviceola.cpp'; else $(CYGPATH_W) '$(srcdir)/device/deviceola.cpp'; fi`
+
+devicespi.o: device/devicespi.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicespi.o -MD -MP -MF $(DEPDIR)/devicespi.Tpo -c -o devicespi.o `test -f 'device/devicespi.cpp' || echo '$(srcdir)/'`device/devicespi.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicespi.Tpo $(DEPDIR)/devicespi.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicespi.cpp' object='devicespi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicespi.o `test -f 'device/devicespi.cpp' || echo '$(srcdir)/'`device/devicespi.cpp
+
+devicespi.obj: device/devicespi.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT devicespi.obj -MD -MP -MF $(DEPDIR)/devicespi.Tpo -c -o devicespi.obj `if test -f 'device/devicespi.cpp'; then $(CYGPATH_W) 'device/devicespi.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicespi.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/devicespi.Tpo $(DEPDIR)/devicespi.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device/devicespi.cpp' object='devicespi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o devicespi.obj `if test -f 'device/devicespi.cpp'; then $(CYGPATH_W) 'device/devicespi.cpp'; else $(CYGPATH_W) '$(srcdir)/device/devicespi.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

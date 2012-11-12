@@ -743,6 +743,23 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       return false;
 #endif
     }
+    else if (type == "lpd8806")
+    {
+#ifdef HAVE_LINUX_SPI_SPIDEV_H
+      CDevice* device = NULL;
+      if (!BuildSPI(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without spi, no support for lpd8806 devices",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
+    }
     else
     {
       LogError("%s line %i: unknown type %s", m_filename.c_str(), linenr, type.c_str());
@@ -1058,6 +1075,34 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
   return true;
 
 }
+
+#ifdef HAVE_LINUX_SPI_SPIDEV_H
+bool CConfig::BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  CDeviceSPI* spidevice = new CDeviceSPI(clients);
+  device = spidevice;
+
+  if (!SetDeviceName(spidevice, devicenr))
+    return false;
+
+  if (!SetDeviceOutput(spidevice, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(spidevice, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(spidevice, devicenr))
+    return false;
+
+  if (!SetDeviceRate(spidevice, devicenr))
+    return false;
+
+  SetDeviceAllowSync(device, devicenr);
+  SetDeviceDebug(device, devicenr);
+
+  return true;
+}
+#endif
 
 bool CConfig::SetDeviceName(CDevice* device, int devicenr)
 {

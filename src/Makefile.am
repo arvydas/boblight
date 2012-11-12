@@ -96,6 +96,10 @@ boblightd_SOURCES += device/deviceola.cpp
 boblightd_LDFLAGS += -lola -lolacommon -lprotobuf
 endif
 
+if HAVE_SPI
+boblightd_SOURCES += device/devicespi.cpp
+endif
+
 lib_LTLIBRARIES = \
 	libboblight.la
 

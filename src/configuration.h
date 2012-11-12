@@ -35,6 +35,9 @@
 #ifdef HAVE_LIBUSB
   #include "device/deviceibelight.h"
 #endif
+#ifdef HAVE_LINUX_SPI_SPIDEV_H
+  #include "device/devicespi.h"
+#endif
 
 //place to store relevant lines from the config file
 class CConfigLine
@@ -105,6 +108,9 @@ class CConfig
 #endif
 #ifdef HAVE_LIBUSB
     bool BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& clients);
+#endif
+#ifdef HAVE_LINUX_SPI_SPIDEV_H
+    bool BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
 
     bool SetDeviceName(CDevice* device, int devicenr);
