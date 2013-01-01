@@ -743,11 +743,11 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       return false;
 #endif
     }
-    else if (type == "lpd8806")
+    else if (type == "lpd8806" || type == "ws2801")
     {
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
       CDevice* device = NULL;
-      if (!BuildSPI(device, i, clients))
+      if (!BuildSPI(device, i, clients, type))
       {
         if (device)
           delete device;
@@ -1077,7 +1077,7 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
 }
 
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
-bool CConfig::BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients)
+bool CConfig::BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type)
 {
   CDeviceSPI* spidevice = new CDeviceSPI(clients);
   device = spidevice;
@@ -1099,6 +1099,11 @@ bool CConfig::BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients)
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+
+  if (type == "lpd8806")
+    device->SetType(LPD8806);
+  else if (type == "ws2801")
+    device->SetType(WS2801);
 
   return true;
 }

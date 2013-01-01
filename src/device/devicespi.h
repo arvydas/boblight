@@ -39,6 +39,7 @@ class CDeviceSPI : public CDevice
     int          m_fd;
     uint8_t*     m_buff;
     int          m_buffsize;
+    float        m_max;
 };
 
 

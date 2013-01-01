@@ -34,6 +34,7 @@
 #define OLA      9
 #define SEDU     10
 #define LPD8806  11
+#define WS2801   12
 
 #include <string>
 #include <vector>

@@ -91,11 +91,24 @@ bool CDeviceSPI::SetupDevice()
     return false;
   }
 
-  m_buffsize = m_channels.size() + 1;
-  m_buff = new uint8_t[m_buffsize];
-  memset(m_buff, 0x80, m_channels.size());
-  //the LPD8806 needs a null byte at the end to reset the internal byte counter
-  m_buff[m_buffsize - 1] = 0;
+  if (m_type == LPD8806)
+  {
+    m_buffsize = m_channels.size() + 1;
+    m_buff = new uint8_t[m_buffsize];
+    memset(m_buff, 0x80, m_channels.size());
+    //the LPD8806 needs a null byte at the end to reset the internal byte counter
+    m_buff[m_buffsize - 1] = 0;
+
+    m_max = 127.0f;
+  }
+  else if (m_type == WS2801)
+  {
+    m_buffsize = m_channels.size();
+    m_buff = new uint8_t[m_buffsize];
+    memset(m_buff, 0, m_buffsize);
+
+    m_max = 255.0f;
+  }
 
   //write out the buffer to turn off all leds
   if (!WriteBuffer())
@@ -113,9 +126,15 @@ bool CDeviceSPI::WriteOutput()
   //put the values in the buffer, big endian
   for (int i = 0; i < m_channels.size(); i++)
   {
-    int output = Round32(m_channels[i].GetValue(now) * 127.0f);
-    output = Clamp(output, 0, 127);
-    m_buff[i] = output | 0x80; //for the LPD8806, high bit needs to be always set
+    int output = Round32(m_channels[i].GetValue(now) * m_max);
+    m_buff[i] = Clamp(output, 0, Round32(m_max));
+  }
+
+  if (m_type == LPD8806)
+  {
+    //for the LPD8806, high bit needs to be always set
+    for (int i = 0; i < m_channels.size(); i++)
+      m_buff[i] |= 0x80;
   }
 
   if (!WriteBuffer())
@@ -131,7 +150,13 @@ void CDeviceSPI::CloseDevice()
   if (m_fd != -1)
   {
     //turn off all leds
-    memset(m_buff, 0x80, m_channels.size());
+    int value;
+    if (m_type == LPD8806)
+      value = 0x80;
+    else if (m_type == WS2801)
+      value = 0;
+
+    memset(m_buff, value, m_channels.size());
     WriteBuffer();
 
     close(m_fd);

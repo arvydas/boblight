@@ -110,7 +110,7 @@ class CConfig
     bool BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
-    bool BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
 #endif
 
     bool SetDeviceName(CDevice* device, int devicenr);
