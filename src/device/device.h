@@ -35,6 +35,7 @@
 #define SEDU     10
 #define LPD8806  11
 #define WS2801   12
+#define AMBIODER 13
 
 #include <string>
 #include <vector>

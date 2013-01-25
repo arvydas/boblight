@@ -75,6 +75,7 @@ boblightd_SOURCES = \
 	device/devicers232.cpp \
 	device/deviceltbl.cpp \
 	device/devicedioder.cpp \
+	device/deviceambioder.cpp \
         util/signaltimer.cpp
 
 boblightd_LDFLAGS =

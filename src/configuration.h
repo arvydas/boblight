@@ -28,6 +28,8 @@
 #include "device/device.h"
 #include "device/devicers232.h"
 #include "device/devicedioder.h"
+#include "device/deviceambioder.h"
+
 
 #ifdef HAVE_LIBPORTAUDIO
   #include "device/devicesound.h"
@@ -103,6 +105,7 @@ class CConfig
     bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& clients);
 #ifdef HAVE_LIBPORTAUDIO
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
