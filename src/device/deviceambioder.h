@@ -29,7 +29,6 @@ class CDeviceAmbioder : public CDeviceRS232
   private:
 
     bool SetupDevice();
-    bool OpenSerialPort();
     bool WriteOutput();
     void CloseDevice();
     ~CDeviceAmbioder();

@@ -21,18 +21,23 @@
 #include "util/misc.h"
 #include "util/timeutils.h"
 
-
+#define AMBIODER_PWM_PERIOD 255
 /*
 support for Ambioder device: http://gabriel-lg.github.com/Ambioder/
 protocol:
-commands are sent as 4-byte sequences:
-binary: 00pppppp 01rrrrrr 10gggggg 11bbbbbb
+commands are sent as 6/8-byte sequences:
+hex: [0x0X 0x1X] 0x2X 0x3X 0x4X 0x5X 0x6X 0x7X
+the least significant nibbles are combined to form (in order):
+pwm period, red, green blue.
 */
+
+static const uint8_t ambioder_off[] = {0x0F, 0x1F, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70};
 
 CDeviceAmbioder::CDeviceAmbioder(CClientsHandler& clients) : CDeviceRS232(clients)
 {
-  m_buff = new uint8_t[4];
+  m_buff = new uint8_t[8];
 }
+
 
 bool CDeviceAmbioder::SetupDevice()
 {
@@ -47,32 +52,14 @@ bool CDeviceAmbioder::SetupDevice()
     USleep(m_delayafteropen, &m_stop);
 
   //turn off the lights
-  m_buff[0] = 0x00;
-  m_buff[1] = 0x40;
-  m_buff[2] = 0x80;
-  m_buff[3] = 0xC0;
-  if (m_serialport.Write(m_buff, 4) == -1)
+  memcpy(m_buff, ambioder_off, 8);
+  if (m_serialport.Write(m_buff, 8) == -1)
   {
     LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
   }
 
   return true;
-}
-
-bool CDeviceAmbioder::OpenSerialPort()
-{
-  bool opened = m_serialport.Open(m_output, m_rate, 8, 2); //FIXME workaround for sync issue when uart transmitter stays saturated
-  if (m_serialport.HasError())
-  {
-    LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
-    if (opened)
-      Log("%s: %s had a non fatal error, it might still work, continuing", m_name.c_str(), m_output.c_str());
-  }
-
-  m_serialport.PrintToStdOut(m_debug); //print serial data to stdout when debug mode is on
-
-  return opened;
 }
 
 bool CDeviceAmbioder::WriteOutput()
@@ -82,34 +69,27 @@ bool CDeviceAmbioder::WriteOutput()
   m_clients.FillChannels(m_channels, now, this);
 
   //create the command sequence
-  m_buff[0] = 0x3F; //63 step pwm loop
-  if(m_channels.size() > 0)
+  if(m_channels.size() >= 3)
   {
-    m_buff[1] = Clamp(Round32(m_channels[0].GetValue(now) * 63.0f), 0, 63) | 0x40;
+	uint8_t period = AMBIODER_PWM_PERIOD;
+	uint8_t red = Clamp(Round32(m_channels[0].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
+	uint8_t green = Clamp(Round32(m_channels[1].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
+	uint8_t blue = Clamp(Round32(m_channels[2].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
+	m_buff[0] = 0x00 | ((period >> 4) & 0x0F);
+	m_buff[1] = 0x10 | (period & 0x0F);
+	m_buff[2] = 0x20 | ((red >> 4) & 0x0F);
+	m_buff[3] = 0x30 | (red & 0x0F);
+	m_buff[4] = 0x40 | ((green >> 4) & 0x0F);
+	m_buff[5] = 0x50 | (green & 0x0F);
+	m_buff[6] = 0x60 | ((blue >> 4) &0x0F);
+	m_buff[7] = 0x70 | (blue & 0x0F);
   }
   else
   {
-    m_buff[1] = 0x40;
-  }
-  if(m_channels.size() > 1)
-  {
-    m_buff[2] = Clamp(Round32(m_channels[1].GetValue(now) * 63.0f), 0, 63) | 0x80;
-  }
-  else
-  {
-    m_buff[2] = 0x80;
-  }
-
-  if(m_channels.size() > 2)
-  {
-    m_buff[3] = Clamp(Round32(m_channels[2].GetValue(now) * 63.0f), 0, 63) | 0xC0;
-  }
-  else
-  {
-    m_buff[3] = 0xC0;
+	  memcpy(m_buff, ambioder_off, 8);
   }
   //write output to the serial port
-  if (m_serialport.Write(m_buff, 4) == -1)
+  if (m_serialport.Write(m_buff, 8) == -1)
   {
     LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
     return false;
@@ -123,11 +103,8 @@ bool CDeviceAmbioder::WriteOutput()
 void CDeviceAmbioder::CloseDevice()
 {
   //turn off the lights
-  m_buff[0] = 0x00;
-  m_buff[1] = 0x40;
-  m_buff[2] = 0x80;
-  m_buff[3] = 0xC0;
-  if (m_serialport.Write(m_buff, 4) == -1)
+  memcpy(m_buff, ambioder_off, 8);
+  if (m_serialport.Write(m_buff, 8) == -1)
   {
     LogError("%s: %s", m_name.c_str(), m_serialport.GetError().c_str());
   }
