@@ -25,9 +25,10 @@ class CDeviceAmbioder : public CDeviceRS232
 {
   public:
     CDeviceAmbioder(CClientsHandler& clients);
+    bool SetPrecision(int max);
 
   private:
-
+    int m_precision;
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();

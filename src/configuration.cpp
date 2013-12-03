@@ -305,7 +305,7 @@ bool CConfig::CheckDeviceConfig()
         continue; //can't check these here
       }
       else if (key == "rate" || key == "channels" || key == "interval" || key == "period" ||
-               key == "bits" || key == "delayafteropen" || key == "max")
+               key == "bits" || key == "delayafteropen" || key == "max" || key == "precision")
       { //these are of type integer not lower than 1
         int64_t ivalue;
         if (!StrToInt(value, ivalue) || ivalue < 1 || (key == "bits" && ivalue > 32) || (key == "max" && ivalue > 0xFFFFFFFF))
@@ -1186,6 +1186,9 @@ bool CConfig::BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& cli
   if (!SetDeviceInterval(ambioderdevice, devicenr))
     return false;
 
+  if (!SetDevicePrecision(ambioderdevice, devicenr))
+    return false;
+
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
@@ -1195,6 +1198,24 @@ bool CConfig::BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& cli
 
   return true;
 
+}
+
+bool CConfig::SetDevicePrecision(CDeviceAmbioder*& device, int devicenr)
+{
+	  string line, strvalue;
+	  int linenr = GetLineWithKey("precision", m_devicelines[devicenr].lines, line);
+	  if (linenr == -1)
+	    return false;
+
+	  GetWord(line, strvalue);
+
+	  int precision;
+	  StrToInt(strvalue, precision);
+
+	  if(!device->SetPrecision(precision))
+		  return false;
+
+	  return true;
 }
 
 #ifdef HAVE_LINUX_SPI_SPIDEV_H

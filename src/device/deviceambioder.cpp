@@ -59,8 +59,36 @@ bool CDeviceAmbioder::SetupDevice()
     return false;
   }
 
+  Log("%s: %d colors @ %.1fHz", m_name.c_str(), (int)pow(m_precision+1, 3), (float)2000000/(35*m_precision) );
+
   return true;
+
 }
+
+/**
+ * Set the precision for ambioder. Valid range is 15 to 255.
+ * Higher precision means more colors can be generated.
+ * Higher precision will result in a lower PWM frequency.
+ *r
+ * The number of colors/pwm frequency are calculated as follows:
+ * colors = (precision + 1)^3
+ * frequency = 2000000 / (35 * precision)
+ *
+ * e.g. precision = 127 gives:
+ *      colors = (127 + 1)^3 = 2,097,152 colors
+ *      frequency = 2000000 / (25 * 127) = 449.94Hz
+ */
+bool CDeviceAmbioder::SetPrecision(int precision) {
+	  if(precision < 15 || precision > 255) {
+	    LogError("%s: invalid precision value: %d (valid range: 15~255)", m_name.c_str(), precision);
+	    return false;
+	  }
+
+	  m_precision = precision;
+
+	  return true;
+}
+
 
 bool CDeviceAmbioder::WriteOutput()
 {
@@ -71,10 +99,10 @@ bool CDeviceAmbioder::WriteOutput()
   //create the command sequence
   if(m_channels.size() >= 3)
   {
-	uint8_t period = AMBIODER_PWM_PERIOD;
-	uint8_t red = Clamp(Round32(m_channels[0].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
-	uint8_t green = Clamp(Round32(m_channels[1].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
-	uint8_t blue = Clamp(Round32(m_channels[2].GetValue(now) * AMBIODER_PWM_PERIOD), 0, AMBIODER_PWM_PERIOD);
+	uint8_t period = m_precision;
+	uint8_t red = Clamp(Round32(m_channels[0].GetValue(now) * m_precision), 0, m_precision);
+	uint8_t green = Clamp(Round32(m_channels[1].GetValue(now) * m_precision), 0, m_precision);
+	uint8_t blue = Clamp(Round32(m_channels[2].GetValue(now) * m_precision), 0, m_precision);
 	m_buff[0] = 0x00 | ((period >> 4) & 0x0F);
 	m_buff[1] = 0x10 | (period & 0x0F);
 	m_buff[2] = 0x20 | ((red >> 4) & 0x0F);

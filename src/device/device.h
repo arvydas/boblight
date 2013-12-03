@@ -36,7 +36,7 @@
 #define LPD8806   11
 #define WS2801    12
 #define LIGHTPACK 13
-#define AMBIODER    14
+#define AMBIODER  14
 
 
 #include <string>

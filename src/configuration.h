@@ -105,6 +105,8 @@ class CConfig
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients);
     bool BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool SetDevicePrecision(CDeviceAmbioder*& device, int devicenr);
+
 #ifdef HAVE_LIBPORTAUDIO
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
