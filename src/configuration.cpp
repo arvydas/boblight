@@ -1191,7 +1191,7 @@ bool CConfig::BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& cli
   SetDeviceDelayAfterOpen(device, devicenr);
   SetDeviceThreadPriority(device, devicenr);
 
-  device->SetType(DIODER);
+  device->SetType(AMBIODER);
 
   return true;
 
