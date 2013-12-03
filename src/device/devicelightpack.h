@@ -1,6 +1,6 @@
 /*
  * boblight
- * Copyright (C) Bob  2012
+ * Copyright (C) tim.helloworld 2013
  * 
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,16 +16,18 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CDEVICEIBELIGHT
-#define CDEVICEIBELIGHT 
+#ifndef CDEVICELIGHTPACK
+#define CDEVICELIGHTPACK
 
 #include "deviceusb.h"
 #include <libusb-1.0/libusb.h>
 
-class CDeviceiBeLight : public CDeviceUsb
+#define LIGHTPACK_REPORT_SIZE 61
+
+class CDeviceLightpack : public CDeviceUsb
 {
   public:
-    CDeviceiBeLight(CClientsHandler& clients);
+    CDeviceLightpack(CClientsHandler& clients);
     void Sync();
 
   protected:
@@ -33,18 +35,14 @@ class CDeviceiBeLight : public CDeviceUsb
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
-
-    bool SetPixelCount();
-    bool SetColors();
-    int  BulkTransfer(struct libusb_device_handle* dev_handle, unsigned char endpoint,
-                      unsigned char* data, int length, int* transferred, unsigned int timeout);
+    bool DisableSmoothness();
 
     const char* UsbErrorName(int errcode);
 
     CSignalTimer          m_timer;
     libusb_context*       m_usbcontext;
     libusb_device_handle* m_devicehandle;
-    uint8_t*              m_chanbuffer;
+    unsigned char         m_buf[LIGHTPACK_REPORT_SIZE];
 };
 
-#endif //CDEVICEIBELIGHT 
+#endif //CDEVICELIGHTPACK

@@ -22,20 +22,20 @@
 #include "util/inclstdint.h"
 
 //device types
-#define NOTHING  0
-#define MOMO     1
-#define ATMO     2
-#define POPEN    3
-#define LTBL     4
-#define SOUND    5
-#define DIODER   6
-#define KARATE   7
-#define IBELIGHT 8
-#define OLA      9
-#define SEDU     10
-#define LPD8806  11
-#define WS2801   12
-#define AMBIODER 13
+#define NOTHING   0
+#define MOMO      1
+#define ATMO      2
+#define POPEN     3
+#define LTBL      4
+#define SOUND     5
+#define DIODER    6
+#define KARATE    7
+#define IBELIGHT  8
+#define OLA       9
+#define SEDU      10
+#define LPD8806   11
+#define WS2801    12
+#define LIGHTPACK 13
 
 #include <string>
 #include <vector>
@@ -103,6 +103,7 @@ class CDevice : public CThread
     void SetAllowSync(bool allowsync)                 { m_allowsync = allowsync; }
     void SetDebug(bool debug)                         { m_debug = debug; }
     void SetDelayAfterOpen(int64_t delay)             { m_delayafteropen = delay; }
+    void SetThreadPriority(int priority)              { m_threadpriority = priority; m_setpriority = true;}
 
     int GetNrChannels()     { return m_channels.size(); }
       
@@ -126,6 +127,8 @@ class CDevice : public CThread
     bool        m_allowsync;
     bool        m_debug;
     int64_t     m_delayafteropen;
+    int         m_threadpriority;
+    bool        m_setpriority;
 
     std::vector<CChannel> m_channels;
 

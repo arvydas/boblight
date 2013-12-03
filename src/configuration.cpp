@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sched.h>
 
 #include "util/log.h"
 #include "util/misc.h"
@@ -27,6 +28,11 @@
 
 #include "device/devicepopen.h"
 #include "device/deviceltbl.h"
+
+#ifdef HAVE_LIBUSB
+  #include "device/devicelightpack.h"
+  #include "device/deviceibelight.h"
+#endif
 
 #ifdef HAVE_OLA
   #include "device/deviceola.h"
@@ -294,7 +300,7 @@ bool CConfig::CheckDeviceConfig()
         continue;
       }
 
-      if (key == "name" || key == "output" || key == "type")
+      if (key == "name" || key == "output" || key == "type" || key == "serial")
       {
         continue; //can't check these here
       }
@@ -307,6 +313,24 @@ bool CConfig::CheckDeviceConfig()
           LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
           valid = false;
         }          
+      }
+      else if (key == "threadpriority")
+      {
+        int64_t ivalue;
+        if (!StrToInt(value, ivalue))
+        {
+          LogError("%s line %i section [device]: wrong value %s for key %s", m_filename.c_str(), linenr, value.c_str(), key.c_str());
+          valid = false;
+        }
+
+        int priomax = sched_get_priority_max(SCHED_FIFO);
+        int priomin = sched_get_priority_min(SCHED_FIFO);
+        if (ivalue > priomax || ivalue < priomin)
+        {
+          LogError("%s line %i section [device]: threadpriority must be between %i and %i",
+                   m_filename.c_str(), linenr, priomin, priomax);
+          valid = false;
+        }
       }
       else if (key == "prefix" || key == "postfix")
       { //this is in hex from 00 to FF, separated by spaces, like: prefix FF 7F A0 22
@@ -726,17 +750,6 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       }
       devices.push_back(device);
     }
-    else if (type == "ambioder")
-    {
-      CDevice* device = NULL;
-      if (!BuildAmbioder(device, i, clients))
-      {
-        if (device)
-          delete device;
-        return false;
-      }
-      devices.push_back(device);
-    }
     else if (type == "ibelight")
     {
 #ifdef HAVE_LIBUSB
@@ -750,6 +763,23 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       devices.push_back(device);
 #else
       LogError("%s line %i: boblightd was built without libusb, no support for ibelight devices",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
+    }
+    else if (type == "lightpack")
+    {
+#ifdef HAVE_LIBUSB
+      CDevice* device = NULL;
+      if (!BuildLightpack(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without libusb, no support for lightpack devices",
                m_filename.c_str(), linenr);
       return false;
 #endif
@@ -879,6 +909,8 @@ bool CConfig::BuildOla(CDevice*& device, int devicenr, CClientsHandler& clients)
   if (!SetDeviceInterval(device, devicenr))
     return false;
 
+  SetDeviceThreadPriority(device, devicenr);
+
   device->SetType(OLA);
 
   return true;
@@ -904,6 +936,7 @@ bool CConfig::BuildPopen(CDevice*& device, int devicenr, CClientsHandler& client
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   device->SetType(POPEN);
   
@@ -933,6 +966,7 @@ bool CConfig::BuildRS232(CDevice*& device, int devicenr, CClientsHandler& client
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   bool hasbits = SetDeviceBits(rs232device, devicenr);
   bool hasmax  = SetDeviceMax(rs232device, devicenr);
@@ -986,6 +1020,7 @@ bool CConfig::BuildLtbl(CDevice*& device, int devicenr, CClientsHandler& clients
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   device->SetType(LTBL);
   
@@ -1014,6 +1049,7 @@ bool CConfig::BuildSound(CDevice*& device, int devicenr, CClientsHandler& client
     return false;
 
   SetDeviceLatency(sounddevice, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   sounddevice->SetType(SOUND);
 
@@ -1049,12 +1085,42 @@ bool CConfig::BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& cli
   SetDeviceAddress(ibedevice, devicenr);
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   ibedevice->SetType(IBELIGHT);
 
   return true;
 }
 #endif
+
+#ifdef HAVE_LIBUSB
+bool CConfig::BuildLightpack(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  CDeviceLightpack* lightpackdevice = new CDeviceLightpack(clients);
+  device = lightpackdevice;
+
+  if (!SetDeviceName(device, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(device, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(device, devicenr))
+    return false;
+
+  SetDeviceBus(lightpackdevice, devicenr);
+  SetDeviceAddress(lightpackdevice, devicenr);
+  SetSerial(lightpackdevice, devicenr);
+  SetDeviceAllowSync(lightpackdevice, devicenr);
+  SetDeviceDebug(lightpackdevice, devicenr);
+  SetDeviceThreadPriority(lightpackdevice, devicenr);
+
+  device->SetType(LIGHTPACK);
+
+  return true;
+}
+#endif
+
 
 bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
@@ -1080,40 +1146,10 @@ bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clien
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
   SetDeviceDelayAfterOpen(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   device->SetType(DIODER);
   
-  return true;
-
-}
-
-bool CConfig::BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& clients)
-{
-  CDeviceAmbioder* ambioderdevice = new CDeviceAmbioder(clients);
-
-  device = ambioderdevice;
-
-  if (!SetDeviceName(ambioderdevice, devicenr))
-    return false;
-
-  if (!SetDeviceOutput(ambioderdevice, devicenr))
-    return false;
-
-  if (!SetDeviceChannels(ambioderdevice, devicenr))
-    return false;
-
-  if (!SetDeviceRate(ambioderdevice, devicenr))
-    return false;
-
-  if (!SetDeviceInterval(ambioderdevice, devicenr))
-    return false;
-
-  SetDeviceAllowSync(device, devicenr);
-  SetDeviceDebug(device, devicenr);
-  SetDeviceDelayAfterOpen(device, devicenr);
-
-  device->SetType(AMBIODER);
-
   return true;
 
 }
@@ -1141,6 +1177,7 @@ bool CConfig::BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients,
 
   SetDeviceAllowSync(device, devicenr);
   SetDeviceDebug(device, devicenr);
+  SetDeviceThreadPriority(device, devicenr);
 
   if (type == "lpd8806")
     device->SetType(LPD8806);
@@ -1308,7 +1345,7 @@ void CConfig::SetDeviceLatency(CDeviceSound* device, int devicenr)
 #endif
 
 #ifdef HAVE_LIBUSB
-void CConfig::SetDeviceBus(CDeviceiBeLight* device, int devicenr)
+void CConfig::SetDeviceBus(CDeviceUsb* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("bus", m_devicelines[devicenr].lines, line);
@@ -1319,10 +1356,10 @@ void CConfig::SetDeviceBus(CDeviceiBeLight* device, int devicenr)
 
   int busnr;
   StrToInt(strvalue, busnr);
-  device->SetBusNr(busnr);
+  device->SetBusNumber(busnr);
 }
 
-void CConfig::SetDeviceAddress(CDeviceiBeLight* device, int devicenr)
+void CConfig::SetDeviceAddress(CDeviceUsb* device, int devicenr)
 {
   string line, strvalue;
   int linenr = GetLineWithKey("address", m_devicelines[devicenr].lines, line);
@@ -1333,7 +1370,19 @@ void CConfig::SetDeviceAddress(CDeviceiBeLight* device, int devicenr)
 
   int address;
   StrToInt(strvalue, address);
-  device->SetAddress(address);
+  device->SetDeviceAddress(address);
+}
+
+void CConfig::SetSerial(CDeviceUsb* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("serial", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  device->SetSerial(strvalue);
 }
 #endif
 
@@ -1410,6 +1459,20 @@ void CConfig::SetDeviceDelayAfterOpen(CDevice* device, int devicenr)
   int delayafteropen;
   StrToInt(strvalue, delayafteropen);
   device->SetDelayAfterOpen(delayafteropen);
+}
+
+void CConfig::SetDeviceThreadPriority(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("threadpriority", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  int priority;
+  StrToInt(strvalue, priority);
+  device->SetThreadPriority(priority);
 }
 
 bool CConfig::SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr)

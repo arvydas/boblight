@@ -22,6 +22,7 @@
 #include "util/inclstdint.h"
 
 #include <vector>
+#include <map>
 
 #include "util/misc.h"
 #include "util/mutex.h"
@@ -42,8 +43,10 @@ class CClient
     void             SetPriority(int priority) { m_priority = Clamp(priority, 0, 255); }
     int64_t          m_connecttime;  //when a client connected, used to decide which is the oldest client in case of same priority
 
-    std::vector<CLight> m_lights;    //lights of the client
+    std::vector<CLight>        m_lights;    //lights of the client
+    std::map<std::string, int> m_lightnrs;  //tree for light names to light nr conversion for faster searching
 
+    void             InitLights(std::vector<CLight>& lights);
     int              LightNameToInt(std::string& lightname);
 };
 

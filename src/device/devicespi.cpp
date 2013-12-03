@@ -93,11 +93,16 @@ bool CDeviceSPI::SetupDevice()
 
   if (m_type == LPD8806)
   {
-    m_buffsize = m_channels.size() + 1;
+    int latchbytes = (m_channels.size() / 3 + 31) / 32;
+    m_buffsize = m_channels.size() + latchbytes;
     m_buff = new uint8_t[m_buffsize];
+
+    //turn of all leds, the LPD8806 needs the high bit set for this
     memset(m_buff, 0x80, m_channels.size());
-    //the LPD8806 needs a null byte at the end to reset the internal byte counter
-    m_buff[m_buffsize - 1] = 0;
+
+    //the LPD8806 needs one zero byte per 32 chips (32 rgb leds) to reset the internal counter
+    //see the explanation at https://github.com/adafruit/LPD8806/blob/master/LPD8806.cpp
+    memset(m_buff + m_channels.size(), 0, latchbytes);
 
     m_max = 127.0f;
   }
@@ -188,6 +193,10 @@ bool CDeviceSPI::WriteBuffer()
 
     printf("\n");
   }
+
+  //to latch in the data, the WS2801 needs the clock pin low for 500 microseconds
+  if (m_type == WS2801)
+    USleep(500);
 
   return true;
 }

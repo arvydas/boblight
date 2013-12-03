@@ -24,7 +24,8 @@ boblight_v4l_SOURCES = \
 	clients/boblight-v4l/flagmanager-v4l.cpp \
 	util/misc.cpp \
 	clients/flagmanager.cpp \
-	clients/boblight-v4l/videograbber.cpp
+	clients/boblight-v4l/videograbber.cpp \
+        util/daemonize.cpp
 
 boblight_v4l_LDFLAGS = -lavutil -lavcodec -lavformat -lswscale -lavdevice -lX11
 
@@ -32,7 +33,8 @@ boblight_constant_SOURCES = \
 	clients/boblight-constant/boblight-constant.cpp \
 	clients/flagmanager.cpp \
 	clients/boblight-constant/flagmanager-constant.cpp \
-	util/misc.cpp
+	util/misc.cpp \
+        util/daemonize.cpp
 
 boblight_X11_SOURCES = \
 	clients/boblight-X11/boblight-X11.cpp \
@@ -42,6 +44,7 @@ boblight_X11_SOURCES = \
 	util/thread.cpp \
 	util/misc.cpp \
         util/timeutils.cpp \
+        util/daemonize.cpp \
 	clients/boblight-X11/grabber-base.cpp \
 	clients/boblight-X11/grabber-xgetimage.cpp \
 	clients/boblight-X11/grabber-xrender.cpp \
@@ -75,8 +78,8 @@ boblightd_SOURCES = \
 	device/devicers232.cpp \
 	device/deviceltbl.cpp \
 	device/devicedioder.cpp \
-	device/deviceambioder.cpp \
-        util/signaltimer.cpp
+        util/signaltimer.cpp \
+        util/daemonize.cpp
 
 boblightd_LDFLAGS =
 
@@ -88,7 +91,8 @@ boblightd_LDFLAGS += -lportaudio
 endif
 
 if HAVE_LIBUSB
-boblightd_SOURCES += device/deviceibelight.cpp
+boblightd_SOURCES += device/deviceibelight.cpp \
+	device/devicelightpack.cpp
 boblightd_LDFLAGS += -lusb-1.0
 endif
 

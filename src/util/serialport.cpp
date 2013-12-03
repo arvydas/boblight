@@ -183,7 +183,7 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     return false;
   }
 
-  m_fd = open(name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+  m_fd = open(name.c_str(), O_RDWR | O_NOCTTY);
 
   if (m_fd == -1)
   {
@@ -191,7 +191,9 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     return false;
   }
 
-  fcntl(m_fd, F_SETFL, 0);
+  //make sure port is blocking
+  int flags = fcntl(m_fd, F_GETFL, 0);
+  fcntl(m_fd, F_SETFL, flags & (~O_NONBLOCK));
 
   //set port attributes, don't bail if they fail because the port might still be usable
   if (tcgetattr(m_fd, &m_options) == 0)
@@ -204,8 +206,9 @@ bool CSerialPort::Open(std::string name, int baudrate, int databits/* = 8*/, int
     m_error = "tcgetattr() " + GetErrno();
   }
 
-  //non-blocking port
-  fcntl(m_fd, F_SETFL, FNDELAY);
+  //make port non blocking
+  flags = fcntl(m_fd, F_GETFL, 0);
+  fcntl(m_fd, F_SETFL, flags | O_NONBLOCK);
 
   return true;
 }

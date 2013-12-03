@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "util/misc.h"
+#include "util/daemonize.h"
 #include "flagmanager-constant.h"
 
 using namespace std;
@@ -73,10 +74,7 @@ int main(int argc, char *argv[])
   }
 
   if (g_flagmanager.m_fork)
-  {
-    if (fork())
-      return 0;
-  }
+    Daemonize();
 
   //set up signal handlers
   signal(SIGTERM, SignalHandler);

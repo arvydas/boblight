@@ -17,6 +17,8 @@
  */
 
 #include <math.h>
+#include <pthread.h>
+#include <sched.h>
 
 #include "device.h"
 #include "util/log.h"
@@ -108,6 +110,8 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
   m_allowsync = true;
   m_debug = false;
   m_delayafteropen = 0;
+  m_threadpriority = -1;
+  m_setpriority = false;
 }
 
 void CDevice::Process()
@@ -116,7 +120,18 @@ void CDevice::Process()
     Log("%s: starting", m_name.c_str());
   else
     Log("%s: starting with output \"%s\"", m_name.c_str(), m_output.c_str());
-      
+  
+  if (m_setpriority)
+  {
+    sched_param param = {};
+    param.sched_priority = m_threadpriority;
+    int returnv = pthread_setschedparam(m_thread, SCHED_FIFO, &param);
+    if (returnv == 0)
+      Log("%s: successfully set thread priority to %i", m_name.c_str(), m_threadpriority);
+    else
+      LogError("%s: error setting thread priority to %i: %s", m_name.c_str(), m_threadpriority, GetErrno(returnv).c_str());
+  }
+
   int64_t setuptime;
 
   while(!m_stop)

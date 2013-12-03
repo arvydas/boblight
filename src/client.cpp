@@ -39,14 +39,22 @@ CClient::CClient()
   m_connecttime = -1;
 }
 
+void CClient::InitLights(std::vector<CLight>& lights)
+{
+  m_lights = lights;
+
+  //generate a tree for fast lightname->lightnr conversion
+  for (int i = 0; i < m_lights.size(); i++)
+    m_lightnrs[m_lights[i].GetName()] = i;
+}
+
 int CClient::LightNameToInt(std::string& lightname)
 {
-  for (int i = 0; i < m_lights.size(); i++)
-  {
-    if (m_lights[i].GetName() == lightname)
-      return i;
-  }
-  return -1;
+  map<string, int>::iterator it = m_lightnrs.find(lightname);
+  if (it == m_lightnrs.end())
+    return -1;
+
+  return it->second;
 }
 
 CClientsHandler::CClientsHandler(std::vector<CLight>& lights) : m_lights(lights)
@@ -149,7 +157,7 @@ void CClientsHandler::AddClient(CClient* client)
   }
 
   //assign lights and put the pointer in the clients vector
-  client->m_lights = m_lights;
+  client->InitLights(m_lights);
   m_clients.push_back(client);
 }
 

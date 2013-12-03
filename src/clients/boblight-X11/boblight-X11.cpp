@@ -29,6 +29,7 @@
 
 #include "util/misc.h"
 #include "util/timer.h"
+#include "util/daemonize.h"
 #include "config.h"
 #include "flagmanager-X11.h"
 
@@ -83,10 +84,7 @@ int main (int argc, char *argv[])
   g_flagmanager.SetVideoGamma();
 
   if (g_flagmanager.m_fork)
-  {
-    if (fork())
-      return 0;
-  }
+    Daemonize();
 
   if (g_flagmanager.m_pixels == -1) //set default pixels
   {

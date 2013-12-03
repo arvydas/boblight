@@ -23,8 +23,8 @@
 #include <arpa/inet.h>
 #include <iostream> //debug
 #include <string.h>
-#include <sys/unistd.h>
-#include <sys/fcntl.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
 

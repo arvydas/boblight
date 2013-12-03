@@ -24,6 +24,7 @@
 #include "util/log.h"
 #include "util/tcpsocket.h"
 #include "util/messagequeue.h"
+#include "util/daemonize.h"
 #include "client.h"
 #include "configuration.h"
 #include "device/device.h"
@@ -55,12 +56,11 @@ int main (int argc, char *argv[])
 
   if (bfork)
   {
-    if (fork())
-      return 0;
+    Daemonize();
+    logtostderr = false;
   }
   
   //init our logfile
-  logtostderr = true;
   SetLogFile("boblightd.log");
   PrintFlags(argc, argv);
 

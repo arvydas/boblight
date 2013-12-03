@@ -28,13 +28,11 @@
 #define IBE_ENDPOINT  1
 #define IBE_TIMEOUT   100
 
-CDeviceiBeLight::CDeviceiBeLight(CClientsHandler& clients) : CDevice(clients)
+CDeviceiBeLight::CDeviceiBeLight(CClientsHandler& clients) : CDeviceUsb(clients)
 {
   m_usbcontext = NULL;
   m_devicehandle = NULL;
   m_chanbuffer = NULL;
-  m_busnr = -1;
-  m_address = -1;
 }
 
 void CDeviceiBeLight::Sync()
@@ -80,7 +78,7 @@ bool CDeviceiBeLight::SetupDevice()
 
       //if a custom bus and/or address is set, use only that
       //-1 for m_busnr and m_address means use any
-      if (device == NULL && (m_busnr == -1 || m_busnr == busnr) && (m_address == -1 || m_address == address))
+      if (device == NULL && (m_busnumber == -1 || m_busnumber == busnr) && (m_deviceaddress == -1 || m_deviceaddress == address))
       {
         device = devicelist[i];
         use = true;
@@ -93,13 +91,13 @@ bool CDeviceiBeLight::SetupDevice()
   if (!device)
   {
     std::string buserror;
-    if (m_busnr != -1 || m_address != -1)
+    if (m_busnumber != -1 || m_deviceaddress != -1)
     {
       buserror = " on";
-      if (m_busnr != -1)
-        buserror += " bus " + ToString(m_busnr);
-      if (m_address != -1)
-        buserror += " address " + ToString(m_address);
+      if (m_busnumber != -1)
+        buserror += " bus " + ToString(m_busnumber);
+      if (m_deviceaddress != -1)
+        buserror += " address " + ToString(m_deviceaddress);
     }
 
     LogError("%s: no iBeLight device with vid %04x and pid %04x found%s", m_name.c_str(), IBE_VID, IBE_PID, buserror.c_str());

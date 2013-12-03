@@ -24,6 +24,7 @@
 #define BOBLIGHT_DLOPEN
 #include "lib/boblight.h"
 #include "util/misc.h"
+#include "util/daemonize.h"
 #include "flagmanager-v4l.h"
 #include "videograbber.h"
 
@@ -75,10 +76,7 @@ int main(int argc, char *argv[])
   g_flagmanager.SetVideoGamma();
 
   if (g_flagmanager.m_fork)
-  {
-    if (fork())
-      return 0;
-  }
+    Daemonize();
 
   //set up signal handlers
   signal(SIGTERM, SignalHandler);

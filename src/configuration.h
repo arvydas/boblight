@@ -28,14 +28,12 @@
 #include "device/device.h"
 #include "device/devicers232.h"
 #include "device/devicedioder.h"
-#include "device/deviceambioder.h"
-
 
 #ifdef HAVE_LIBPORTAUDIO
   #include "device/devicesound.h"
 #endif
 #ifdef HAVE_LIBUSB
-  #include "device/deviceibelight.h"
+  #include "device/deviceusb.h"
 #endif
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
   #include "device/devicespi.h"
@@ -105,12 +103,12 @@ class CConfig
     bool BuildRS232(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
     bool BuildLtbl(CDevice*& device,  int devicenr, CClientsHandler& clients);
     bool BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients);
-    bool BuildAmbioder(CDevice*& device, int devicenr, CClientsHandler& clients);
 #ifdef HAVE_LIBPORTAUDIO
     bool BuildSound(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
 #ifdef HAVE_LIBUSB
     bool BuildiBeLight(CDevice*& device, int devicenr, CClientsHandler& clients);
+    bool BuildLightpack(CDevice*& device, int devicenr, CClientsHandler& clients);
 #endif
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
     bool BuildSPI(CDevice*& device, int devicenr, CClientsHandler& clients, const std::string& type);
@@ -128,14 +126,16 @@ class CConfig
     void SetDeviceLatency(CDeviceSound* device, int devicenr);
 #endif
 #ifdef HAVE_LIBUSB
-    void SetDeviceBus(CDeviceiBeLight* device, int devicenr);
-    void SetDeviceAddress(CDeviceiBeLight* device, int devicenr);
+    void SetDeviceBus(CDeviceUsb* device, int devicenr);
+    void SetDeviceAddress(CDeviceUsb* device, int devicenr);
+    void SetSerial(CDeviceUsb* device, int devicenr);
 #endif
     void SetDeviceAllowSync(CDevice* device, int devicenr);
     void SetDeviceDebug(CDevice* device, int devicenr);
     bool SetDeviceBits(CDeviceRS232* device, int devicenr);
     bool SetDeviceMax(CDeviceRS232* device, int devicenr);
     void SetDeviceDelayAfterOpen(CDevice* device, int devicenr);
+    void SetDeviceThreadPriority(CDevice* device, int devicenr);
 
     bool SetLightName(CLight& light, std::vector<CConfigLine>& lines, int lightnr);
     void SetLightScanRange(CLight& light, std::vector<CConfigLine>& lines);
