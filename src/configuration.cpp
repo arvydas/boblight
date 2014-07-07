@@ -795,6 +795,23 @@ bool CConfig::BuildDeviceConfig(std::vector<CDevice*>& devices, CClientsHandler&
       return false;
 #endif
     }
+    else if (type == "blinkstick")
+    {
+#ifdef HAVE_LIBUSB
+      CDevice* device = NULL;
+      if (!BuildBlinkstick(device, i, clients))
+      {
+        if (device)
+          delete device;
+        return false;
+      }
+      devices.push_back(device);
+#else
+      LogError("%s line %i: boblightd was built without libusb, no support for BlinkStick devices",
+               m_filename.c_str(), linenr);
+      return false;
+#endif
+    }
     else if (type == "lpd8806" || type == "ws2801")
     {
 #ifdef HAVE_LINUX_SPI_SPIDEV_H
@@ -1132,6 +1149,33 @@ bool CConfig::BuildLightpack(CDevice*& device, int devicenr, CClientsHandler& cl
 }
 #endif
 
+#ifdef HAVE_LIBUSB
+bool CConfig::BuildBlinkstick(CDevice*& device, int devicenr, CClientsHandler& clients)
+{
+  CDeviceBlinkstick* blinkstickdevice = new CDeviceBlinkstick(clients);
+  device = blinkstickdevice;
+
+  if (!SetDeviceName(device, devicenr))
+    return false;
+
+  if (!SetDeviceChannels(device, devicenr))
+    return false;
+
+  if (!SetDeviceInterval(device, devicenr))
+    return false;
+
+  SetDeviceBus(blinkstickdevice, devicenr);
+  SetDeviceAddress(blinkstickdevice, devicenr);
+  SetSerial(blinkstickdevice, devicenr);
+  SetDeviceAllowSync(blinkstickdevice, devicenr);
+  SetDeviceDebug(blinkstickdevice, devicenr);
+  SetDeviceThreadPriority(blinkstickdevice, devicenr);
+
+  device->SetType(BLINKSTICK);
+
+  return true;
+}
+#endif
 
 bool CConfig::BuildDioder(CDevice*& device, int devicenr, CClientsHandler& clients)
 {
