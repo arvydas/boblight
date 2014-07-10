@@ -292,12 +292,20 @@ bool CDeviceBlinkstick::WriteOutput()
 
   return result;
 #else
-  int result = libusb_control_transfer(m_devicehandle,
-                                       0x20,
-                                       0x09,
-                                       0x01,
-                                       0x00,
-                                       m_buf, BLINKSTICK_REPORT_SIZE, BLINKSTICK_TIMEOUT);
+  int result = 0;
+  int attempts = 0;
+  while (result != BLINKSTICK_REPORT_SIZE && attempts < 10)
+  {
+    result = libusb_control_transfer(m_devicehandle,
+                                         0x20,
+                                         0x09,
+                                         0x01,
+                                         0x00,
+                                         m_buf, BLINKSTICK_REPORT_SIZE, BLINKSTICK_TIMEOUT);
+		if (result != BLINKSTICK_REPORT_SIZE && m_debug)
+		  Log("Attempting to resend");
+		attempts++;
+  }
   m_timer.Wait();
 
   return result == BLINKSTICK_REPORT_SIZE;
