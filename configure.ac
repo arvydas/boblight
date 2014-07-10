@@ -3,7 +3,7 @@ dnl Created by Anjuta application wizard.
 
 AC_INIT(boblight, 2.0)
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
