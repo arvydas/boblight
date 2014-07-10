@@ -23,7 +23,10 @@
 # Project specific
 
 Makefile
+Makefile.in
+aclocal.m4
 config.*
+configure
 libtool
 stamp-h1
 autom4te.cache
