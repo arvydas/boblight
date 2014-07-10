@@ -35,13 +35,15 @@ class CDeviceBlinkstick : public CDeviceUsb
     bool SetupDevice();
     bool WriteOutput();
     void CloseDevice();
-    bool DisableSmoothness();
 
     const char* UsbErrorName(int errcode);
 
     CSignalTimer          m_timer;
     libusb_context*       m_usbcontext;
     libusb_device_handle* m_devicehandle;
+#if defined(WIN32)
+	HANDLE				  m_hidHandle = INVALID_HANDLE_VALUE;
+#endif
     unsigned char         m_buf[BLINKSTICK_REPORT_SIZE];
 };
 
