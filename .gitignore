@@ -26,6 +26,7 @@ Makefile
 config.*
 libtool
 stamp-h1
+autom4te.cache
 /src/.deps
 /src/.libs
 /src/boblightd
