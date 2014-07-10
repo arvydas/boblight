@@ -38,3 +38,4 @@ autom4te.cache
 /src/boblight-constant
 .deps
 .dirstamp
+ltmain.sh
