@@ -109,6 +109,7 @@ CDevice::CDevice(CClientsHandler& clients) : m_clients(clients)
   m_type = NOTHING;
   m_allowsync = true;
   m_debug = false;
+  m_inverse = false;
   m_delayafteropen = 0;
   m_threadpriority = -1;
   m_setpriority = false;

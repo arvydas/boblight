@@ -267,6 +267,13 @@ bool CDeviceBlinkstick::WriteOutput()
     unsigned int g = Get8bitColor(&m_channels[i+1], now); 
     unsigned int b = Get8bitColor(&m_channels[i+2], now); 
 
+    if (m_inverse)
+    {
+      r = 255 - r;
+      g = 255 - g;
+      b = 255 - b;
+    }
+
     m_buf[idx++] = r & 0xff;
     m_buf[idx++] = g & 0xff;
     m_buf[idx++] = b & 0xff;

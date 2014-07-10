@@ -355,7 +355,7 @@ bool CConfig::CheckDeviceConfig()
           valid = false;
         }
       }
-      else if (key == "allowsync" || key == "debug")//bool
+      else if (key == "allowsync" || key == "debug" || key == "inverse")//bool
       {
         bool bValue;
         if (!StrToBool(value, bValue))
@@ -1170,6 +1170,7 @@ bool CConfig::BuildBlinkstick(CDevice*& device, int devicenr, CClientsHandler& c
   SetDeviceAllowSync(blinkstickdevice, devicenr);
   SetDeviceDebug(blinkstickdevice, devicenr);
   SetDeviceThreadPriority(blinkstickdevice, devicenr);
+  SetDeviceInverse(blinkstickdevice, devicenr);
 
   device->SetType(BLINKSTICK);
 
@@ -1520,6 +1521,20 @@ void CConfig::SetDeviceDebug(CDevice* device, int devicenr)
   bool debug;
   StrToBool(strvalue, debug);
   device->SetDebug(debug);
+}
+
+void CConfig::SetDeviceInverse(CDevice* device, int devicenr)
+{
+  string line, strvalue;
+  int linenr = GetLineWithKey("inverse", m_devicelines[devicenr].lines, line);
+  if (linenr == -1)
+    return;
+
+  GetWord(line, strvalue);
+
+  bool inverse;
+  StrToBool(strvalue, inverse);
+  device->SetInverse(inverse);
 }
 
 bool CConfig::SetDeviceBits(CDeviceRS232* device, int devicenr)

@@ -138,6 +138,7 @@ class CConfig
 #endif
     void SetDeviceAllowSync(CDevice* device, int devicenr);
     void SetDeviceDebug(CDevice* device, int devicenr);
+    void SetDeviceInverse(CDevice* device, int devicenr);
     bool SetDeviceBits(CDeviceRS232* device, int devicenr);
     bool SetDeviceMax(CDeviceRS232* device, int devicenr);
     void SetDeviceDelayAfterOpen(CDevice* device, int devicenr);
