@@ -23,7 +23,7 @@ AC_CHECK_DECL([clock_gettime], AC_DEFINE([HAVE_CLOCK_GETTIME], [1], [ ]), [], [[
 
 dnl blinkstick
 AC_CANONICAL_HOST
-AC_MSG_CHECKING([whether to build with mingw32 for a Windows host])
+AC_MSG_CHECKING([whether to build with cygwin for a Windows host])
 AS_CASE([$host_os],
         [*cygwin*], [windows_host=yes],
         [windows_host=no])
