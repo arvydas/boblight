@@ -39,3 +39,4 @@ autom4te.cache
 .deps
 .dirstamp
 ltmain.sh
+compile
