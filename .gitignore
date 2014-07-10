@@ -27,6 +27,7 @@ config.*
 libtool
 stamp-h1
 autom4te.cache
+*.stackdump
 /src/.deps
 /src/.libs
 /src/boblightd
