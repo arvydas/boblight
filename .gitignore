@@ -33,3 +33,5 @@ autom4te.cache
 /src/boblightd
 /src/boblight-X11
 /src/boblight-constant
+.deps
+.dirstamp
