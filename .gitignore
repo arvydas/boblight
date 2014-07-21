@@ -40,3 +40,6 @@ autom4te.cache
 .dirstamp
 ltmain.sh
 compile
+missing
+install-sh
+depcomp
