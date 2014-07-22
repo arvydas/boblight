@@ -259,13 +259,33 @@ bool CDeviceBlinkstick::WriteOutput()
   m_buf[0]=1;
 
   unsigned char idx = 1;
+  if (m_channels.size() > 3)
+  {
+    //set internal channel to R
+	m_buf[idx++] = 0;
+  }
+
+  int led_count = 0;
 
   //put the values in the buffer
   for (int i = 0; i < m_channels.size(); i+=3)
   {
-    unsigned int r = Get8bitColor(&m_channels[i]  , now); 
-    unsigned int g = Get8bitColor(&m_channels[i+1], now); 
-    unsigned int b = Get8bitColor(&m_channels[i+2], now); 
+    unsigned int r = 0; 
+    unsigned int g = 0; 
+    unsigned int b = 0; 
+
+	if (m_channels.size() > 3)
+	{
+		r = Get8bitColor(&m_channels[i+1]  , now); 
+		g = Get8bitColor(&m_channels[i], now); 
+		b = Get8bitColor(&m_channels[i+2], now); 
+	}
+	else
+	{
+		r = Get8bitColor(&m_channels[i]  , now); 
+		g = Get8bitColor(&m_channels[i+1], now); 
+		b = Get8bitColor(&m_channels[i+2], now); 
+	}
 
     if (m_inverse)
     {
@@ -277,10 +297,43 @@ bool CDeviceBlinkstick::WriteOutput()
     m_buf[idx++] = r & 0xff;
     m_buf[idx++] = g & 0xff;
     m_buf[idx++] = b & 0xff;
+
+	//BlinkStick supports up to 64 LEDS for one channel
+	led_count++;
+	if (led_count >= 64)
+		break;
   }
 
-  if (idx < BLINKSTICK_REPORT_SIZE)
-    memset(m_buf + idx, 0, BLINKSTICK_REPORT_SIZE - idx);
+  //Determine the report which needs to be sent
+  int report_size = 0;
+  if (led_count <= 1)
+  {
+	m_buf[0] = 1;
+	report_size = BLINKSTICK_REPORT_SIZE;
+  }
+  else if (led_count <= 8)
+  {
+	m_buf[0] = 6;
+	report_size = BLINKSTICK_REPORT_SIZE8;
+  }
+  else if (led_count <= 16)
+  {
+	m_buf[0] = 7;
+	report_size = BLINKSTICK_REPORT_SIZE16;
+  }
+  else if (led_count <= 32)
+  {
+	m_buf[0] = 8;
+	report_size = BLINKSTICK_REPORT_SIZE32;
+  }
+  else if (led_count <= 64)
+  {
+	m_buf[0] = 9;
+	report_size = BLINKSTICK_REPORT_SIZE64;
+  }
+
+  if (idx < report_size)
+    memset(m_buf + idx, 0, report_size - idx);
 
 #if defined(WIN32)
   BOOLEAN result = false;
@@ -289,7 +342,7 @@ bool CDeviceBlinkstick::WriteOutput()
   int attempts = 0;
   while (!result && attempts < 10)
   {
-		result = HidD_SetFeature(m_hidHandle, m_buf, 3 + 1);
+		result = HidD_SetFeature(m_hidHandle, m_buf, report_size);
 		if (!result && m_debug)
 		  Log("Attempting to resend");
 		attempts++;
@@ -301,21 +354,21 @@ bool CDeviceBlinkstick::WriteOutput()
 #else
   int result = 0;
   int attempts = 0;
-  while (result != BLINKSTICK_REPORT_SIZE && attempts < 10)
+  while (result != report_size && attempts < 10)
   {
     result = libusb_control_transfer(m_devicehandle,
                                          0x20,
                                          0x09,
-                                         0x01,
+                                         m_buf[0],
                                          0x00,
-                                         m_buf, BLINKSTICK_REPORT_SIZE, BLINKSTICK_TIMEOUT);
-		if (result != BLINKSTICK_REPORT_SIZE && m_debug)
-		  Log("Attempting to resend");
-		attempts++;
+                                         m_buf, report_size, BLINKSTICK_TIMEOUT);
+	if (result != report_size && m_debug)
+	  Log("Attempting to resend");
+	attempts++;
   }
   m_timer.Wait();
 
-  return result == BLINKSTICK_REPORT_SIZE;
+  return result == report_size;
 #endif
 }
 

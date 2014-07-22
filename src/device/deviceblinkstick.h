@@ -23,6 +23,10 @@
 #include <libusb-1.0/libusb.h>
 
 #define BLINKSTICK_REPORT_SIZE 4
+#define BLINKSTICK_REPORT_SIZE8 26
+#define BLINKSTICK_REPORT_SIZE16 50
+#define BLINKSTICK_REPORT_SIZE32 98
+#define BLINKSTICK_REPORT_SIZE64 194
 
 class CDeviceBlinkstick : public CDeviceUsb
 {
@@ -44,7 +48,7 @@ class CDeviceBlinkstick : public CDeviceUsb
 #if defined(WIN32)
 	HANDLE				  m_hidHandle = INVALID_HANDLE_VALUE;
 #endif
-    unsigned char         m_buf[BLINKSTICK_REPORT_SIZE];
+    unsigned char         m_buf[BLINKSTICK_REPORT_SIZE64];
 };
 
 #endif //CDEVICEBLINKSTICK
