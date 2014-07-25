@@ -11,7 +11,7 @@ http://www.blinkstick.com
 * Build environment cleanup
 * Full support for Windows build environment under [Cygwin](https://www.cygwin.com/)
 * BlinkStick support under Linux with libusb
-* BlinkStick support under Windows wihthout extra drivers using native Windows HID API
+* BlinkStick support under Windows without extra drivers using native Windows HID API
 
 ## Build
 
