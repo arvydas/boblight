@@ -1,4 +1,4 @@
-= Boblight with BlinkStick support
+# Boblight with BlinkStick support
 
 This is Boblight repository with BlinkStick support based on [Boblight](https://code.google.com/p/boblight/) source code. 
 
@@ -6,16 +6,16 @@ BlinkStick is a smart USB-Controlled LED Pixel. More information about it here:
 
 http://www.blinkstick.com
 
-== Changes from official source code
+## Changes from official source code
 
 * Build environment cleanup
 * Full support for Windows build environment under [Cygwin](https://www.cygwin.com/)
 * BlinkStick support under Linux with libusb
 * BlinkStick support under Windows wihthout extra drivers using native Windows HID API
 
-== Build
+## Build
 
-=== Linux
+### Linux
 
 Prepare the build environment
 
@@ -58,7 +58,7 @@ If you want to install boblight to your system run the following command:
 
 Then follow the guide in the Wiki to [automatically start boblightd](https://github.com/arvydas/boblight/wiki/Automatically-starting-boblightd-on-Linux) when OS starts.
 
-=== Windows
+### Windows
 
 Building under Windows requires Cygwin environment. Prepare it by installing [Cygwin](https://www.cygwin.com/) together with the following additional packages
 
@@ -103,7 +103,7 @@ If you want to run Boblightd.exe as standalone application without Cygwin enviro
 	/bin/cygusb-1.0.dll
 	/bin/cygwin1.dll
 
-== Development
+## Development
 
 Join the development of Boblight for BlinkStick! Here is how you can contribute:
 
@@ -111,18 +111,18 @@ Join the development of Boblight for BlinkStick! Here is how you can contribute:
 * Write some awesome code
 * Issue a pull request
 
-== Support
+## Support
 
 If you have any issues installing or using Boblight with BlinkStick, please post them on the [issue tracker](https://github.com/arvydas/boblight/issues).
 
-== License
+## License
 
 [GNU GPL v3](http://www.gnu.org/licenses/gpl.html)
            
-== Author
+## Author
 
 * [Bob](https://code.google.com/u/105397595332940693856/)
 
-== Maintainer
+## Maintainer
 
 * Arvydas Juskevicius - [http://twitter.com/arvydev](http://twitter.com/arvydev)
