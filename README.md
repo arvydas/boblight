@@ -62,13 +62,13 @@ Then follow the guide in the Wiki to [automatically start boblightd](https://git
 
 Building under Windows requires Cygwin environment. Prepare it by installing [Cygwin](https://www.cygwin.com/) together with the following additional packages
 
-	make
-	autoconf
-	automake
-	libtool
-	gcc-g++
-	libusb1.0-devel
-	git
+* make
+* autoconf
+* automake
+* libtool
+* gcc-g++
+* libusb1.0-devel
+* git
 
 Open Cygwin shell and clone this repository
 
