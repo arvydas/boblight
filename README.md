@@ -1,6 +1,7 @@
 # Boblight with BlinkStick support
 
-This is Boblight repository with BlinkStick support based on [Boblight](https://code.google.com/p/boblight/) source code. 
+This is Boblight repository with BlinkStick support based on [Boblight](https://code.google.com/p/boblight/) source code.
+This source code compiles on Linux, OSX and Windows.
 
 BlinkStick is a smart USB-Controlled LED Pixel. More information about it here:
 
@@ -10,7 +11,7 @@ http://www.blinkstick.com
 
 * Build environment cleanup
 * Full support for Windows build environment under [Cygwin](https://www.cygwin.com/)
-* BlinkStick support under Linux with libusb
+* BlinkStick support under Linux and OSX with libusb
 * BlinkStick support under Windows without extra drivers using native Windows HID API
 
 ## Build
@@ -57,6 +58,37 @@ If you want to install boblight to your system run the following command:
 	sudo make install
 
 Then follow the guide in the Wiki to [automatically start boblightd](https://github.com/arvydas/boblight/wiki/Automatically-starting-boblightd-on-Linux) when OS starts.
+
+### OSX
+
+Prepare the build environment
+
+	brew install autoconf automake libtool libusb git
+
+Clone this repository
+
+	git clone http://github.com/arvydas/boblight
+
+Change directory
+
+  cd boblight
+	
+Run the following commands to set up build environment and build boblight
+
+	./autogen.sh
+	./configure --without-x11 --without-portaudio
+	make
+	
+Set up your configuration file as described in the [Boblight wiki](https://code.google.com/p/boblight/wiki/boblightconf). 
+Sample configuration files for BlinkStick are available in the ./conf subdirectory of the source code repository.
+
+Run boblightd by issuing the following command
+
+	./src/boblightd
+
+Alternatively you can supply your own config file manually, for example
+
+	./src/boblightd -c ./conf/blinkstick.conf
 
 ### Windows
 
