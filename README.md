@@ -18,6 +18,9 @@ http://www.blinkstick.com
 
 ### Linux
 
+**NOTE:** The instructions below for Linux are incompete. Please follow this [comprehensive guide
+to set up BlinkStick with Kodi/XBMC on Linux OS](https://forums.blinkstick.com/t/blinkstick-ambilight-with-kodi-xbmc-and-boblight-on-linux-os/132/1).
+
 Prepare the build environment
 
 	sudo apt-get install -y build-essential autoconf libtool libusb-1.0-0-dev portaudio19-dev git 
